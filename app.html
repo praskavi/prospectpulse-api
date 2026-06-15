@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ProspectPulse V2 — Business Intelligence</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ── NAV ── -->
+  <nav>
+    <div class="nav-inner">
+      <a href="#" class="logo">
+        <div class="logo-icon">PP</div>
+        <span class="logo-text">Prospect<span>Pulse</span></span>
+        <span class="logo-badge">V2</span>
+      </a>
+      
+<div class="nav-actions">
+  <span class="nav-user-email" id="navUserEmail"></span>
+  <button class="btn-settings" onclick="openSettings()" title="Settings">⚙</button>
+  <button class="btn-logout" onclick="logout()" title="Sign out">↩ Sign out</button>
+</div>
+    </div>
+  </nav>
+
+  <!-- ── MAIN ── -->
+  <main>
+    <div class="wrap">
+
+      <!-- HERO -->
+      <section class="hero">
+        <div class="hero-eyebrow">
+          <span class="chip chip-orange">AI POWERED</span>
+          <span class="chip chip-purple">LINKEDIN ENRICHED</span>
+          <span class="chip chip-blue">REAL-TIME</span>
+        </div>
+        <h1>
+          <span class="g1">Discover</span> your next<br/>
+          <span class="g2">Business Lead</span>
+        </h1>
+        <p>Scrape, enrich &amp; extract verified decision-makers from Google Maps — with LinkedIn profiles and BD contacts, automatically.</p>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="val">50K+</div>
+            <div class="lbl">Leads Scraped</div>
+          </div>
+          <div class="hero-divider"></div>
+          <div class="hero-stat">
+            <div class="val">92%</div>
+            <div class="lbl">Email Accuracy</div>
+          </div>
+          <div class="hero-divider"></div>
+          <div class="hero-stat">
+            <div class="val">3 min</div>
+            <div class="lbl">Avg Scan Time</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ACCOUNT CARDS -->
+      <div class="account-cards">
+        <div class="account-card">
+          <div class="account-card-icon">⚡</div>
+          <div class="account-card-body">
+            <div class="account-card-label">Current Plan</div>
+            <div class="account-card-value" id="planDisplay">—</div>
+            <div class="account-card-subvalue" id="planCreditsDisplay">— credits included</div>
+          </div>
+          <div class="account-card-badge" id="planBadge"></div>
+        </div>
+        <div class="account-card">
+          <div class="account-card-icon">🪙</div>
+          <div class="account-card-body">
+            <div class="account-card-label">Credits Remaining</div>
+            <div class="account-card-value" id="creditsAmount">—</div>
+          </div>
+          <button class="account-card-refresh" id="creditsRefreshBtn" onclick="fetchUserProfile()" title="Refresh balance">↻</button>
+        </div>
+      </div>
+
+      <!-- FORM CARD -->
+      <div class="form-card">
+        <div class="form-card-header">
+          <div class="step-badge">01</div>
+          <h2>Search Parameters</h2>
+          <p>Configure your intelligence scan</p>
+        </div>
+        <div class="form-body">
+
+          <div class="form-grid">
+            <div class="field">
+              <label>Business Category</label>
+              <input
+                type="text"
+                id="businessCategory"
+                class="field-input"
+                placeholder="e.g. Digital Marketing Agency"
+                list="category-suggestions"
+              />
+              <datalist id="category-suggestions">
+                <option value="Digital Marketing Agency">
+                <option value="Software Development Company">
+                <option value="Real Estate Agency">
+                <option value="Accounting Firm">
+                <option value="Law Firm">
+                <option value="Dental Clinic">
+                <option value="Restaurant">
+                <option value="E-commerce Store">
+                <option value="Consulting Firm">
+                <option value="IT Services">
+              </datalist>
+            </div>
+
+            <div class="field">
+              <label>Location / City</label>
+              <input
+                type="text"
+                id="location"
+                class="field-input"
+                placeholder="e.g. New York, NY"
+              />
+            </div>
+
+            <div class="field">
+              <label>Max Results</label>
+              <select id="maxResults" class="field-input">
+                <option value="10">10 Results</option>
+                <option value="25">25 Results</option>
+                <option value="50" selected>50 Results</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Company Size</label>
+              <select id="companySize" class="field-input">
+                <option value="">Any Size</option>
+                <option value="1-10">1–10 employees</option>
+                <option value="11-50">11–50 employees</option>
+                <option value="51-200">51–200 employees</option>
+                <option value="201-500">201–500 employees</option>
+                <option value="500+">500+ employees</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>State</label>
+              <select id="state" class="field-input">
+                <option value="">Any State</option>
+                <option value="VIC">VIC — Victoria</option>
+                <option value="NSW">NSW — New South Wales</option>
+                <option value="TAS">TAS — Tasmania</option>
+                <option value="ACT">ACT — Australian Capital Territory</option>
+                <option value="WA">WA — Western Australia</option>
+                <option value="SA">SA — South Australia</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field" style="margin-bottom:16px;">
+            <label>Decision Maker Roles</label>
+            <div class="tags-wrap" id="tagsWrap" onclick="focusTagInput()">
+              <input
+                type="text"
+                id="tagInput"
+                class="tag-input-field"
+                placeholder="Type a role and press Enter to add…"
+              />
+            </div>
+          </div>
+
+          <div class="field" style="margin-bottom:16px;">
+            <label>Post Code</label>
+            <div class="tags-wrap" id="postcodesWrap" onclick="focusPostcodeInput()">
+              <input
+                type="text"
+                id="postcodeInput"
+                class="tag-input-field"
+                placeholder="Type a postcode and press Enter to add…"
+                inputmode="numeric"
+                pattern="[0-9]*"
+              />
+            </div>
+            <span class="field-hint">Numbers only · e.g. 3000, 2000, 6000</span>
+          </div>
+          <div class="enrichment-panel">
+            <div class="toggle-row" onclick="toggleCompanyContacts()">
+              <div class="toggle-icon">C</div>
+              <div class="toggle-text">
+                <strong>Find company contacts</strong>
+                <small>Emails, phones, and social links from the business website</small>
+              </div>
+              <label class="toggle-switch" onclick="event.stopPropagation()">
+                <input type="checkbox" id="companyContactsToggle" checked />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div class="toggle-row" onclick="togglePeopleEnrichment()">
+              <div class="toggle-icon">P</div>
+              <div class="toggle-text">
+                <strong>Find people at the business</strong>
+                <small>Owner/director lead enrichment per place found</small>
+              </div>
+              <label class="toggle-switch" onclick="event.stopPropagation()">
+                <input type="checkbox" id="peopleEnrichmentToggle" />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div class="enrichment-options" id="peopleEnrichmentOptions">
+              <div class="field">
+                <label>Maximum People Per Business</label>
+                <select id="maxLeadsPerPlace" class="field-input" disabled>
+                  <option value="0" selected>0 People</option>
+                  <option value="1">1 Person</option>
+                  <option value="2">2 People</option>
+                </select>
+              </div>
+              <div class="toggle-row compact" onclick="toggleEmailVerification()">
+                <div class="toggle-icon">V</div>
+                <div class="toggle-text">
+                  <strong>Verify enriched emails</strong>
+                  <small>Charged only when Apify successfully verifies emails</small>
+                </div>
+                <label class="toggle-switch" onclick="event.stopPropagation()">
+                  <input type="checkbox" id="verifyEmailsToggle" disabled />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="credit-estimator" id="creditEstimator">
+              <div class="est-header">Estimated Cost <span class="est-worst-case">(worst case)</span></div>
+              <div class="est-row">
+                <span class="est-label">Businesses</span>
+                <span class="est-calc"><span id="estBusinessCount">25</span> × 2 cr</span>
+                <span class="est-cost" id="estBusinessCredits">50 cr</span>
+              </div>
+              <div class="est-row" id="estContactRow" style="display:none">
+                <span class="est-label">People</span>
+                <span class="est-calc"><span id="estContactCount">0</span> × 15 cr</span>
+                <span class="est-cost" id="estContactCredits">0 cr</span>
+              </div>
+              <div class="est-row" id="estEmailRow" style="display:none">
+                <span class="est-label">Email verify</span>
+                <span class="est-calc">~50% charged × 15 cr</span>
+                <span class="est-cost" id="estEmailCredits">0 cr</span>
+              </div>
+              <div class="est-divider"></div>
+              <div class="est-total-row">
+                <span class="est-label">Max possible</span>
+                <span class="est-total" id="estTotal">50 credits</span>
+              </div>
+              <div class="est-note">Actual deducted after search completes</div>
+            </div>
+          </div>
+<div class="error-card" id="errorCard">
+            <span>⚠️</span>
+            <span id="errorMsg">
+              <strong>Error:</strong> Could not reach the workflow. Please check your webhook URL in Settings.
+            </span>
+          </div>
+
+          <button class="btn-launch" id="launchBtn" onclick="launchScan()">
+            <span id="launchBtnIcon">🚀</span>
+            <span id="launchBtnText">Launch Intelligence Scan</span>
+            <span id="launchBtnArrow">→</span>
+          </button>
+
+        </div>
+      </div>
+
+      <!-- SEARCH HISTORY -->
+      <section class="history-section" id="historySection" style="display:none;">
+        <div class="history-header">
+          <div class="history-title">Recent Searches</div>
+          <button class="btn-sm" onclick="loadSearchHistory()">↺ Refresh</button>
+        </div>
+        <div class="history-list" id="historyList"></div>
+      </section>
+
+      <!-- PROGRESS -->
+      <div class="progress-card" id="progressCard">
+        <div class="progress-header">
+          <div class="spinner2"></div>
+          <span id="progressLabel">Initializing scan…</span>
+          <small id="progressPct">0%</small>
+        </div>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" id="progressBar"></div>
+        </div>
+        <div class="progress-steps">
+          <div class="pstep" id="step1">📍 Locating businesses</div>
+          <div class="pstep" id="step2">🔍 Scraping Google Maps</div>
+          <div class="pstep" id="step3">🔗 LinkedIn enrichment</div>
+          <div class="pstep" id="step4">📧 Extracting contacts</div>
+          <div class="pstep" id="step5">✅ Compiling results</div>
+        </div>
+      </div>
+
+      <!-- RESULTS -->
+      <section class="results-section" id="resultsSection">
+        <div class="results-header">
+          <div class="results-title">
+            Found <span id="resultsCount">0</span> Businesses
+          </div>
+          <div class="results-actions">
+            <button class="btn-sm" onclick="resetScan()">↺ New Scan</button>
+            <button class="btn-sm primary" onclick="exportCSV()">⬇ Export CSV</button>
+          </div>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat-box"><div class="sv" id="statTotal">0</div><div class="sl">Businesses</div></div>
+          <div class="stat-box"><div class="sv" id="statEnriched">0</div><div class="sl">LinkedIn Found</div></div>
+          <div class="stat-box"><div class="sv" id="statEmails">0</div><div class="sl">Emails Found</div></div>
+          <div class="stat-box"><div class="sv" id="statBizdev">0</div><div class="sl">Contacts Found</div></div>
+        </div>
+
+        <div class="search-wrap">
+          <input
+            type="text"
+            class="search-input"
+            id="tableSearch"
+            placeholder="Filter by company, location, phone…"
+            oninput="filterTable()"
+          />
+          <select class="sort-select" id="sortSelect" onchange="sortBySelect()">
+            <option value="">Sort: Default</option>
+            <option value="company">Sort: Company A–Z</option>
+            <option value="rating">Sort: Rating ↓</option>
+            <option value="location">Sort: Location A–Z</option>
+            <option value="contact">Sort: Contact A–Z</option>
+          </select>
+        </div>
+
+        <div class="cards-wrap">
+          <div class="cards-grid" id="cardsGrid"></div>
+          <div id="emptyState" class="empty-state" style="display:none;">
+            <div class="icon">🔎</div>
+            <p>No results match your filter.</p>
+          </div>
+          <div class="pagination" id="paginationWrap">
+            <span id="pageInfo">Showing 0–0 of 0 businesses</span>
+            <div class="page-btns" id="pageBtns"></div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="wrap">
+    ProspectPulse V2 &middot; Powered by <a href="#">n8n Automation</a> &middot; Built for Prashant
+  </footer>
+
+  <!-- ── SETTINGS MODAL ── -->
+  <div class="modal-overlay" id="settingsModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>⚙ Workflow Settings</h3>
+        <button class="modal-close" onclick="closeSettings()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="field">
+          <label>n8n Webhook URL</label>
+          <input
+            type="url"
+            id="webhookUrl"
+            class="field-input"
+            placeholder="https://your-n8n.app/webhook/..."
+          />
+          <p class="modal-hint">
+            Copy the webhook URL from your n8n trigger node.<br/>
+            Workflow: <strong>ProspectPulse V2 - Prashant Business Scraper</strong>
+          </p>
+        </div>
+        <div class="field">
+          <label>Request Method</label>
+          <select id="webhookMethod" class="field-input">
+            <option value="POST">POST (recommended)</option>
+            <option value="GET">GET</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Response Mode</label>
+          <select id="responseMode" class="field-input">
+            <option value="sync">Synchronous — wait for results</option>
+            <option value="async">Asynchronous — poll for results</option>
+          </select>
+          <p class="modal-hint">
+            Use <strong>Synchronous</strong> if your n8n webhook uses "Respond to Webhook" at the end.<br/>
+            Use <strong>Asynchronous</strong> for long-running workflows with callbacks.
+          </p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" onclick="closeSettings()">Cancel</button>
+        <button class="btn-save" onclick="saveSettings()">Save Settings</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TOAST ── -->
+  <div class="toast" id="toast">
+    <span class="ti" id="toastIcon">✓</span>
+    <span id="toastMsg"></span>
+  </div>
+
+  <script src="script.js?v=20260615-plan-credits-card"></script>
+</body>
+</html>

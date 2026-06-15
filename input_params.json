@@ -1,0 +1,36 @@
+{
+  "includeWebResults": false,
+  "language": "en",
+  "locationQuery": "point cook, VIC",
+  "maxCrawledPlacesPerSearch": 10,
+  "maximumLeadsEnrichmentRecords": 2,
+  "scrapeContacts": true,
+  "scrapeDirectories": false,
+  "scrapeImageAuthors": false,
+  "scrapeOrderOnline": false,
+  "scrapePlaceDetailPage": false,
+  "scrapeReviewsPersonalData": true,
+  "scrapeSocialMediaProfiles": {
+    "facebooks": false,
+    "instagrams": false,
+    "tiktoks": false,
+    "twitters": false,
+    "youtubes": false
+  },
+  "scrapeTableReservationProvider": false,
+  "searchStringsArray": [
+    "Printing"
+  ],
+  "skipClosedPlaces": false,
+  "verifyLeadsEnrichmentEmails": true,
+  "searchMatching": "all",
+  "placeMinimumStars": "",
+  "website": "allPlaces",
+  "maxQuestions": 0,
+  "maxReviews": 0,
+  "reviewsSort": "newest",
+  "reviewsFilterString": "",
+  "reviewsOrigin": "all",
+  "maxImages": 0,
+  "allPlacesNoSearchAction": ""
+}

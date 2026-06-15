@@ -1,0 +1,1879 @@
+[
+  {
+    "title": "The Print Truck",
+    "subTitle": null,
+    "description": null,
+    "price": null,
+    "categoryName": "Custom t-shirt store",
+    "address": "Unit 3/22 Linmax Ct, Point Cook VIC 3030, Australia",
+    "neighborhood": null,
+    "street": "Unit 3/22 Linmax Ct",
+    "city": "Point Cook",
+    "postalCode": "3030",
+    "state": "Victoria",
+    "countryCode": "AU",
+    "phone": "+61 422 170 847",
+    "phoneUnformatted": "+61422170847",
+    "claimThisBusiness": false,
+    "location": {
+      "lat": -37.8726833,
+      "lng": 144.7433419
+    },
+    "locatedIn": null,
+    "floor": null,
+    "plusCode": null,
+    "menu": null,
+    "servicesLink": null,
+    "totalScore": 4.9,
+    "permanentlyClosed": false,
+    "temporarilyClosed": false,
+    "placeId": "ChIJmxoUiheP1moRb_KWwg6iwwY",
+    "categories": [
+      "Custom t-shirt store",
+      "Embroidery service",
+      "Laser cutting service",
+      "Souvenir store",
+      "T-shirt store"
+    ],
+    "fid": "0x6ad68f178a141a9b:0x6c3a20ec296f26f",
+    "cid": "487411368964059759",
+    "reviewsCount": 57,
+    "imagesCount": 83,
+    "imageCategories": [],
+    "scrapedAt": "2026-06-13T00:58:00.390Z",
+    "reserveTableUrl": null,
+    "googleFoodUrl": null,
+    "hotelStars": null,
+    "hotelDescription": null,
+    "checkInDate": null,
+    "checkOutDate": null,
+    "hotelAds": [],
+    "popularTimesLiveText": null,
+    "popularTimesLivePercent": null,
+    "popularTimesHistogram": {},
+    "openingHours": [],
+    "peopleAlsoSearch": [],
+    "placesTags": [],
+    "reviewsTags": [],
+    "additionalInfo": {
+      "Service options": [
+        {
+          "Delivery": true
+        }
+      ],
+      "Accessibility": [
+        {
+          "Wheelchair accessible entrance": true
+        },
+        {
+          "Wheelchair accessible parking lot": true
+        },
+        {
+          "Wheelchair accessible restroom": false
+        },
+        {
+          "Wheelchair accessible seating": false
+        }
+      ],
+      "Crowd": [
+        {
+          "LGBTQ+ friendly": true
+        },
+        {
+          "Transgender safespace": true
+        }
+      ],
+      "Payments": [
+        {
+          "Credit cards": true
+        },
+        {
+          "Debit cards": true
+        },
+        {
+          "NFC mobile payments": true
+        },
+        {
+          "Credit cards": true
+        }
+      ]
+    },
+    "gasPrices": [],
+    "url": "https://www.google.com/maps/search/?api=1&query=The%20Print%20Truck&query_place_id=ChIJmxoUiheP1moRb_KWwg6iwwY",
+    "searchPageUrl": "https://www.google.com/maps/search/Printing/@-37.91899130705457,144.7671171149164,17z?hl=en",
+    "searchString": "Printing",
+    "language": "en",
+    "rank": 9,
+    "isAdvertisement": false,
+    "imageUrl": "https://lh3.googleusercontent.com/gps-cs-s/APNQkAGwPMRNKE-vpB2VWUJo5PcbBa0XQwZeSQPn9je8kQb1xflprXYrY9OMrHpv6xaCZTgcJmeDy-bOFvNOBp6BicuAJ45po2zRJ4Iyp3M_pYRVV4DaRs-kpjCak2n-dtXA_HQutP8XVg=w408-h306-k-no",
+    "kgmid": "/g/11dxnr6g79",
+    "emails": [],
+    "phones": [],
+    "phonesUncertain": [],
+    "linkedIns": [],
+    "twitters": [],
+    "instagrams": [],
+    "facebooks": [],
+    "youtubes": [],
+    "tiktoks": [],
+    "pinterests": [],
+    "discords": [],
+    "leadsEnrichment": []
+  },
+  {
+    "title": "InkCart Point Cook",
+    "subTitle": null,
+    "description": null,
+    "price": null,
+    "categoryName": "Toner cartridge supplier",
+    "address": "Stockland Point Cook Shopping Centre, Main Street & Murnong Street, Point Cook VIC 3030, Australia",
+    "neighborhood": null,
+    "street": "Stockland Point Cook Shopping Centre, Main Street & Murnong Street",
+    "city": "Point Cook",
+    "postalCode": "3030",
+    "state": "VIC",
+    "countryCode": "AU",
+    "phone": "+61 452 616 637",
+    "phoneUnformatted": "+61452616637",
+    "claimThisBusiness": false,
+    "location": {
+      "lat": -37.883688,
+      "lng": 144.734773
+    },
+    "locatedIn": null,
+    "floor": null,
+    "plusCode": null,
+    "menu": null,
+    "servicesLink": null,
+    "totalScore": 4.7,
+    "permanentlyClosed": false,
+    "temporarilyClosed": false,
+    "placeId": "ChIJKbYhTPOI1moRyP1SCkDClVI",
+    "categories": [
+      "Toner cartridge supplier",
+      "Custom t-shirt store"
+    ],
+    "fid": "0x6ad688f34c21b629:0x5295c2400a52fdc8",
+    "cid": "5950876062946885064",
+    "reviewsCount": 73,
+    "imagesCount": 26,
+    "imageCategories": [],
+    "scrapedAt": "2026-06-13T00:58:06.451Z",
+    "reserveTableUrl": null,
+    "googleFoodUrl": null,
+    "hotelStars": null,
+    "hotelDescription": null,
+    "checkInDate": null,
+    "checkOutDate": null,
+    "hotelAds": [],
+    "popularTimesLiveText": null,
+    "popularTimesLivePercent": null,
+    "popularTimesHistogram": {},
+    "openingHours": [
+      {
+        "day": "Monday",
+        "hours": "9:30 AM to 5:30 PM"
+      },
+      {
+        "day": "Tuesday",
+        "hours": "9:30 AM to 5:30 PM"
+      },
+      {
+        "day": "Wednesday",
+        "hours": "9:30 AM to 5:30 PM"
+      },
+      {
+        "day": "Thursday",
+        "hours": "9:30 AM to 7:30 PM"
+      },
+      {
+        "day": "Friday",
+        "hours": "9:30 AM to 7:30 PM"
+      },
+      {
+        "day": "Saturday",
+        "hours": "10 AM to 5 PM"
+      },
+      {
+        "day": "Sunday",
+        "hours": "10 AM to 5 PM"
+      }
+    ],
+    "peopleAlsoSearch": [],
+    "placesTags": [],
+    "reviewsTags": [],
+    "additionalInfo": {
+      "Accessibility": [
+        {
+          "Wheelchair accessible entrance": true
+        },
+        {
+          "Wheelchair accessible parking lot": true
+        }
+      ],
+      "Recycling": [
+        {
+          "Ink cartridges": true
+        }
+      ]
+    },
+    "gasPrices": [],
+    "url": "https://www.google.com/maps/search/?api=1&query=InkCart%20Point%20Cook&query_place_id=ChIJKbYhTPOI1moRyP1SCkDClVI",
+    "searchPageUrl": "https://www.google.com/maps/search/Printing/@-37.89185869294542,144.7671171149164,17z?hl=en",
+    "searchString": "Printing",
+    "language": "en",
+    "rank": 5,
+    "isAdvertisement": false,
+    "imageUrl": "https://lh3.googleusercontent.com/gps-cs-s/APNQkAFA4Pqd9WTUEO17Mm-Z0w_RT2vHAMfEV-ctLm8CbQAYodcvHSEGZl1X5ecopG-XizWiaQlRLHHoaRJJAPWGUk3oWh0vdQyda6wUwoEpvrqJqyN8MKO7RybM9Jrk79Lu4wiSaS0Hug=w426-h240-k-no",
+    "kgmid": "/g/11c1lslx4t",
+    "emails": [],
+    "phones": [],
+    "phonesUncertain": [],
+    "linkedIns": [],
+    "twitters": [],
+    "instagrams": [],
+    "facebooks": [],
+    "youtubes": [],
+    "tiktoks": [],
+    "pinterests": [],
+    "discords": [],
+    "leadsEnrichment": []
+  },
+  {
+    "title": "Promo Printing",
+    "subTitle": null,
+    "description": null,
+    "price": null,
+    "categoryName": "Uniform store",
+    "address": "6 La Coruna Gardens, Point Cook VIC 3030, Australia",
+    "neighborhood": null,
+    "street": "6 La Coruna Gardens",
+    "city": "Point Cook",
+    "postalCode": "3030",
+    "state": "Victoria",
+    "countryCode": "AU",
+    "website": "https://www.promoprinting.net.au/",
+    "phone": "+61 434 943 092",
+    "phoneUnformatted": "+61434943092",
+    "claimThisBusiness": false,
+    "location": {
+      "lat": -37.8942291,
+      "lng": 144.7400236
+    },
+    "locatedIn": null,
+    "floor": null,
+    "plusCode": null,
+    "menu": null,
+    "servicesLink": null,
+    "totalScore": 5,
+    "permanentlyClosed": false,
+    "temporarilyClosed": false,
+    "placeId": "ChIJyZk2SJ2J1moR_rZiUb1VpIk",
+    "categories": [
+      "Uniform store",
+      "Custom t-shirt store",
+      "Digital printer",
+      "Embroidery shop",
+      "Screen printer"
+    ],
+    "fid": "0x6ad6899d483699c9:0x89a455bd5162b6fe",
+    "cid": "9918146550979278590",
+    "reviewsCount": 81,
+    "imagesCount": 98,
+    "imageCategories": [],
+    "scrapedAt": "2026-06-13T00:58:00.389Z",
+    "reserveTableUrl": null,
+    "googleFoodUrl": null,
+    "hotelStars": null,
+    "hotelDescription": null,
+    "checkInDate": null,
+    "checkOutDate": null,
+    "hotelAds": [],
+    "popularTimesLiveText": null,
+    "popularTimesLivePercent": null,
+    "popularTimesHistogram": {},
+    "openingHours": [
+      {
+        "day": "Monday",
+        "hours": "9 AM to 5 PM"
+      },
+      {
+        "day": "Tuesday",
+        "hours": "9 AM to 5 PM"
+      },
+      {
+        "day": "Wednesday",
+        "hours": "9 AM to 5 PM"
+      },
+      {
+        "day": "Thursday",
+        "hours": "9 AM to 5 PM"
+      },
+      {
+        "day": "Friday",
+        "hours": "9 AM to 5 PM"
+      },
+      {
+        "day": "Saturday",
+        "hours": "Closed"
+      },
+      {
+        "day": "Sunday",
+        "hours": "Closed"
+      }
+    ],
+    "peopleAlsoSearch": [],
+    "placesTags": [],
+    "reviewsTags": [],
+    "additionalInfo": {
+      "Service options": [
+        {
+          "Delivery": true
+        },
+        {
+          "In-store pickup": true
+        }
+      ],
+      "Accessibility": [
+        {
+          "Wheelchair accessible entrance": true
+        },
+        {
+          "Wheelchair accessible parking lot": true
+        }
+      ],
+      "Offerings": [
+        {
+          "Men's clothing": true
+        }
+      ],
+      "Planning": [
+        {
+          "Appointment required": true
+        }
+      ],
+      "Payments": [
+        {
+          "Credit cards": true
+        },
+        {
+          "Debit cards": true
+        },
+        {
+          "NFC mobile payments": true
+        }
+      ]
+    },
+    "gasPrices": [],
+    "url": "https://www.google.com/maps/search/?api=1&query=Promo%20Printing&query_place_id=ChIJyZk2SJ2J1moR_rZiUb1VpIk",
+    "searchPageUrl": "https://www.google.com/maps/search/Printing/@-37.91899130705457,144.7671171149164,17z?hl=en",
+    "searchString": "Printing",
+    "language": "en",
+    "rank": 6,
+    "isAdvertisement": false,
+    "imageUrl": "https://lh3.googleusercontent.com/gps-cs-s/APNQkAGp2AkqOeEKfll72N8V7l6NpdUAna9yXQ-bAO-Gz86Ov3r2lQ-rHgrhEDhgzfc3-uiPxzo1rGZbafMk-zAwRMbUH7rm63oXbTUvlwhhO5AjpCQKohu5Ak0xR4-NduA74jlV50yg=w408-h408-k-no",
+    "kgmid": "/g/11h_t60fs3",
+    "emails": [],
+    "phones": [
+      "0434943092"
+    ],
+    "phonesUncertain": [
+      "181072954279501",
+      "205848650446560",
+      "39242101",
+      "752604385960892",
+      "179112112382207",
+      "161824324030571",
+      "161824325697237",
+      "165066870648976",
+      "180888491723786",
+      "39.30808",
+      "534819134043404",
+      "712823612",
+      "715404993",
+      "161824187030584",
+      "161824188363918",
+      "184628020721280",
+      "541137200849710",
+      "594040332659842",
+      "714955189",
+      "714981250",
+      "161666373046366",
+      "161666375046366",
+      "181184753417921",
+      "458521931599723",
+      "714888996",
+      "715010614",
+      "769177306117901",
+      "161729907373346",
+      "161729944373342",
+      "180692895593632",
+      "214016544278225",
+      "393875241256585",
+      "711425892",
+      "711695901",
+      "179321160032702",
+      "181051733059799",
+      "180178620416886",
+      "181374615645405",
+      "180958297941882",
+      "178728390305045",
+      "1632028",
+      "179514332551695",
+      "180579376977241",
+      "183229146192712",
+      "179148186363877",
+      "181187179426687",
+      "158188473727489",
+      "158188475060822",
+      "158188476060822",
+      "158188482394155"
+    ],
+    "linkedIns": [],
+    "twitters": [],
+    "instagrams": [
+      "https://www.instagram.com/promo__printing"
+    ],
+    "facebooks": [
+      "https://www.facebook.com/promoprinters"
+    ],
+    "youtubes": [],
+    "tiktoks": [],
+    "pinterests": [],
+    "discords": [],
+    "domain": "promoprinting.net.au",
+    "leadsEnrichment": []
+  },
+  {
+    "title": "C4 Print | Custom Online Signs & Prints Australia",
+    "subTitle": null,
+    "description": null,
+    "price": null,
+    "categoryName": "Print shop",
+    "address": "Stockland Point Cook Shopping Centre, Entrance C4, Level 1/2 Main St, Point Cook VIC 3030, Australia",
+    "neighborhood": null,
+    "street": "Stockland Point Cook Shopping Centre, Entrance C4, Level 1/2 Main St",
+    "city": "Point Cook",
+    "postalCode": "3030",
+    "state": "Victoria",
+    "countryCode": "AU",
+    "website": "https://www.c4print.com.au/",
+    "phone": "+61 1300 247 746",
+    "phoneUnformatted": "",
+    "claimThisBusiness": false,
+    "location": {
+      "lat": -37.8834508,
+      "lng": 144.7360609
+    },
+    "locatedIn": null,
+    "floor": null,
+    "plusCode": null,
+    "menu": null,
+    "servicesLink": null,
+    "totalScore": 5,
+    "permanentlyClosed": false,
+    "temporarilyClosed": false,
+    "placeId": "ChIJl8o7g5OJ1moRg0wJShvlao4",
+    "categories": [
+      "Print shop",
+      "Commercial printer",
+      "Digital printer",
+      "Sign shop"
+    ],
+    "fid": "0x6ad68993833bca97:0x8e6ae51b4a094c83",
+    "cid": "10262266606286097539",
+    "reviewsCount": 29,
+    "imagesCount": 25,
+    "imageCategories": [],
+    "scrapedAt": "2026-06-13T00:58:06.451Z",
+    "reserveTableUrl": null,
+    "googleFoodUrl": null,
+    "hotelStars": null,
+    "hotelDescription": null,
+    "checkInDate": null,
+    "checkOutDate": null,
+    "hotelAds": [],
+    "popularTimesLiveText": null,
+    "popularTimesLivePercent": null,
+    "popularTimesHistogram": {},
+    "openingHours": [
+      {
+        "day": "Monday",
+        "hours": "9 AM to 5 PM"
+      },
+      {
+        "day": "Tuesday",
+        "hours": "9 AM to 5 PM"
+      },
+      {
+        "day": "Wednesday",
+        "hours": "9 AM to 5 PM"
+      },
+      {
+        "day": "Thursday",
+        "hours": "9 AM to 5 PM"
+      },
+      {
+        "day": "Friday",
+        "hours": "9 AM to 5 PM"
+      },
+      {
+        "day": "Saturday",
+        "hours": "Closed"
+      },
+      {
+        "day": "Sunday",
+        "hours": "Closed"
+      }
+    ],
+    "additionalOpeningHours": {
+      "Pickup": [
+        {
+          "day": "Monday",
+          "hours": "9 AM–5 PM"
+        },
+        {
+          "day": "Tuesday",
+          "hours": "9 AM–5 PM"
+        },
+        {
+          "day": "Wednesday",
+          "hours": "9 AM–5 PM"
+        },
+        {
+          "day": "Thursday",
+          "hours": "9 AM–5 PM"
+        },
+        {
+          "day": "Friday",
+          "hours": "9 AM–5 PM"
+        },
+        {
+          "day": "Saturday",
+          "hours": "Closed"
+        },
+        {
+          "day": "Sunday",
+          "hours": "Closed"
+        }
+      ],
+      "Online service hours": [
+        {
+          "day": "Monday",
+          "hours": "8:30 AM–7 PM"
+        },
+        {
+          "day": "Tuesday",
+          "hours": "8:30 AM–7 PM"
+        },
+        {
+          "day": "Wednesday",
+          "hours": "8:30 AM–7 PM"
+        },
+        {
+          "day": "Thursday",
+          "hours": "8:30 AM–7 PM"
+        },
+        {
+          "day": "Friday",
+          "hours": "8:30 AM–7 PM"
+        },
+        {
+          "day": "Saturday",
+          "hours": "8:30 AM–7 PM"
+        },
+        {
+          "day": "Sunday",
+          "hours": "Closed"
+        }
+      ]
+    },
+    "peopleAlsoSearch": [],
+    "placesTags": [],
+    "reviewsTags": [],
+    "additionalInfo": {
+      "Service options": [
+        {
+          "Online appointments": true
+        },
+        {
+          "Delivery": true
+        },
+        {
+          "In-store pickup": true
+        },
+        {
+          "Onsite services": true
+        }
+      ],
+      "Accessibility": [
+        {
+          "Wheelchair accessible entrance": true
+        },
+        {
+          "Wheelchair accessible parking lot": true
+        }
+      ],
+      "Planning": [
+        {
+          "Appointment required": true
+        }
+      ],
+      "Payments": [
+        {
+          "Credit cards": true
+        },
+        {
+          "Debit cards": true
+        },
+        {
+          "NFC mobile payments": true
+        },
+        {
+          "Credit cards": true
+        }
+      ]
+    },
+    "gasPrices": [],
+    "url": "https://www.google.com/maps/search/?api=1&query=C4%20Print%20%7C%20Custom%20Online%20Signs%20%26%20Prints%20Australia&query_place_id=ChIJl8o7g5OJ1moRg0wJShvlao4",
+    "searchPageUrl": "https://www.google.com/maps/search/Printing/@-37.89185869294542,144.7671171149164,17z?hl=en",
+    "searchString": "Printing",
+    "language": "en",
+    "rank": 9,
+    "isAdvertisement": false,
+    "imageUrl": "https://lh3.googleusercontent.com/gps-cs-s/APNQkAHdPYdYi7NgjrX5Z9ZCdzeE7KmeIWgS_aq3mPidlbWq3N0atbsdI3HUecFQeMPlaSSnxAidq8azS2LSfpspgxEMeaVAv6SWEjxl6lOjar9AjEmtolKIWriiKWhk9ExMWL5DLCX6=w408-h408-k-no",
+    "kgmid": "/g/11h52ml52d",
+    "emails": [
+      "info@c4print.com.au",
+      "admin@c4print.com.au",
+      "sales001@c4print.com.au"
+    ],
+    "phones": [],
+    "phonesUncertain": [
+      "1300247746",
+      "1754483694",
+      "606323209",
+      "1762259938",
+      "51255537",
+      "99.852289",
+      "1300 247746"
+    ],
+    "linkedIns": [
+      "https://au.linkedin.com/in/c4-print-606323209"
+    ],
+    "twitters": [
+      "https://x.com/C4_Print"
+    ],
+    "instagrams": [
+      "https://www.instagram.com/c4print"
+    ],
+    "facebooks": [
+      "https://www.facebook.com/C4Prints"
+    ],
+    "youtubes": [
+      "https://www.youtube.com/channel/UCsWsjHu-cokQozgdskrrGIQ"
+    ],
+    "tiktoks": [
+      "https://www.tiktok.com/@c4_print"
+    ],
+    "pinterests": [
+      "https://www.pinterest.com/0qd4fjifydr8xp6ype3e5jc2kasgoc"
+    ],
+    "discords": [],
+    "domain": "c4print.com.au",
+    "leadsEnrichment": []
+  },
+  {
+    "title": "MBE Point Cook | Printing, Courier and Mailbox Rental Services",
+    "subTitle": null,
+    "description": "Chain retailer specializing in shipping services, plus printing & graphic design.",
+    "price": null,
+    "categoryName": "Print shop",
+    "address": "U23/22-30 Wallace Ave, Point Cook VIC 3030, Australia",
+    "neighborhood": null,
+    "street": "U23/22-30 Wallace Ave",
+    "city": "Point Cook",
+    "postalCode": "3030",
+    "state": "Victoria",
+    "countryCode": "AU",
+    "website": "http://www.mbe.com.au/melbourne/point-cook",
+    "phone": "+61 3 9395 9149",
+    "phoneUnformatted": "+61393959149",
+    "claimThisBusiness": false,
+    "location": {
+      "lat": -37.8726069,
+      "lng": 144.7453071
+    },
+    "locatedIn": null,
+    "floor": null,
+    "plusCode": null,
+    "menu": null,
+    "servicesLink": null,
+    "totalScore": 4.9,
+    "permanentlyClosed": false,
+    "temporarilyClosed": false,
+    "placeId": "ChIJKVMlXPOI1moRSWSbphzU4xo",
+    "categories": [
+      "Print shop",
+      "Banner store",
+      "Courier service",
+      "Digital printer",
+      "Digital printing service",
+      "Invitation printing service",
+      "Lamination service",
+      "Mailbox rental service",
+      "Shipping service"
+    ],
+    "fid": "0x6ad688f35c255329:0x1ae3d41ca69b6449",
+    "cid": "1937625484218819657",
+    "reviewsCount": 165,
+    "imagesCount": 496,
+    "imageCategories": [],
+    "scrapedAt": "2026-06-13T00:58:00.389Z",
+    "reserveTableUrl": null,
+    "googleFoodUrl": null,
+    "hotelStars": null,
+    "hotelDescription": null,
+    "checkInDate": null,
+    "checkOutDate": null,
+    "hotelAds": [],
+    "popularTimesLiveText": null,
+    "popularTimesLivePercent": null,
+    "popularTimesHistogram": {},
+    "openingHours": [
+      {
+        "day": "Monday",
+        "hours": "10 AM to 5 PM"
+      },
+      {
+        "day": "Tuesday",
+        "hours": "10 AM to 5 PM"
+      },
+      {
+        "day": "Wednesday",
+        "hours": "10 AM to 5 PM"
+      },
+      {
+        "day": "Thursday",
+        "hours": "10 AM to 5 PM"
+      },
+      {
+        "day": "Friday",
+        "hours": "10 AM to 5 PM"
+      },
+      {
+        "day": "Saturday",
+        "hours": "10 AM to 1 PM"
+      },
+      {
+        "day": "Sunday",
+        "hours": "Closed"
+      }
+    ],
+    "additionalOpeningHours": {
+      "Online service hours": [
+        {
+          "day": "Monday",
+          "hours": "10 AM–5 PM"
+        },
+        {
+          "day": "Tuesday",
+          "hours": "10 AM–5 PM"
+        },
+        {
+          "day": "Wednesday",
+          "hours": "10 AM–5 PM"
+        },
+        {
+          "day": "Thursday",
+          "hours": "10 AM–5 PM"
+        },
+        {
+          "day": "Friday",
+          "hours": "10 AM–5 PM"
+        },
+        {
+          "day": "Saturday",
+          "hours": "10 AM–1 PM"
+        },
+        {
+          "day": "Sunday",
+          "hours": "Closed"
+        }
+      ]
+    },
+    "peopleAlsoSearch": [],
+    "placesTags": [],
+    "reviewsTags": [],
+    "additionalInfo": {
+      "Service options": [
+        {
+          "Delivery": true
+        },
+        {
+          "Onsite services": true
+        }
+      ],
+      "Accessibility": [
+        {
+          "Wheelchair accessible parking lot": true
+        }
+      ],
+      "Payments": [
+        {
+          "Credit cards": true
+        },
+        {
+          "Debit cards": true
+        },
+        {
+          "NFC mobile payments": true
+        }
+      ]
+    },
+    "gasPrices": [],
+    "url": "https://www.google.com/maps/search/?api=1&query=MBE%20Point%20Cook%20%7C%20Printing%2C%20Courier%20and%20Mailbox%20Rental%20Services&query_place_id=ChIJKVMlXPOI1moRSWSbphzU4xo",
+    "searchPageUrl": "https://www.google.com/maps/search/Printing/@-37.91899130705457,144.7671171149164,17z?hl=en",
+    "searchString": "Printing",
+    "language": "en",
+    "rank": 2,
+    "isAdvertisement": false,
+    "imageUrl": "https://lh3.googleusercontent.com/gps-cs-s/APNQkAGUjFOzUSBJw8F52Yu3T_EPOHB0p72sEIPD555YaPFDq4tiCLdiWiv5AX0biBjnIJowCYxxYPZK5oFxdi2hM632Tq01acuPCwbf_iXzrjW3c8ZQ_hsXX0rvi3Ou4BKfNj23n9j0Xg=w408-h408-k-no",
+    "kgmid": "/g/11xfm331s",
+    "emails": [
+      "enquiry@mbe.com.au"
+    ],
+    "phones": [
+      "+61393959149",
+      "611800556245",
+      "+611800556245"
+    ],
+    "phonesUncertain": [
+      "(03) 9395 9149",
+      "+61 1800 556 245"
+    ],
+    "linkedIns": [
+      "https://www.linkedin.com/company/mail-boxes-etc-australia"
+    ],
+    "twitters": [],
+    "instagrams": [],
+    "facebooks": [
+      "https://www.facebook.com/mbeaustralia"
+    ],
+    "youtubes": [
+      "https://www.youtube.com/channel/UCoK6PuKGdR6FKSt8EvkqrUw"
+    ],
+    "tiktoks": [],
+    "pinterests": [],
+    "discords": [],
+    "domain": "mbe.com.au",
+    "leadsEnrichment": [
+      {
+        "personId": "54a248337468693a7ebb931c",
+        "firstName": "Pete",
+        "lastName": "Seary",
+        "fullName": "Pete Seary",
+        "linkedinProfile": "http://www.linkedin.com/in/pete-seary-42242520",
+        "email": "pete.seary@mbe.com.au",
+        "mobileNumber": null,
+        "jobTitle": "Owner",
+        "industry": null,
+        "city": "Sydney",
+        "state": "New South Wales",
+        "country": "Australia",
+        "companyId": "5d09acc9a3ae61e3d64c98ac",
+        "companyName": "Mail Boxes Etc (MBE) Australia",
+        "companyWebsite": "mbe.com.au",
+        "companySize": null,
+        "companyLinkedin": "http://www.linkedin.com/company/mbeaustralia",
+        "companyCity": null,
+        "companyState": null,
+        "companyCountry": null,
+        "companyPhoneNumber": "+61299558922",
+        "headline": "Owner, MBE -Business service Centres Hurstville",
+        "departments": [],
+        "seniority": "owner",
+        "photoUrl": "https://static.licdn.com/aero-v1/sc/h/9c8pery4andzj6ohjkjp54ma2",
+        "twitter": null,
+        "emailVerification": {
+          "email": "pete.seary@mbe.com.au",
+          "quality": "risky",
+          "result": "catch_all",
+          "subResult": "ok",
+          "free": false,
+          "role": false,
+          "error": ""
+        }
+      },
+      {
+        "personId": "5f6d7c51687f4000017febe0",
+        "firstName": "Wendy",
+        "lastName": "Chadwick",
+        "fullName": "Wendy Chadwick",
+        "linkedinProfile": "http://www.linkedin.com/in/wendy-chadwick-55151147",
+        "email": "wendy.chadwick@mbe.com.au",
+        "mobileNumber": null,
+        "jobTitle": "Owner",
+        "industry": null,
+        "city": null,
+        "state": "Queensland",
+        "country": "Australia",
+        "companyId": "5d09acc9a3ae61e3d64c98ac",
+        "companyName": "Mail Boxes Etc (MBE) Australia",
+        "companyWebsite": "mbe.com.au",
+        "companySize": null,
+        "companyLinkedin": "http://www.linkedin.com/company/mbeaustralia",
+        "companyCity": null,
+        "companyState": null,
+        "companyCountry": null,
+        "companyPhoneNumber": "+61299558922",
+        "headline": "Owner",
+        "departments": [],
+        "seniority": "owner",
+        "photoUrl": "https://static.licdn.com/aero-v1/sc/h/9c8pery4andzj6ohjkjp54ma2",
+        "twitter": null,
+        "emailVerification": {
+          "email": "wendy.chadwick@mbe.com.au",
+          "quality": "risky",
+          "result": "catch_all",
+          "subResult": "ok",
+          "free": false,
+          "role": false,
+          "error": ""
+        }
+      }
+    ]
+  },
+  {
+    "title": "Murnane Print Group",
+    "subTitle": null,
+    "description": null,
+    "price": null,
+    "categoryName": "Promotional products supplier",
+    "address": "3 Daisy Dr, Point Cook VIC 3030, Australia",
+    "neighborhood": null,
+    "street": "3 Daisy Dr",
+    "city": "Point Cook",
+    "postalCode": "3030",
+    "state": "Victoria",
+    "countryCode": "AU",
+    "website": "http://www.murnaneprint.com.au/",
+    "phone": "",
+    "phoneUnformatted": "",
+    "claimThisBusiness": false,
+    "location": {
+      "lat": -37.90489,
+      "lng": 144.750322
+    },
+    "locatedIn": null,
+    "floor": null,
+    "plusCode": null,
+    "menu": null,
+    "servicesLink": null,
+    "totalScore": 4.6,
+    "permanentlyClosed": false,
+    "temporarilyClosed": false,
+    "placeId": "ChIJ7V5TunmI1moRanEQdTa_cZc",
+    "categories": [
+      "Promotional products supplier",
+      "Corporate gift supplier",
+      "Custom label printer",
+      "Custom t-shirt store",
+      "Digital printing service",
+      "Print shop",
+      "Protective clothing supplier",
+      "Sticker manufacturer",
+      "Uniform store"
+    ],
+    "fid": "0x6ad68879ba535eed:0x9771bf367510716a",
+    "cid": "10912713612708573546",
+    "reviewsCount": 40,
+    "imagesCount": 29,
+    "imageCategories": [],
+    "scrapedAt": "2026-06-13T00:58:00.389Z",
+    "reserveTableUrl": null,
+    "googleFoodUrl": null,
+    "hotelStars": null,
+    "hotelDescription": null,
+    "checkInDate": null,
+    "checkOutDate": null,
+    "hotelAds": [],
+    "popularTimesLiveText": null,
+    "popularTimesLivePercent": null,
+    "popularTimesHistogram": {},
+    "openingHours": [
+      {
+        "day": "Monday",
+        "hours": "10 AM to 4 PM"
+      },
+      {
+        "day": "Tuesday",
+        "hours": "10 AM to 4 PM"
+      },
+      {
+        "day": "Wednesday",
+        "hours": "10 AM to 4 PM"
+      },
+      {
+        "day": "Thursday",
+        "hours": "10 AM to 4 PM"
+      },
+      {
+        "day": "Friday",
+        "hours": "10 AM to 4 PM"
+      },
+      {
+        "day": "Saturday",
+        "hours": "Closed"
+      },
+      {
+        "day": "Sunday",
+        "hours": "Closed"
+      }
+    ],
+    "peopleAlsoSearch": [],
+    "placesTags": [],
+    "reviewsTags": [],
+    "additionalInfo": {
+      "Service options": [
+        {
+          "Onsite services": true
+        },
+        {
+          "Online appointments": false
+        }
+      ],
+      "Accessibility": [
+        {
+          "Wheelchair accessible parking lot": true
+        }
+      ],
+      "Payments": [
+        {
+          "Credit cards": true
+        },
+        {
+          "Debit cards": true
+        }
+      ]
+    },
+    "gasPrices": [],
+    "url": "https://www.google.com/maps/search/?api=1&query=Murnane%20Print%20Group&query_place_id=ChIJ7V5TunmI1moRanEQdTa_cZc",
+    "searchPageUrl": "https://www.google.com/maps/search/Printing/@-37.91899130705457,144.7671171149164,17z?hl=en",
+    "searchString": "Printing",
+    "language": "en",
+    "rank": 3,
+    "isAdvertisement": false,
+    "imageUrl": "https://lh3.googleusercontent.com/gps-cs-s/APNQkAG_RMPF0_DWWUU2NiLCM7-_HhT59hZkKSQT7pA4HlqevQo0xzVvW1wiWymS6zs49aVsevFS0DdA2I-aDgm4F05eGnU2YdFzYr2eB0yUnyEAJT4PKFv7udz0D5qoa_wbNzCDBbjI=w408-h544-k-no",
+    "kgmid": "/g/1tmg6q0f",
+    "emails": [
+      "orders@murnaneprint.com.au"
+    ],
+    "phones": [],
+    "phonesUncertain": [
+      "57 627 424 774"
+    ],
+    "linkedIns": [
+      "https://au.linkedin.com/in/emma-murnane-910557b"
+    ],
+    "twitters": [
+      "https://www.twitter.com/murnaneprint"
+    ],
+    "instagrams": [
+      "https://www.instagram.com/murnaneprint",
+      "www.instagram.com/murnaneprint"
+    ],
+    "facebooks": [
+      "https://www.facebook.com/murnaneprint",
+      "www.facebook.com/murnaneprint"
+    ],
+    "youtubes": [
+      "https://youtube.com/@murnaneprint"
+    ],
+    "tiktoks": [],
+    "pinterests": [],
+    "discords": [],
+    "domain": "murnaneprint.com.au",
+    "leadsEnrichment": []
+  },
+  {
+    "title": "MEM Prints",
+    "subTitle": null,
+    "description": null,
+    "price": null,
+    "categoryName": "Print shop",
+    "address": "5 Tathra Grove, Point Cook VIC 3030, Australia",
+    "neighborhood": null,
+    "street": "5 Tathra Grove",
+    "city": "Point Cook",
+    "postalCode": "3030",
+    "state": "Victoria",
+    "countryCode": "AU",
+    "website": "https://memprints.com.au/?utm_source=google&utm_medium=organic&utm_campaign=gbp",
+    "phone": "+61 433 309 523",
+    "phoneUnformatted": "+61433309523",
+    "claimThisBusiness": false,
+    "location": {
+      "lat": -37.9101996,
+      "lng": 144.7213641
+    },
+    "locatedIn": null,
+    "floor": null,
+    "plusCode": null,
+    "menu": null,
+    "servicesLink": null,
+    "totalScore": 5,
+    "permanentlyClosed": false,
+    "temporarilyClosed": false,
+    "placeId": "ChIJCcjDdwaH1moRm7PmTu4Ibm8",
+    "categories": [
+      "Print shop"
+    ],
+    "fid": "0x6ad6870677c3c809:0x6f6e08ee4ee6b39b",
+    "cid": "8029365005267153819",
+    "reviewsCount": 40,
+    "imagesCount": 215,
+    "imageCategories": [],
+    "scrapedAt": "2026-06-13T00:58:26.468Z",
+    "reserveTableUrl": null,
+    "googleFoodUrl": null,
+    "hotelStars": null,
+    "hotelDescription": null,
+    "checkInDate": null,
+    "checkOutDate": null,
+    "hotelAds": [],
+    "popularTimesLiveText": null,
+    "popularTimesLivePercent": null,
+    "popularTimesHistogram": {},
+    "openingHours": [],
+    "peopleAlsoSearch": [],
+    "placesTags": [],
+    "reviewsTags": [],
+    "additionalInfo": {
+      "From the business": [
+        {
+          "Identifies as women-owned": true
+        }
+      ],
+      "Service options": [
+        {
+          "Delivery": true
+        },
+        {
+          "In-store pickup": true
+        },
+        {
+          "Onsite services": true
+        },
+        {
+          "Online appointments": false
+        }
+      ],
+      "Accessibility": [
+        {
+          "Wheelchair accessible entrance": true
+        },
+        {
+          "Wheelchair accessible parking lot": true
+        }
+      ],
+      "Planning": [
+        {
+          "Appointment required": true
+        }
+      ],
+      "Payments": [
+        {
+          "Debit cards": true
+        },
+        {
+          "Credit cards": true
+        }
+      ]
+    },
+    "gasPrices": [],
+    "url": "https://www.google.com/maps/search/?api=1&query=MEM%20Prints&query_place_id=ChIJCcjDdwaH1moRm7PmTu4Ibm8",
+    "searchPageUrl": "https://www.google.com/maps/search/Printing/@-37.91220815352728,144.72411173186183,17z?hl=en",
+    "searchString": "Printing",
+    "language": "en",
+    "rank": 1,
+    "isAdvertisement": false,
+    "imageUrl": "https://lh3.googleusercontent.com/gps-cs-s/APNQkAEqSL4L8_-63xo7qvyqnuUsj9joRXFnCHMLJDmweyssNjfbfVIc1aDhLQEilbQf-jD_4tKH_EtSY5IZRwG5Cwyayy5kGTP3CwbgHMOyOVeOpGhlVgXv_jFPo6nadm3Q6L1H0BaF=w408-h544-k-no",
+    "kgmid": "/g/11nmzx_f1k",
+    "emails": [],
+    "phones": [],
+    "phonesUncertain": [],
+    "linkedIns": [],
+    "twitters": [],
+    "instagrams": [
+      "https://www.instagram.com/memprints_au"
+    ],
+    "facebooks": [
+      "https://www.facebook.com/memprintsau"
+    ],
+    "youtubes": [],
+    "tiktoks": [],
+    "pinterests": [],
+    "discords": [],
+    "domain": "memprints.com.au",
+    "leadsEnrichment": [
+      {
+        "personId": "5e81fe562d4b30000139f771",
+        "firstName": "Mary",
+        "lastName": "Heu",
+        "fullName": "Mary Heu",
+        "linkedinProfile": "http://www.linkedin.com/in/mary-heu-92b17044",
+        "email": null,
+        "mobileNumber": null,
+        "jobTitle": "Business Owner",
+        "industry": "Printing",
+        "city": "Point Cook",
+        "state": "Victoria",
+        "country": "Australia",
+        "companyId": "61eba26ae530100001bcaf83",
+        "companyName": "MEM Prints",
+        "companyWebsite": "memprints.com.au",
+        "companySize": null,
+        "companyLinkedin": "http://www.linkedin.com/company/mem-prints",
+        "companyCity": "Melbourne",
+        "companyState": "Victoria",
+        "companyCountry": "Australia",
+        "companyPhoneNumber": null,
+        "headline": "Business Owner",
+        "departments": [],
+        "seniority": "owner",
+        "photoUrl": "https://media.licdn.com/dms/image/v2/C5603AQF153F5ZieurA/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1599632920169?e=2147483647&v=beta&t=AkUKpZQAPRFpz4JnHav_Rx8Ym3VB-hnNqWb045NvxRs",
+        "twitter": null
+      }
+    ]
+  },
+  {
+    "title": "Printing, Courier & More Point Cook",
+    "subTitle": null,
+    "description": null,
+    "price": null,
+    "categoryName": "Print shop",
+    "address": "U23/22-30 Wallace Ave, Point Cook VIC 3030, Australia",
+    "neighborhood": null,
+    "street": "U23/22-30 Wallace Ave",
+    "city": "Point Cook",
+    "postalCode": "3030",
+    "state": "Victoria",
+    "countryCode": "AU",
+    "website": "http://printingpointcook.com.au/?utm_source=google&utm_medium=gbp",
+    "phone": "+61 3 8609 9614",
+    "phoneUnformatted": "+61386099614",
+    "claimThisBusiness": false,
+    "location": {
+      "lat": -37.872645,
+      "lng": 144.7476942
+    },
+    "locatedIn": null,
+    "floor": null,
+    "plusCode": null,
+    "menu": null,
+    "servicesLink": null,
+    "totalScore": 4.8,
+    "permanentlyClosed": false,
+    "temporarilyClosed": false,
+    "placeId": "ChIJpZp2ofSI1moRIxNmF1CqIPw",
+    "categories": [
+      "Print shop",
+      "Commercial printer",
+      "Copy shop",
+      "Courier service",
+      "Custom label printer",
+      "Digital printer",
+      "Mailbox rental service",
+      "Mailing service",
+      "Shipping and mailing service",
+      "Shipping service"
+    ],
+    "fid": "0x6ad688f4a1769aa5:0xfc20aa5017661323",
+    "cid": "18167708157779252003",
+    "reviewsCount": 81,
+    "imagesCount": 138,
+    "imageCategories": [],
+    "scrapedAt": "2026-06-13T00:58:00.389Z",
+    "reserveTableUrl": null,
+    "googleFoodUrl": null,
+    "hotelStars": null,
+    "hotelDescription": null,
+    "checkInDate": null,
+    "checkOutDate": null,
+    "hotelAds": [],
+    "popularTimesLiveText": null,
+    "popularTimesLivePercent": null,
+    "popularTimesHistogram": {},
+    "openingHours": [
+      {
+        "day": "Monday",
+        "hours": "10 AM to 5 PM"
+      },
+      {
+        "day": "Tuesday",
+        "hours": "10 AM to 5 PM"
+      },
+      {
+        "day": "Wednesday",
+        "hours": "10 AM to 5 PM"
+      },
+      {
+        "day": "Thursday",
+        "hours": "10 AM to 5 PM"
+      },
+      {
+        "day": "Friday",
+        "hours": "10 AM to 5 PM"
+      },
+      {
+        "day": "Saturday",
+        "hours": "Closed"
+      },
+      {
+        "day": "Sunday",
+        "hours": "Closed"
+      }
+    ],
+    "peopleAlsoSearch": [],
+    "placesTags": [],
+    "reviewsTags": [],
+    "additionalInfo": {
+      "Service options": [
+        {
+          "Online appointments": true
+        },
+        {
+          "Delivery": true
+        },
+        {
+          "In-store pickup": true
+        },
+        {
+          "In-store shopping": true
+        },
+        {
+          "Onsite services": true
+        }
+      ],
+      "Accessibility": [
+        {
+          "Wheelchair accessible entrance": true
+        },
+        {
+          "Wheelchair accessible parking lot": true
+        },
+        {
+          "Wheelchair accessible seating": true
+        },
+        {
+          "Assistive hearing loop": false
+        },
+        {
+          "Wheelchair accessible restroom": false
+        }
+      ],
+      "Amenities": [
+        {
+          "Gender-neutral restroom": true
+        },
+        {
+          "Wi-Fi": true
+        },
+        {
+          "Free Wi-Fi": true
+        }
+      ],
+      "Crowd": [
+        {
+          "LGBTQ+ friendly": true
+        },
+        {
+          "Transgender safespace": true
+        }
+      ],
+      "Recycling": [
+        {
+          "Electronics": true
+        }
+      ],
+      "Payments": [
+        {
+          "Credit cards": true
+        },
+        {
+          "Debit cards": true
+        },
+        {
+          "NFC mobile payments": true
+        },
+        {
+          "Credit cards": true
+        }
+      ],
+      "Parking": [
+        {
+          "Free parking lot": true
+        },
+        {
+          "Free street parking": true
+        },
+        {
+          "On-site parking": true
+        },
+        {
+          "Paid parking garage": true
+        },
+        {
+          "Paid parking lot": true
+        },
+        {
+          "Paid street parking": true
+        }
+      ]
+    },
+    "gasPrices": [],
+    "url": "https://www.google.com/maps/search/?api=1&query=Printing%2C%20Courier%20%26%20More%20Point%20Cook&query_place_id=ChIJpZp2ofSI1moRIxNmF1CqIPw",
+    "searchPageUrl": "https://www.google.com/maps/search/Printing/@-37.91899130705457,144.7671171149164,17z?hl=en",
+    "searchString": "Printing",
+    "language": "en",
+    "rank": 5,
+    "isAdvertisement": false,
+    "imageUrl": "https://lh3.googleusercontent.com/gps-cs-s/APNQkAG4sFOKF_W-i5OW-1wt6N5nktnDe0DTmGs8FVOy_WHp-MquXIdq1G5iWWBJ7Bt_SRGSG5BNXTr-fW1uJtzjGEF1XoStu0RFZjnd9f9eYRrcaNtoTbk5hqd6zqnWnJaP25k26t7f=w408-h272-k-no",
+    "kgmid": "/g/11bccmjk3w",
+    "emails": [
+      "enquiry@printingpointcook.com.au",
+      "enquiry@broadbeachprinting.com.au",
+      "enquiry@manukaprinting.com.au",
+      "enquiry@printingarcherfield.com.au",
+      "enquiry@printingcoomera.com.au",
+      "enquiry@eightmileplainsprinting.com.au",
+      "enquiry@kentstreetprinting.com.au",
+      "enquiry@lanecoveprinting.com.au",
+      "enquiry@perthcbdprinting.com.au",
+      "enquiry@printingcurrumbin.com.au",
+      "enquiry@printingmacquariepark.com.au",
+      "enquiry@printingmalvern.com.au"
+    ],
+    "phones": [
+      "+61386099614",
+      "+61261004906",
+      "+61290981751",
+      "+61721456504",
+      "+61730883211",
+      "+61730883274",
+      "+61290531151",
+      "+61290981750",
+      "+61290981752",
+      "+61370186660",
+      "+61386099613",
+      "+61756463200",
+      "+61756463204",
+      "+61756463209",
+      "+61863555614"
+    ],
+    "phonesUncertain": [
+      "+61386099614",
+      "03 8609 9614"
+    ],
+    "linkedIns": [],
+    "twitters": [],
+    "instagrams": [],
+    "facebooks": [],
+    "youtubes": [],
+    "tiktoks": [],
+    "pinterests": [],
+    "discords": [],
+    "domain": "printingpointcook.com.au",
+    "leadsEnrichment": []
+  },
+  {
+    "title": "Wyndham Library Service - Point Cook Branch",
+    "subTitle": null,
+    "description": null,
+    "price": null,
+    "categoryName": "Public library",
+    "address": "1/21 Cheetham St, Point Cook VIC 3030, Australia",
+    "neighborhood": null,
+    "street": "1/21 Cheetham St",
+    "city": "Point Cook",
+    "postalCode": "3030",
+    "state": "Victoria",
+    "countryCode": "AU",
+    "website": "https://www.wyndham.vic.gov.au/services/libraries",
+    "phone": "+61 3 8734 8999",
+    "phoneUnformatted": "+61387348999",
+    "claimThisBusiness": false,
+    "location": {
+      "lat": -37.8820532,
+      "lng": 144.7360285
+    },
+    "locatedIn": null,
+    "floor": null,
+    "plusCode": null,
+    "menu": null,
+    "servicesLink": null,
+    "totalScore": 4.5,
+    "permanentlyClosed": false,
+    "temporarilyClosed": false,
+    "placeId": "ChIJnVRbgPOI1moRK8zh_MqT8k8",
+    "categories": [
+      "Public library"
+    ],
+    "fid": "0x6ad688f3805b549d:0x4ff293cafce1cc2b",
+    "cid": "5760829373395618859",
+    "reviewsCount": 188,
+    "imagesCount": 38,
+    "imageCategories": [],
+    "scrapedAt": "2026-06-13T00:58:31.294Z",
+    "reserveTableUrl": null,
+    "googleFoodUrl": null,
+    "hotelStars": null,
+    "hotelDescription": null,
+    "checkInDate": null,
+    "checkOutDate": null,
+    "hotelAds": [],
+    "popularTimesLiveText": null,
+    "popularTimesLivePercent": null,
+    "popularTimesHistogram": {},
+    "openingHours": [
+      {
+        "day": "Monday",
+        "hours": "10 AM to 8 PM"
+      },
+      {
+        "day": "Tuesday",
+        "hours": "10 AM to 8 PM"
+      },
+      {
+        "day": "Wednesday",
+        "hours": "10 AM to 8 PM"
+      },
+      {
+        "day": "Thursday",
+        "hours": "10 AM to 8 PM"
+      },
+      {
+        "day": "Friday",
+        "hours": "10 AM to 6 PM"
+      },
+      {
+        "day": "Saturday",
+        "hours": "10 AM to 4 PM"
+      },
+      {
+        "day": "Sunday",
+        "hours": "1 to 5 PM"
+      }
+    ],
+    "peopleAlsoSearch": [],
+    "placesTags": [],
+    "reviewsTags": [],
+    "additionalInfo": {
+      "Accessibility": [
+        {
+          "Wheelchair accessible entrance": true
+        },
+        {
+          "Wheelchair accessible parking lot": true
+        }
+      ],
+      "Payments": [
+        {
+          "Credit cards": true
+        },
+        {
+          "Debit cards": true
+        },
+        {
+          "NFC mobile payments": true
+        },
+        {
+          "Credit cards": true
+        }
+      ],
+      "Parking": [
+        {
+          "Free parking lot": true
+        },
+        {
+          "Free street parking": true
+        },
+        {
+          "On-site parking": true
+        },
+        {
+          "Paid parking lot": true
+        }
+      ]
+    },
+    "gasPrices": [],
+    "url": "https://www.google.com/maps/search/?api=1&query=Wyndham%20Library%20Service%20-%20Point%20Cook%20Branch&query_place_id=ChIJnVRbgPOI1moRK8zh_MqT8k8",
+    "searchPageUrl": "https://www.google.com/maps/search/Printing/@-37.93255761410914,144.74991496169457,17z?hl=en",
+    "searchString": "Printing",
+    "language": "en",
+    "rank": 19,
+    "isAdvertisement": false,
+    "imageUrl": "https://lh3.googleusercontent.com/gps-cs-s/APNQkAGIp2U67ktWmpna9QMCLg5YDkagQ83aW3epouu9llw0_GIWs7cRaqE62uQhuewYBGUR0H6MgeUOIE99DoAjpbgOAWfUkb4rX6zucK9cQ0UOa6eBK-QMFVOSLjUfPwvkSw1eYyu-aw=w408-h302-k-no",
+    "kgmid": "/g/1td2h17q",
+    "emails": [
+      "adultlibraryprograms@wyndham.vic.gov.au",
+      "mail@wyndham.vic.gov.au"
+    ],
+    "phones": [
+      "(03) 8734 8999",
+      "131450"
+    ],
+    "phonesUncertain": [
+      "8734 8999",
+      "(03) 8734 8999",
+      "1300 023 411"
+    ],
+    "linkedIns": [
+      "https://www.linkedin.com/company/wyndham-city-council"
+    ],
+    "twitters": [
+      "https://twitter.com/WyndhamCouncil"
+    ],
+    "instagrams": [
+      "https://www.instagram.com/wyndham_city",
+      "https://www.instagram.com/librariesinwyndham",
+      "https://www.instagram.com/youthinwyndham"
+    ],
+    "facebooks": [
+      "https://www.facebook.com/librariesinwyndham",
+      "https://www.facebook.com/wyndhamcitycouncil",
+      "https://www.facebook.com/WerribeeCityCentre",
+      "https://www.facebook.com/WyndhamCityMayor"
+    ],
+    "youtubes": [
+      "https://www.youtube.com/user/WyndhamCity"
+    ],
+    "tiktoks": [],
+    "pinterests": [],
+    "discords": [],
+    "domain": "wyndham.vic.gov.au",
+    "leadsEnrichment": [
+      {
+        "personId": "6167f343f877d20001edd429",
+        "firstName": "Sam",
+        "lastName": "Chen",
+        "fullName": "Sam Chen",
+        "linkedinProfile": "http://www.linkedin.com/in/sam-chen-28198aa9",
+        "email": "sam.chen@wyndham.vic.gov.au",
+        "mobileNumber": null,
+        "jobTitle": "Senior Town Planner",
+        "industry": null,
+        "city": "Melbourne",
+        "state": "Victoria",
+        "country": "Australia",
+        "companyId": "54a12b1a69702d8cfc899b02",
+        "companyName": "Wyndham City Council",
+        "companyWebsite": "wyndham.vic.gov.au",
+        "companySize": null,
+        "companyLinkedin": "http://www.linkedin.com/company/wyndham-city-council",
+        "companyCity": null,
+        "companyState": null,
+        "companyCountry": null,
+        "companyPhoneNumber": "+611300023411",
+        "headline": "Senior Town Planner",
+        "departments": [],
+        "seniority": "senior",
+        "photoUrl": "https://media.licdn.com/dms/image/v2/C4E03AQGEY72WGhAxnQ/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1538369292595?e=2147483647&v=beta&t=XLhXy6KkgsXo59--ozzvf0-v2iwFmGfmXsCS0iCF2Iw",
+        "twitter": null,
+        "emailVerification": {
+          "email": "sam.chen@wyndham.vic.gov.au",
+          "quality": "good",
+          "result": "ok",
+          "subResult": "ok",
+          "free": false,
+          "role": false,
+          "error": ""
+        }
+      },
+      {
+        "personId": "600d69cbd328e00001b40909",
+        "firstName": "Mark",
+        "lastName": "Oliver",
+        "fullName": "Mark Oliver",
+        "linkedinProfile": "http://www.linkedin.com/in/mark-oliver-557536a1",
+        "email": "mark.oliver@wyndham.vic.gov.au",
+        "mobileNumber": null,
+        "jobTitle": "Senior Project Engineer",
+        "industry": null,
+        "city": "Melbourne",
+        "state": "Victoria",
+        "country": "Australia",
+        "companyId": "54a12b1a69702d8cfc899b02",
+        "companyName": "Wyndham City Council",
+        "companyWebsite": "wyndham.vic.gov.au",
+        "companySize": null,
+        "companyLinkedin": "http://www.linkedin.com/company/wyndham-city-council",
+        "companyCity": null,
+        "companyState": null,
+        "companyCountry": null,
+        "companyPhoneNumber": "+611300023411",
+        "headline": "Senior Project Engineer",
+        "departments": [
+          "engineering_technical"
+        ],
+        "seniority": "senior",
+        "photoUrl": "https://media.licdn.com/dms/image/C4E03AQFfsKvQHmHPqQ/profile-displayphoto-shrink_200_200/0/1517041608719?e=2147483647&v=beta&t=nW7D9iWYBpP_qWZ6nUR6JV8jIrsK2LwydFmOMemd30s",
+        "twitter": null,
+        "emailVerification": {
+          "email": "mark.oliver@wyndham.vic.gov.au",
+          "quality": "good",
+          "result": "ok",
+          "subResult": "ok",
+          "free": false,
+          "role": false,
+          "error": ""
+        }
+      }
+    ]
+  },
+  {
+    "title": "STUDIO9ART PICTURE FRAMING",
+    "subTitle": null,
+    "description": null,
+    "price": null,
+    "categoryName": "Picture frame shop",
+    "address": "20 Home Rd, Point Cook VIC 3030, Australia",
+    "neighborhood": null,
+    "street": "20 Home Rd",
+    "city": "Point Cook",
+    "postalCode": "3030",
+    "state": "Victoria",
+    "countryCode": "AU",
+    "website": "http://www.studio9art.net.au/",
+    "phone": "+61 422 782 269",
+    "phoneUnformatted": "+61422782269",
+    "claimThisBusiness": false,
+    "location": {
+      "lat": -37.8999191,
+      "lng": 144.7356582
+    },
+    "locatedIn": null,
+    "floor": null,
+    "plusCode": null,
+    "menu": null,
+    "servicesLink": null,
+    "totalScore": 4.8,
+    "permanentlyClosed": false,
+    "temporarilyClosed": false,
+    "placeId": "ChIJqW4hHXWJ1moRnq6sfCST-24",
+    "categories": [
+      "Picture frame shop"
+    ],
+    "fid": "0x6ad689751d216ea9:0x6efb93247cacae9e",
+    "cid": "7997147348246245022",
+    "reviewsCount": 11,
+    "imagesCount": 54,
+    "imageCategories": [],
+    "scrapedAt": "2026-06-13T00:58:26.469Z",
+    "reserveTableUrl": null,
+    "googleFoodUrl": null,
+    "hotelStars": null,
+    "hotelDescription": null,
+    "checkInDate": null,
+    "checkOutDate": null,
+    "hotelAds": [],
+    "popularTimesLiveText": null,
+    "popularTimesLivePercent": null,
+    "popularTimesHistogram": {},
+    "openingHours": [
+      {
+        "day": "Monday",
+        "hours": "Open 24 hours"
+      },
+      {
+        "day": "Tuesday",
+        "hours": "Open 24 hours"
+      },
+      {
+        "day": "Wednesday",
+        "hours": "Open 24 hours"
+      },
+      {
+        "day": "Thursday",
+        "hours": "Open 24 hours"
+      },
+      {
+        "day": "Friday",
+        "hours": "Open 24 hours"
+      },
+      {
+        "day": "Saturday",
+        "hours": "Open 24 hours"
+      },
+      {
+        "day": "Sunday",
+        "hours": "Open 24 hours"
+      }
+    ],
+    "peopleAlsoSearch": [],
+    "placesTags": [],
+    "reviewsTags": [],
+    "additionalInfo": {
+      "Service options": [
+        {
+          "In-store shopping": true
+        },
+        {
+          "Onsite services": true
+        }
+      ],
+      "Accessibility": [
+        {
+          "Wheelchair accessible parking lot": true
+        }
+      ],
+      "Planning": [
+        {
+          "Appointment required": true
+        }
+      ],
+      "Payments": [
+        {
+          "Credit cards": true
+        },
+        {
+          "Debit cards": true
+        },
+        {
+          "NFC mobile payments": true
+        }
+      ]
+    },
+    "gasPrices": [],
+    "url": "https://www.google.com/maps/search/?api=1&query=STUDIO9ART%20PICTURE%20FRAMING&query_place_id=ChIJqW4hHXWJ1moRnq6sfCST-24",
+    "searchPageUrl": "https://www.google.com/maps/search/Printing/@-37.91220815352728,144.72411173186183,17z?hl=en",
+    "searchString": "Printing",
+    "language": "en",
+    "rank": 13,
+    "isAdvertisement": false,
+    "imageUrl": "https://lh3.googleusercontent.com/gps-cs-s/APNQkAGc_aaN4pr6MJ22YUpX1HBk_rGaTAewCbEflVuH6ArqHlrvMriFLw7FE_ShSebXTDm7jDtFcaL3XYCr59ExWH9PS39eBK1riFOCWiXMdLZLQXWI0WYZ57NJeS_2I6P6KdSvTJ2c=w408-h306-k-no",
+    "kgmid": "/g/11pf995tb3",
+    "emails": [
+      "info@studio9art.net.au"
+    ],
+    "phones": [],
+    "phonesUncertain": [
+      "0422 782 269"
+    ],
+    "linkedIns": [],
+    "twitters": [],
+    "instagrams": [
+      "https://www.instagram.com/studio9art_framing_gallery"
+    ],
+    "facebooks": [
+      "https://www.facebook.com/studio9artinfo"
+    ],
+    "youtubes": [],
+    "tiktoks": [],
+    "pinterests": [],
+    "discords": [],
+    "domain": "studio9art.net.au",
+    "leadsEnrichment": []
+  }
+]

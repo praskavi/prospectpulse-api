@@ -1,0 +1,197 @@
+[
+  {
+    "title": "The Print Truck",
+    "totalScore": 4.9,
+    "reviewsCount": 57,
+    "street": "Unit 3/22 Linmax Ct",
+    "city": "Point Cook",
+    "state": "Victoria",
+    "countryCode": "AU",
+    "phone": "+61 422 170 847",
+    "categories": [
+      "Custom t-shirt store",
+      "Embroidery service",
+      "Laser cutting service",
+      "Souvenir store",
+      "T-shirt store"
+    ],
+    "url": "https://www.google.com/maps/search/?api=1&query=The%20Print%20Truck&query_place_id=ChIJmxoUiheP1moRb_KWwg6iwwY",
+    "categoryName": "Custom t-shirt store"
+  },
+  {
+    "title": "InkCart Point Cook",
+    "totalScore": 4.7,
+    "reviewsCount": 73,
+    "street": "Stockland Point Cook Shopping Centre, Main Street & Murnong Street",
+    "city": "Point Cook",
+    "state": "VIC",
+    "countryCode": "AU",
+    "phone": "+61 452 616 637",
+    "categories": [
+      "Toner cartridge supplier",
+      "Custom t-shirt store"
+    ],
+    "url": "https://www.google.com/maps/search/?api=1&query=InkCart%20Point%20Cook&query_place_id=ChIJKbYhTPOI1moRyP1SCkDClVI",
+    "categoryName": "Toner cartridge supplier"
+  },
+  {
+    "title": "Promo Printing",
+    "totalScore": 5,
+    "reviewsCount": 81,
+    "street": "6 La Coruna Gardens",
+    "city": "Point Cook",
+    "state": "Victoria",
+    "countryCode": "AU",
+    "website": "https://www.promoprinting.net.au/",
+    "phone": "+61 434 943 092",
+    "categories": [
+      "Uniform store",
+      "Custom t-shirt store",
+      "Digital printer",
+      "Embroidery shop",
+      "Screen printer"
+    ],
+    "url": "https://www.google.com/maps/search/?api=1&query=Promo%20Printing&query_place_id=ChIJyZk2SJ2J1moR_rZiUb1VpIk",
+    "categoryName": "Uniform store"
+  },
+  {
+    "title": "C4 Print | Custom Online Signs & Prints Australia",
+    "totalScore": 5,
+    "reviewsCount": 29,
+    "street": "Stockland Point Cook Shopping Centre, Entrance C4, Level 1/2 Main St",
+    "city": "Point Cook",
+    "state": "Victoria",
+    "countryCode": "AU",
+    "website": "https://www.c4print.com.au/",
+    "phone": "+61 1300 247 746",
+    "categories": [
+      "Print shop",
+      "Commercial printer",
+      "Digital printer",
+      "Sign shop"
+    ],
+    "url": "https://www.google.com/maps/search/?api=1&query=C4%20Print%20%7C%20Custom%20Online%20Signs%20%26%20Prints%20Australia&query_place_id=ChIJl8o7g5OJ1moRg0wJShvlao4",
+    "categoryName": "Print shop"
+  },
+  {
+    "title": "MBE Point Cook | Printing, Courier and Mailbox Rental Services",
+    "totalScore": 4.9,
+    "reviewsCount": 165,
+    "street": "U23/22-30 Wallace Ave",
+    "city": "Point Cook",
+    "state": "Victoria",
+    "countryCode": "AU",
+    "website": "http://www.mbe.com.au/melbourne/point-cook",
+    "phone": "+61 3 9395 9149",
+    "categories": [
+      "Print shop",
+      "Banner store",
+      "Courier service",
+      "Digital printer",
+      "Digital printing service",
+      "Invitation printing service",
+      "Lamination service",
+      "Mailbox rental service",
+      "Shipping service"
+    ],
+    "url": "https://www.google.com/maps/search/?api=1&query=MBE%20Point%20Cook%20%7C%20Printing%2C%20Courier%20and%20Mailbox%20Rental%20Services&query_place_id=ChIJKVMlXPOI1moRSWSbphzU4xo",
+    "categoryName": "Print shop"
+  },
+  {
+    "title": "Murnane Print Group",
+    "totalScore": 4.6,
+    "reviewsCount": 40,
+    "street": "3 Daisy Dr",
+    "city": "Point Cook",
+    "state": "Victoria",
+    "countryCode": "AU",
+    "website": "http://www.murnaneprint.com.au/",
+    "phone": "",
+    "categories": [
+      "Promotional products supplier",
+      "Corporate gift supplier",
+      "Custom label printer",
+      "Custom t-shirt store",
+      "Digital printing service",
+      "Print shop",
+      "Protective clothing supplier",
+      "Sticker manufacturer",
+      "Uniform store"
+    ],
+    "url": "https://www.google.com/maps/search/?api=1&query=Murnane%20Print%20Group&query_place_id=ChIJ7V5TunmI1moRanEQdTa_cZc",
+    "categoryName": "Promotional products supplier"
+  },
+  {
+    "title": "MEM Prints",
+    "totalScore": 5,
+    "reviewsCount": 40,
+    "street": "5 Tathra Grove",
+    "city": "Point Cook",
+    "state": "Victoria",
+    "countryCode": "AU",
+    "website": "https://memprints.com.au/?utm_source=google&utm_medium=organic&utm_campaign=gbp",
+    "phone": "+61 433 309 523",
+    "categories": [
+      "Print shop"
+    ],
+    "url": "https://www.google.com/maps/search/?api=1&query=MEM%20Prints&query_place_id=ChIJCcjDdwaH1moRm7PmTu4Ibm8",
+    "categoryName": "Print shop"
+  },
+  {
+    "title": "Printing, Courier & More Point Cook",
+    "totalScore": 4.8,
+    "reviewsCount": 81,
+    "street": "U23/22-30 Wallace Ave",
+    "city": "Point Cook",
+    "state": "Victoria",
+    "countryCode": "AU",
+    "website": "http://printingpointcook.com.au/?utm_source=google&utm_medium=gbp",
+    "phone": "+61 3 8609 9614",
+    "categories": [
+      "Print shop",
+      "Commercial printer",
+      "Copy shop",
+      "Courier service",
+      "Custom label printer",
+      "Digital printer",
+      "Mailbox rental service",
+      "Mailing service",
+      "Shipping and mailing service",
+      "Shipping service"
+    ],
+    "url": "https://www.google.com/maps/search/?api=1&query=Printing%2C%20Courier%20%26%20More%20Point%20Cook&query_place_id=ChIJpZp2ofSI1moRIxNmF1CqIPw",
+    "categoryName": "Print shop"
+  },
+  {
+    "title": "Wyndham Library Service - Point Cook Branch",
+    "totalScore": 4.5,
+    "reviewsCount": 188,
+    "street": "1/21 Cheetham St",
+    "city": "Point Cook",
+    "state": "Victoria",
+    "countryCode": "AU",
+    "website": "https://www.wyndham.vic.gov.au/services/libraries",
+    "phone": "+61 3 8734 8999",
+    "categories": [
+      "Public library"
+    ],
+    "url": "https://www.google.com/maps/search/?api=1&query=Wyndham%20Library%20Service%20-%20Point%20Cook%20Branch&query_place_id=ChIJnVRbgPOI1moRK8zh_MqT8k8",
+    "categoryName": "Public library"
+  },
+  {
+    "title": "STUDIO9ART PICTURE FRAMING",
+    "totalScore": 4.8,
+    "reviewsCount": 11,
+    "street": "20 Home Rd",
+    "city": "Point Cook",
+    "state": "Victoria",
+    "countryCode": "AU",
+    "website": "http://www.studio9art.net.au/",
+    "phone": "+61 422 782 269",
+    "categories": [
+      "Picture frame shop"
+    ],
+    "url": "https://www.google.com/maps/search/?api=1&query=STUDIO9ART%20PICTURE%20FRAMING&query_place_id=ChIJqW4hHXWJ1moRnq6sfCST-24",
+    "categoryName": "Picture frame shop"
+  }
+]

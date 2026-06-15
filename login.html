@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ProspectPulse — Sign In</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0a0a0f;
+      --bg2:     #111118;
+      --card:    #16161f;
+      --border:  rgba(255,255,255,0.08);
+      --orange:  #f97316;
+      --text1:   #f1f5f9;
+      --text2:   #94a3b8;
+      --text3:   #475569;
+      --danger:  #ef4444;
+      --success: #10b981;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text1);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    /* ── LOGO ── */
+    .logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; margin-bottom: 32px;
+    }
+    .logo-icon {
+      width: 38px; height: 38px; border-radius: 10px;
+      background: linear-gradient(135deg, #f97316, #c2410c);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 13px; color: #fff; letter-spacing: 0.5px;
+    }
+    .logo-text {
+      font-size: 20px; font-weight: 800; color: var(--text1); letter-spacing: -0.5px;
+    }
+    .logo-text span { color: var(--orange); }
+
+    /* ── CARD ── */
+    .auth-card {
+      width: 100%; max-width: 420px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 36px;
+    }
+
+    /* ── TABS ── */
+    .tabs {
+      display: flex; gap: 0;
+      background: var(--bg2); border-radius: 10px; padding: 4px;
+      margin-bottom: 28px;
+    }
+    .tab {
+      flex: 1; padding: 8px; border: none; border-radius: 8px;
+      background: transparent; color: var(--text3);
+      font-size: 13px; font-weight: 600; font-family: inherit;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .tab.active {
+      background: var(--card);
+      color: var(--text1);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    }
+
+    /* ── FORM ── */
+    .form-title { font-size: 20px; font-weight: 700; margin-bottom: 6px; }
+    .form-sub   { font-size: 13px; color: var(--text3); margin-bottom: 24px; }
+
+    .field { margin-bottom: 16px; }
+    .field label {
+      display: block; font-size: 12px; font-weight: 600;
+      color: var(--text2); margin-bottom: 6px; letter-spacing: 0.3px;
+    }
+    .field input {
+      width: 100%; padding: 10px 14px;
+      background: var(--bg2); border: 1px solid var(--border);
+      border-radius: 10px; color: var(--text1);
+      font-size: 14px; font-family: inherit; outline: none;
+      transition: border-color 0.2s;
+    }
+    .field input:focus { border-color: var(--orange); }
+    .field input::placeholder { color: var(--text3); }
+
+    /* ── ERROR / SUCCESS ── */
+    .alert {
+      padding: 10px 14px; border-radius: 10px; font-size: 13px;
+      margin-bottom: 16px; display: none; align-items: center; gap: 8px;
+    }
+    .alert.error   { background: rgba(239,68,68,0.1);  border: 1px solid rgba(239,68,68,0.25);  color: #fca5a5; display: flex; }
+    .alert.success { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.25); color: #6ee7b7; display: flex; }
+
+    /* ── BUTTON ── */
+    .btn-submit {
+      width: 100%; padding: 12px;
+      background: linear-gradient(135deg, var(--orange), #c2410c);
+      color: #fff; border: none; border-radius: 12px;
+      font-size: 14px; font-weight: 700; font-family: inherit;
+      cursor: pointer; transition: all 0.2s;
+      box-shadow: 0 4px 15px rgba(249,115,22,0.3);
+      margin-top: 4px;
+    }
+    .btn-submit:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(249,115,22,0.4); }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    /* ── DIVIDER ── */
+    .divider {
+      text-align: center; color: var(--text3); font-size: 12px;
+      margin: 20px 0; position: relative;
+    }
+    .divider::before, .divider::after {
+      content: ''; position: absolute; top: 50%; width: 40%;
+      height: 1px; background: var(--border);
+    }
+    .divider::before { left: 0; }
+    .divider::after  { right: 0; }
+
+    .switch-link {
+      text-align: center; font-size: 13px; color: var(--text3); margin-top: 20px;
+    }
+    .switch-link a { color: var(--orange); text-decoration: none; font-weight: 600; cursor: pointer; }
+    .switch-link a:hover { text-decoration: underline; }
+    .form-action-link {
+      text-align: right;
+      margin: -6px 0 16px;
+      font-size: 12px;
+    }
+    .form-action-link a {
+      color: var(--orange);
+      text-decoration: none;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .form-action-link a:hover { text-decoration: underline; }
+
+    /* ── FOOTER ── */
+    .auth-footer {
+      margin-top: 24px; font-size: 11px; color: var(--text3); text-align: center;
+    }
+
+    /* ── SPINNER ── */
+    .spinner-sm {
+      display: inline-block; width: 14px; height: 14px; border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: #fff; animation: spin 0.7s linear infinite;
+      vertical-align: middle; margin-right: 6px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+  <a href="index.html" class="logo">
+    <div class="logo-icon">PP</div>
+    <span class="logo-text">Prospect<span>Pulse</span></span>
+  </a>
+
+  <div class="auth-card">
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" id="tabLogin"  onclick="switchTab('login')">Sign In</button>
+      <button class="tab"        id="tabSignup" onclick="switchTab('signup')">Create Account</button>
+    </div>
+
+    <!-- Alert -->
+    <div class="alert" id="alert"></div>
+
+    <!-- LOGIN FORM -->
+    <div id="loginForm">
+      <div class="form-title">Welcome back</div>
+      <div class="form-sub">Sign in to your ProspectPulse account</div>
+
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="loginEmail" placeholder="you@company.com" autocomplete="email" />
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password" />
+      </div>
+
+      <div class="form-action-link">
+        <a onclick="handleForgotPassword()">Forgot password?</a>
+      </div>
+
+      <button class="btn-submit" id="loginBtn" onclick="handleLogin()">Sign In</button>
+
+      <div class="switch-link">
+        Don't have an account? <a onclick="switchTab('signup')">Create one</a>
+      </div>
+    </div>
+
+    <!-- SIGNUP FORM -->
+    <div id="signupForm" style="display:none;">
+      <div class="form-title">Get started free</div>
+      <div class="form-sub">100 credits included — no card required</div>
+
+      <div class="field">
+        <label>Full Name</label>
+        <input type="text" id="signupName" placeholder="Jane Smith" autocomplete="name" />
+      </div>
+      <div class="field">
+        <label>Email</label>
+        <input type="email" id="signupEmail" placeholder="you@company.com" autocomplete="email" />
+      </div>
+      <div class="field">
+        <label>Password <span style="color:var(--text3);font-weight:400">(min 6 chars)</span></label>
+        <input type="password" id="signupPassword" placeholder="••••••••" autocomplete="new-password" />
+      </div>
+
+      <button class="btn-submit" id="signupBtn" onclick="handleSignup()">Create Account</button>
+
+      <div class="switch-link">
+        Already have an account? <a onclick="switchTab('login')">Sign in</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="auth-footer">ProspectPulse · AI-powered lead generation</div>
+
+  <script>
+    const API = 'http://localhost:3000/api';
+
+    // ── If already logged in, go straight to app ──
+    if (localStorage.getItem('pp_access_token')) {
+      window.location.href = 'app.html';
+    }
+
+    function switchTab(tab) {
+      const isLogin = tab === 'login';
+      document.getElementById('tabLogin').classList.toggle('active', isLogin);
+      document.getElementById('tabSignup').classList.toggle('active', !isLogin);
+      document.getElementById('loginForm').style.display  = isLogin ? 'block' : 'none';
+      document.getElementById('signupForm').style.display = isLogin ? 'none'  : 'block';
+      clearAlert();
+    }
+
+    function showAlert(type, msg) {
+      const el = document.getElementById('alert');
+      el.className = `alert ${type}`;
+      el.innerHTML = `<span>${type === 'error' ? '⚠' : '✓'}</span><span>${msg}</span>`;
+    }
+
+    function clearAlert() {
+      const el = document.getElementById('alert');
+      el.className = 'alert';
+      el.innerHTML = '';
+    }
+
+    function setLoading(btnId, loading) {
+      const btn = document.getElementById(btnId);
+      btn.disabled = loading;
+      btn.innerHTML = loading
+        ? `<span class="spinner-sm"></span> Please wait…`
+        : btn.id === 'loginBtn' ? 'Sign In' : 'Create Account';
+    }
+
+    async function handleLogin() {
+      const email    = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      clearAlert();
+
+      if (!email || !password) { showAlert('error', 'Email and password are required.'); return; }
+
+      setLoading('loginBtn', true);
+      try {
+        const res  = await fetch(`${API}/login`, {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({ email, password }),
+        });
+        const data = await res.json();
+
+        if (!res.ok) { showAlert('error', data.message || 'Login failed.'); return; }
+
+        // Controller returns raw Supabase data: { user, session }
+        const session = data.data.session;
+        const user    = data.data.user;
+
+        if (!session?.access_token) {
+          showAlert('error', 'Login succeeded but no session returned. Is your email confirmed?');
+          return;
+        }
+
+        localStorage.setItem('pp_access_token',  session.access_token);
+        localStorage.setItem('pp_refresh_token', session.refresh_token);
+        localStorage.setItem('pp_user_email',    user.email);
+        localStorage.setItem('pp_user_id',       user.id);
+
+        window.location.href = 'app.html';
+      } catch (err) {
+        showAlert('error', 'Could not connect to server. Is it running?');
+      } finally {
+        setLoading('loginBtn', false);
+      }
+    }
+
+    async function handleSignup() {
+      const name     = document.getElementById('signupName').value.trim();
+      const email    = document.getElementById('signupEmail').value.trim();
+      const password = document.getElementById('signupPassword').value;
+      clearAlert();
+
+      if (!email || !password) { showAlert('error', 'Email and password are required.'); return; }
+      if (password.length < 6) { showAlert('error', 'Password must be at least 6 characters.'); return; }
+
+      setLoading('signupBtn', true);
+      try {
+        const res  = await fetch(`${API}/signup`, {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({ name, email, password }),
+        });
+        const data = await res.json();
+
+        if (!res.ok) { showAlert('error', data.message || 'Signup failed.'); return; }
+
+        showAlert('success', 'Account created! Check your email. The confirmation link will open the app.');
+        setTimeout(() => switchTab('login'), 2000);
+      } catch (err) {
+        showAlert('error', 'Could not connect to server. Is it running?');
+      } finally {
+        setLoading('signupBtn', false);
+      }
+    }
+
+    async function handleForgotPassword() {
+      const email = document.getElementById('loginEmail').value.trim();
+      clearAlert();
+
+      if (!email) {
+        showAlert('error', 'Enter your email first, then request a reset link.');
+        document.getElementById('loginEmail').focus();
+        return;
+      }
+
+      setLoading('loginBtn', true);
+      try {
+        const res = await fetch(`${API}/password/forgot`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email }),
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          showAlert('error', data.message || 'Could not send reset link.');
+          return;
+        }
+
+        showAlert('success', 'Check your email for the password reset link.');
+      } catch (err) {
+        showAlert('error', 'Could not connect to server. Is it running?');
+      } finally {
+        setLoading('loginBtn', false);
+      }
+    }
+
+    // Allow Enter key to submit
+    document.addEventListener('keydown', e => {
+      if (e.key !== 'Enter') return;
+      const loginVisible = document.getElementById('loginForm').style.display !== 'none';
+      if (loginVisible) handleLogin();
+      else handleSignup();
+    });
+  </script>
+</body>
+</html>

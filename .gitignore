@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Runtime and cache files
+.cache/
+.parcel-cache/
+.vite/
+.turbo/
+coverage/
+
+# Build output
+dist/
+build/
+.next/
+out/
+
+# Supabase local temp files
+supabase/.temp/
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Local test artifacts
+playwright-report/
+test-results/

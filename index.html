@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ProspectPulse | Find Local Business Leads With Contact Enrichment</title>
+  <meta
+    name="description"
+    content="ProspectPulse helps teams find local businesses, enrich company contacts, discover decision makers, and save search results in one lead generation workflow."
+  />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://prospectpulse.local/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="ProspectPulse | Local Business Lead Generation" />
+  <meta
+    property="og:description"
+    content="Search local businesses, enrich company contacts, and organise leads with a Supabase-backed workflow."
+  />
+  <meta property="og:image" content="https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=1200&q=80" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="stylesheet" href="landing.css" />
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "ProspectPulse",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "description": "ProspectPulse helps teams find local businesses, enrich contacts, and organise search results for outbound prospecting."
+    }
+  </script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/" aria-label="ProspectPulse home">
+      <span class="brand-mark">PP</span>
+      <span>ProspectPulse</span>
+    </a>
+    <nav class="site-nav" aria-label="Primary navigation">
+      <a href="#workflow">Workflow</a>
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a class="nav-cta" href="app.html">Open App</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-bg" role="img" aria-label="Team reviewing business lead research on laptops"></div>
+      <div class="hero-content">
+        <p class="eyebrow">Local business lead generation</p>
+        <h1>ProspectPulse</h1>
+        <p class="hero-copy">
+          Find businesses by category and location, enrich company contacts, discover decision makers, and keep each user's search results organised for follow-up.
+        </p>
+        <div class="hero-actions">
+          <a class="primary-action" href="app.html">Start a Search</a>
+          <a class="secondary-action" href="#workflow">See How It Works</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="workflow">
+      <div class="section-heading">
+        <p class="eyebrow">Workflow</p>
+        <h2>From local search to usable prospect list</h2>
+        <p>
+          ProspectPulse turns a simple search request into a structured list of businesses, contact channels, and enriched people where available.
+        </p>
+      </div>
+      <div class="steps">
+        <article>
+          <span>01</span>
+          <h3>Search a market</h3>
+          <p>Choose a business category, location, state, postcodes, and the number of places to scan.</p>
+        </article>
+        <article>
+          <span>02</span>
+          <h3>Control enrichment cost</h3>
+          <p>Enable company contacts, people enrichment, and email verification only when the search needs deeper data.</p>
+        </article>
+        <article>
+          <span>03</span>
+          <h3>Save results</h3>
+          <p>Results are written to Supabase under the user's search and kept for the MVP retention window.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section split" id="data">
+      <div>
+        <p class="eyebrow">Data Model</p>
+        <h2>Built around user searches, not bulk lead imports</h2>
+        <p>
+          Each run creates a search record, then stores matching businesses in search results. This keeps the MVP simple, user-scoped, and ready for cleanup after 30 days.
+        </p>
+        <ul class="check-list">
+          <li>Searches track category, location, status, and result counts.</li>
+          <li>Search results store business details, email, LinkedIn, phone, rating, and raw Apify payload.</li>
+          <li>Contact enrichment is explicit so users understand cost before running a scan.</li>
+        </ul>
+      </div>
+      <div class="data-panel" aria-label="Example enriched lead fields">
+        <div><span>business_name</span><strong>MBE Point Cook</strong></div>
+        <div><span>owner_name</span><strong>Pete Seary</strong></div>
+        <div><span>email</span><strong>pete.seary@mbe.com.au</strong></div>
+        <div><span>linkedin_url</span><strong>linkedin.com/in/pete-seary</strong></div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="section" id="features">
+      <div class="section-heading">
+        <p class="eyebrow">Features</p>
+        <h2>Everything you need to find and close local business leads</h2>
+        <p>One workflow from search to enriched contact — no spreadsheets, no manual lookup.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🗺️</div>
+          <h3>Google Places Discovery</h3>
+          <p>Search any business category in any city or postcode. Get name, address, phone, website, and rating instantly.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔗</div>
+          <h3>LinkedIn Enrichment</h3>
+          <p>Find decision-makers linked to each business — owners, directors, and managers with public LinkedIn profiles.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">✉️</div>
+          <h3>Email Verification</h3>
+          <p>Verify discovered emails in real time before they hit your outbox. Only deliverable addresses, no bounces.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📋</div>
+          <h3>Search History</h3>
+          <p>Every scan is saved to your account. Re-open any past search and filter, sort, or export results anytime.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <h3>Credit-Based Usage</h3>
+          <p>Only pay for what you scan. Credits roll over so nothing is wasted — scale up or down each month.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🛡️</div>
+          <h3>Per-User Data Isolation</h3>
+          <p>Your leads are yours. Every search is scoped to your account with Supabase RLS enforcing access at the DB level.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRICING -->
+    <section class="section" id="pricing">
+      <div class="section-heading">
+        <p class="eyebrow">Pricing</p>
+        <h2>Simple credit-based plans</h2>
+        <p>Start free. Upgrade when your prospecting volume grows. No hidden fees, no seat licences.</p>
+      </div>
+
+      <div class="pricing-grid">
+
+        <!-- FREE -->
+        <div class="pricing-card">
+          <div class="pricing-header">
+            <div class="plan-name">Free</div>
+            <div class="plan-price"><span class="price-amount">$0</span><span class="price-period">/mo</span></div>
+            <div class="plan-credits">100 credits / month</div>
+          </div>
+          <ul class="plan-features">
+            <li class="feat-yes">Up to 10 results per scan</li>
+            <li class="feat-yes">Business name, phone, website, rating</li>
+            <li class="feat-yes">Search history (7-day retention)</li>
+            <li class="feat-no">Company contact scraping</li>
+            <li class="feat-no">LinkedIn / people enrichment</li>
+            <li class="feat-no">Email verification</li>
+          </ul>
+          <a class="plan-cta plan-cta-outline" href="login.html">Get started free</a>
+        </div>
+
+        <!-- STARTER (highlighted) -->
+        <div class="pricing-card pricing-card-featured">
+          <div class="plan-popular">Most Popular</div>
+          <div class="pricing-header">
+            <div class="plan-name">Starter</div>
+            <div class="plan-price"><span class="price-amount">$29</span><span class="price-period">/mo</span></div>
+            <div class="plan-credits">1,000 credits / month</div>
+          </div>
+          <ul class="plan-features">
+            <li class="feat-yes">Up to 25 results per scan</li>
+            <li class="feat-yes">Business name, phone, website, rating</li>
+            <li class="feat-yes">Search history (30-day retention)</li>
+            <li class="feat-yes">Company contact scraping</li>
+            <li class="feat-yes">1 decision-maker per business</li>
+            <li class="feat-yes">Email verification</li>
+          </ul>
+          <a class="plan-cta plan-cta-primary" href="login.html">Start Starter plan</a>
+        </div>
+
+        <!-- GROWTH -->
+        <div class="pricing-card">
+          <div class="pricing-header">
+            <div class="plan-name">Growth</div>
+            <div class="plan-price"><span class="price-amount">$79</span><span class="price-period">/mo</span></div>
+            <div class="plan-credits">4,000 credits / month</div>
+          </div>
+          <ul class="plan-features">
+            <li class="feat-yes">Up to 50 results per scan</li>
+            <li class="feat-yes">Business name, phone, website, rating</li>
+            <li class="feat-yes">Search history (90-day retention)</li>
+            <li class="feat-yes">Company contact scraping</li>
+            <li class="feat-yes">Up to 2 decision-makers per business</li>
+            <li class="feat-yes">Email verification</li>
+          </ul>
+          <a class="plan-cta plan-cta-outline" href="login.html">Start Growth plan</a>
+        </div>
+
+      </div>
+
+      <p class="pricing-note">All plans include a free trial period. No credit card required to start.</p>
+    </section>
+
+    <section class="cta-band">
+      <p class="eyebrow">MVP now live</p>
+      <h2>Run your next local prospecting search</h2>
+      <p>Open the app, choose your enrichment level, and let the workflow save the results while the interface polls Supabase.</p>
+      <a class="primary-action" href="app.html">Open ProspectPulse App</a>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>ProspectPulse</span>
+    <span>Local business intelligence for focused outbound teams.</span>
+  </footer>
+</body>
+</html>
