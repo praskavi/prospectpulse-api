@@ -39,3 +39,12 @@ Thumbs.db
 # Local test artifacts
 playwright-report/
 test-results/
+
+# Local documents and data exports
+*.pdf
+*.doc
+*.docx
+*.csv
+*.tsv
+*.xls
+*.xlsx
