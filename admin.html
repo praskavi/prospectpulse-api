@@ -41,6 +41,11 @@
     .pill-failed { color: #fca5a5; background: rgba(239,68,68,.12); }
     .pill-running { color: #fdba74; background: rgba(249,115,22,.12); }
     .pill-completed { color: #6ee7b7; background: rgba(16,185,129,.12); }
+    .pill-open { color: #fdba74; background: rgba(249,115,22,.12); }
+    .pill-in_progress { color: #93c5fd; background: rgba(59,130,246,.12); }
+    .pill-resolved, .pill-closed { color: #6ee7b7; background: rgba(16,185,129,.12); }
+    .pill-urgent, .pill-high { color: #fca5a5; background: rgba(239,68,68,.12); }
+    .pill-normal, .pill-low { color: #a3a3a3; background: rgba(255,255,255,.06); }
     .admin-section { display: none; }
     .admin-section.active { display: block; }
     .admin-state { padding: 18px 16px; color: var(--text2); font-size: 13px; }
@@ -82,6 +87,7 @@
       <button class="admin-tab" data-tab="users" onclick="showTab('users')">Users</button>
       <button class="admin-tab" data-tab="searches" onclick="showTab('searches')">Searches</button>
       <button class="admin-tab" data-tab="transactions" onclick="showTab('transactions')">Transactions</button>
+      <button class="admin-tab" data-tab="support" onclick="showTab('support')">Support</button>
       <button class="admin-tab" data-tab="billing" onclick="showTab('billing')">Billing Health</button>
       <button class="admin-tab" data-tab="webhooks" onclick="showTab('webhooks')">Webhooks</button>
       <button class="admin-tab" data-tab="system" onclick="showTab('system')">System</button>
@@ -91,6 +97,7 @@
     <section class="admin-section" id="section-users"></section>
     <section class="admin-section" id="section-searches"></section>
     <section class="admin-section" id="section-transactions"></section>
+    <section class="admin-section" id="section-support"></section>
     <section class="admin-section" id="section-billing"></section>
     <section class="admin-section" id="section-webhooks"></section>
     <section class="admin-section" id="section-system"></section>
@@ -189,6 +196,7 @@
         if (name === 'users') await loadUsers();
         if (name === 'searches') await loadSearches();
         if (name === 'transactions') await loadTransactions();
+        if (name === 'support') await loadSupport();
         if (name === 'billing') await loadBilling();
         if (name === 'webhooks') await loadWebhooks();
         if (name === 'system') await loadSystem();
@@ -205,6 +213,7 @@
         card('Total Users', fmt(data.users.total), `${fmt(data.users.zeroCredits)} zero-credit`),
         card('Paid Users', fmt(data.users.starter + data.users.growth), `${fmt(data.users.starter)} Starter / ${fmt(data.users.growth)} Growth`),
         card('Searches 24h', fmt(data.searches.last24h), `${fmt(data.searches.failedLast24h)} failed`),
+        card('Open Support', fmt(data.support?.open), 'open or in progress'),
         card('Stuck Running', fmt(data.searches.stuckRunning), 'running over 15 minutes'),
         card('Webhook Failures', fmt(data.webhooks?.failedLast24h), 'failed in last 24 hours'),
       ].join('');
@@ -281,6 +290,47 @@
         <label class="admin-muted"><input type="checkbox" name="negative" ${fc('transactionsFilters', 'negative')} /> Negative</label>
         <button class="admin-btn" type="submit">Apply</button><button class="admin-btn" type="button" onclick="clearFilters('transactionsFilters')">Clear</button>
       </form></div><div class="admin-state">${data.length} loaded</div>${table(['User','Type','Credits','Description','Search ID','Created'], rows)}</div>`);
+    }
+
+    async function updateTicketStatus(ticketId, status) {
+      const res = await fetch(`/api/admin/support-tickets/${encodeURIComponent(ticketId)}`, {
+        method: 'PATCH',
+        headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        alert(json.message || `Could not update ticket (${res.status})`);
+        return;
+      }
+      state.loaded.delete('support');
+      loadSupport();
+    }
+
+    async function loadSupport() {
+      const data = await api(`/support-tickets?${qs('supportFilters')}`);
+      const rows = data.map(ticket => `<tr>
+        <td class="admin-id">${esc(ticket.ticket_id)}</td>
+        <td>${pill(ticket.status)}</td>
+        <td>${pill(ticket.priority)}</td>
+        <td>${esc(ticket.category)}</td>
+        <td><a class="admin-link" href="mailto:${esc(ticket.email)}">${esc(ticket.email)}</a></td>
+        <td class="wrap-cell"><strong>${esc(ticket.subject)}</strong><br><span class="admin-muted">${esc(ticket.name || '-')} · ${esc(ticket.source || '-')}</span></td>
+        <td>${pill(ticket.n8n_status)}</td>
+        <td>${date(ticket.created_at)}</td>
+        <td>
+          <button class="admin-btn" onclick="updateTicketStatus('${esc(ticket.ticket_id)}', 'in_progress')">Start</button>
+          <button class="admin-btn" onclick="updateTicketStatus('${esc(ticket.ticket_id)}', 'resolved')">Resolve</button>
+        </td>
+      </tr>`);
+      setSection('support', `<div class="admin-panel"><div class="admin-panel-header"><div class="admin-panel-title">Support Tickets</div><form class="admin-panel-tools" id="supportFilters" onsubmit="event.preventDefault(); refreshActive();">
+        <select class="admin-select" name="status"><option value="">Any status</option><option value="open" ${fs('supportFilters', 'status', 'open')}>Open</option><option value="in_progress" ${fs('supportFilters', 'status', 'in_progress')}>In progress</option><option value="resolved" ${fs('supportFilters', 'status', 'resolved')}>Resolved</option><option value="closed" ${fs('supportFilters', 'status', 'closed')}>Closed</option></select>
+        <select class="admin-select" name="priority"><option value="">Any priority</option><option value="urgent" ${fs('supportFilters', 'priority', 'urgent')}>Urgent</option><option value="high" ${fs('supportFilters', 'priority', 'high')}>High</option><option value="normal" ${fs('supportFilters', 'priority', 'normal')}>Normal</option><option value="low" ${fs('supportFilters', 'priority', 'low')}>Low</option></select>
+        <select class="admin-select" name="category"><option value="">Any category</option><option value="billing" ${fs('supportFilters', 'category', 'billing')}>Billing</option><option value="credits" ${fs('supportFilters', 'category', 'credits')}>Credits</option><option value="search" ${fs('supportFilters', 'category', 'search')}>Search</option><option value="account" ${fs('supportFilters', 'category', 'account')}>Account</option><option value="privacy" ${fs('supportFilters', 'category', 'privacy')}>Privacy</option><option value="security" ${fs('supportFilters', 'category', 'security')}>Security</option><option value="general" ${fs('supportFilters', 'category', 'general')}>General</option></select>
+        <input class="admin-input" name="email" placeholder="Email contains" value="${fv('supportFilters', 'email')}" />
+        <input class="admin-input" name="search" placeholder="Ticket, subject, message" value="${fv('supportFilters', 'search')}" />
+        <button class="admin-btn" type="submit">Apply</button><button class="admin-btn" type="button" onclick="clearFilters('supportFilters')">Clear</button>
+      </form></div><div class="admin-state">${data.length} loaded</div>${table(['Ticket','Status','Priority','Category','Email','Subject','n8n','Created','Actions'], rows)}</div>`);
     }
 
     function billingTable(title, rows) {

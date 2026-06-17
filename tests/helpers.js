@@ -9,6 +9,10 @@ const supabaseAnon = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
   auth: { autoRefreshToken: false, persistSession: false },
 });
 
+const supabaseAuthAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY, {
+  auth: { autoRefreshToken: false, persistSession: false },
+});
+
 const supabaseAdmin = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY, {
   auth: { autoRefreshToken: false, persistSession: false },
 });
@@ -76,7 +80,7 @@ export async function getMagicLinkToken(email) {
   const cacheKey = `magic:${email}`;
   if (tokenCache.has(cacheKey)) return tokenCache.get(cacheKey);
 
-  const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
+  const { data: linkData, error: linkError } = await supabaseAuthAdmin.auth.admin.generateLink({
     type: 'magiclink',
     email,
   });
@@ -86,7 +90,7 @@ export async function getMagicLinkToken(email) {
   const tokenHash = linkData?.properties?.hashed_token;
   if (!tokenHash) throw new Error(`getMagicLinkToken failed for ${email}: missing token hash`);
 
-  const { data: verifyData, error: verifyError } = await supabaseAdmin.auth.verifyOtp({
+  const { data: verifyData, error: verifyError } = await supabaseAuthAdmin.auth.verifyOtp({
     type: 'magiclink',
     token_hash: tokenHash,
   });
@@ -169,4 +173,37 @@ export async function seedSearchResult(userId, overrides = {}) {
   if (resultErr) throw new Error(`seedSearchResult — result insert failed: ${resultErr.message}`);
 
   return { search, result };
+}
+
+export async function cleanupSupportTickets(email = '@prospectpulse.test') {
+  const { error } = await supabaseAdmin
+    .from('support_tickets')
+    .delete()
+    .ilike('email', `%${email}%`);
+
+  if (error) console.warn(`cleanupSupportTickets(${email}): ${error.message}`);
+}
+
+export async function seedSupportTicket(overrides = {}) {
+  const timestamp = Date.now().toString(36).toUpperCase();
+  const { data, error } = await supabaseAdmin
+    .from('support_tickets')
+    .insert({
+      ticket_id: overrides.ticket_id || `SUP-TEST-${timestamp}`,
+      status: overrides.status || 'open',
+      priority: overrides.priority || 'normal',
+      category: overrides.category || 'billing',
+      email: overrides.email || `support-${timestamp.toLowerCase()}@prospectpulse.test`,
+      name: overrides.name || 'Support Test',
+      subject: overrides.subject || 'Support ticket test',
+      message: overrides.message || 'This seeded support ticket is used by the admin API test suite.',
+      profile_id: overrides.profile_id || null,
+      source: overrides.source || 'vitest',
+      n8n_status: overrides.n8n_status || 'skipped',
+    })
+    .select()
+    .single();
+
+  if (error) throw new Error(`seedSupportTicket failed: ${error.message}`);
+  return data;
 }

@@ -70,6 +70,29 @@ function enrichWithEmail(rows, usersById) {
   }));
 }
 
+function isUuid(value) {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(value || ''));
+}
+
+async function auditAdminAction(req, { action, targetType, targetId, beforeState, afterState, metadata }) {
+  const { error } = await supabase
+    .from('admin_audit_log')
+    .insert({
+      admin_user_id: req.admin?.userId || null,
+      admin_email: req.admin?.email || null,
+      action,
+      target_type: targetType,
+      target_id: targetId,
+      before_state: beforeState || null,
+      after_state: afterState || null,
+      metadata: metadata || null,
+    });
+
+  if (error) {
+    console.error('[admin-audit] Could not record admin action:', error.message);
+  }
+}
+
 router.get('/overview', async (req, res, next) => {
   try {
     const since = dayAgoIso();
@@ -84,6 +107,7 @@ router.get('/overview', async (req, res, next) => {
       searchesLast24h,
       failedLast24h,
       stuckRunning,
+      openSupportTickets,
       failedWebhooksLast24h,
       recentFailed,
       recentTransactions,
@@ -97,6 +121,7 @@ router.get('/overview', async (req, res, next) => {
       countRows('searches', q => q.gte('created_at', since)),
       countRows('searches', q => q.eq('search_status', 'failed').gte('created_at', since)),
       countRows('searches', q => q.eq('search_status', 'running').lt('created_at', stuckCutoff)),
+      countRows('support_tickets', q => q.in('status', ['open', 'in_progress'])),
       countRows('stripe_webhook_events', q => q.eq('status', 'failed').gte('updated_at', since)),
       supabase
         .from('searches')
@@ -140,11 +165,123 @@ router.get('/overview', async (req, res, next) => {
         webhooks: {
           failedLast24h: failedWebhooksLast24h,
         },
+        support: {
+          open: openSupportTickets,
+        },
         recentFailedSearches: recentFailed.data || [],
         recentTransactions: recentTransactions.data || [],
         recentWebhookFailures: recentWebhookFailures.data || [],
       },
     });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/support-tickets', async (req, res, next) => {
+  try {
+    const { page, limit, from, to } = pageRange(req.query);
+    let query = supabase
+      .from('support_tickets')
+      .select(
+        'id,ticket_id,status,priority,category,email,name,subject,profile_id,source,n8n_status,n8n_error,created_at,updated_at,resolved_at',
+        { count: 'exact' },
+      )
+      .order('created_at', { ascending: false })
+      .range(from, to);
+
+    if (req.query.status) query = query.eq('status', req.query.status);
+    if (req.query.priority) query = query.eq('priority', req.query.priority);
+    if (req.query.category) query = query.eq('category', req.query.category);
+    if (req.query.n8nStatus) query = query.eq('n8n_status', req.query.n8nStatus);
+    if (req.query.email) query = query.ilike('email', `%${req.query.email}%`);
+    if (req.query.search) {
+      const needle = `%${req.query.search}%`;
+      query = query.or(`ticket_id.ilike.${needle},subject.ilike.${needle},message.ilike.${needle}`);
+    }
+
+    const { data, error, count } = await query;
+    if (error) throw error;
+
+    res.status(200).json({
+      success: true,
+      data: data || [],
+      meta: { page, limit, total: count || 0 },
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/support-tickets/:id', async (req, res, next) => {
+  try {
+    let query = supabase
+      .from('support_tickets')
+      .select('*');
+
+    query = isUuid(req.params.id)
+      ? query.eq('id', req.params.id)
+      : query.eq('ticket_id', req.params.id);
+
+    const { data, error } = await query.maybeSingle();
+
+    if (error) throw error;
+    if (!data) throw new AppError('Support ticket not found.', 404);
+
+    res.status(200).json({ success: true, data });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.patch('/support-tickets/:id', async (req, res, next) => {
+  try {
+    const allowedStatuses = new Set(['open', 'in_progress', 'resolved', 'closed']);
+    const status = String(req.body?.status || '').trim();
+
+    if (!allowedStatuses.has(status)) {
+      throw new AppError('Invalid support ticket status.', 400);
+    }
+
+    let beforeQuery = supabase
+      .from('support_tickets')
+      .select('*');
+
+    beforeQuery = isUuid(req.params.id)
+      ? beforeQuery.eq('id', req.params.id)
+      : beforeQuery.eq('ticket_id', req.params.id);
+
+    const { data: before, error: beforeError } = await beforeQuery.maybeSingle();
+
+    if (beforeError) throw beforeError;
+    if (!before) throw new AppError('Support ticket not found.', 404);
+
+    const update = {
+      status,
+      resolved_at: ['resolved', 'closed'].includes(status)
+        ? (before.resolved_at || new Date().toISOString())
+        : null,
+    };
+
+    const { data: after, error: updateError } = await supabase
+      .from('support_tickets')
+      .update(update)
+      .eq('id', before.id)
+      .select('*')
+      .single();
+
+    if (updateError) throw updateError;
+
+    await auditAdminAction(req, {
+      action: 'support_ticket_status_update',
+      targetType: 'support_ticket',
+      targetId: after.ticket_id,
+      beforeState: before,
+      afterState: after,
+      metadata: { source: 'admin_dashboard' },
+    });
+
+    res.status(200).json({ success: true, data: after });
   } catch (error) {
     next(error);
   }

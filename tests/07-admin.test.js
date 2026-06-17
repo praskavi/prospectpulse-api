@@ -3,8 +3,10 @@ import request from 'supertest';
 import { app } from '../src/app.js';
 import {
   ADMIN_USER,
+  cleanupSupportTickets,
   getMagicLinkToken,
   getToken,
+  seedSupportTicket,
   TEST_USERS,
 } from './helpers.js';
 
@@ -12,10 +14,18 @@ describe('07 - Admin dashboard API', () => {
   let adminToken;
   let nonAdminToken;
   let existingSearch;
+  let supportTicket;
 
   beforeAll(async () => {
     adminToken = await getMagicLinkToken(ADMIN_USER.email);
     nonAdminToken = await getToken(TEST_USERS.free.email);
+    await cleanupSupportTickets('@prospectpulse.test');
+    supportTicket = await seedSupportTicket({
+      email: 'support-admin-test@prospectpulse.test',
+      subject: 'Billing support admin test',
+      category: 'billing',
+      priority: 'high',
+    });
   });
 
   it('rejects an invalid token before admin checks', async () => {
@@ -57,6 +67,9 @@ describe('07 - Admin dashboard API', () => {
     }));
     expect(res.body.data.webhooks).toEqual(expect.objectContaining({
       failedLast24h: expect.any(Number),
+    }));
+    expect(res.body.data.support).toEqual(expect.objectContaining({
+      open: expect.any(Number),
     }));
     expect(Array.isArray(res.body.data.recentFailedSearches)).toBe(true);
     expect(Array.isArray(res.body.data.recentTransactions)).toBe(true);
@@ -226,6 +239,60 @@ describe('07 - Admin dashboard API', () => {
     for (const event of res.body.data) {
       expect(event.status).toBe('failed');
     }
+  });
+
+  it('GET /api/admin/support-tickets returns paged support tickets', async () => {
+    const res = await request(app)
+      .get('/api/admin/support-tickets?limit=5')
+      .set('Authorization', `Bearer ${adminToken}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(Array.isArray(res.body.data)).toBe(true);
+    expect(res.body.meta).toEqual(expect.objectContaining({
+      page: 1,
+      limit: 5,
+      total: expect.any(Number),
+    }));
+  });
+
+  it('GET /api/admin/support-tickets supports status and email filters', async () => {
+    const res = await request(app)
+      .get('/api/admin/support-tickets?status=open&email=support-admin-test&limit=10')
+      .set('Authorization', `Bearer ${adminToken}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.data.length).toBeGreaterThanOrEqual(1);
+    for (const ticket of res.body.data) {
+      expect(ticket.status).toBe('open');
+      expect(ticket.email).toContain('support-admin-test');
+    }
+  });
+
+  it('GET /api/admin/support-tickets/:id returns support ticket details', async () => {
+    const res = await request(app)
+      .get(`/api/admin/support-tickets/${supportTicket.ticket_id}`)
+      .set('Authorization', `Bearer ${adminToken}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.data).toEqual(expect.objectContaining({
+      ticket_id: supportTicket.ticket_id,
+      subject: 'Billing support admin test',
+    }));
+  });
+
+  it('PATCH /api/admin/support-tickets/:id updates support ticket status', async () => {
+    const res = await request(app)
+      .patch(`/api/admin/support-tickets/${supportTicket.ticket_id}`)
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ status: 'resolved' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.data.status).toBe('resolved');
+    expect(res.body.data.resolved_at).toBeTruthy();
   });
 
   it('GET /api/admin/system/health returns API and database status', async () => {
