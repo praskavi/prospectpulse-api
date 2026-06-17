@@ -88,6 +88,12 @@ Health check:
 http://localhost:3000/health
 ```
 
+Production readiness smoke test:
+
+```text
+docs/production-smoke-test.md
+```
+
 ## Supabase Auth Redirect URLs
 
 In Supabase Dashboard, add these under **Authentication > URL Configuration > Redirect URLs**:

@@ -666,6 +666,7 @@ Implemented documentation:
 - `BILLING_FINDINGS_AND_LEARNINGS.md`
 - `docs/admin-dashboard-requirements.md`
 - `docs/admin-operating-manual.md`
+- `docs/production-smoke-test.md`
 - `docs/PRODUCT_REQUIREMENTS.md`
 - `docs/adr/`
 
@@ -751,7 +752,7 @@ Before charging real customers in production:
 7. Schedule `npm run alerts:scan`.
 8. Verify Gmail/support notification deliverability.
 9. Run `npm test`.
-10. Run manual smoke tests for signup, search, unlock, checkout, cancellation, admin, support, and alerts.
+10. Run the production smoke test in `docs/production-smoke-test.md`.
 11. Review privacy, terms, refund, acceptable use, and data handling pages.
 12. Confirm admin user access and non-admin denial.
 
@@ -759,6 +760,7 @@ Before charging real customers in production:
 
 | Date | Change |
 | --- | --- |
+| 2026-06-17 | Added production deployment readiness smoke-test runbook. |
 | 2026-06-17 | Added operational alert scanning, admin alert visibility, and optional n8n alert forwarding. |
 | 2026-06-17 | Added customer support ticket visibility to support feature scope. |
 | 2026-06-17 | Created PRD and documented implemented auth, credits, search, billing, admin, support, compliance, and test suite features. |
