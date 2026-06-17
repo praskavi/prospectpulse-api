@@ -1,10 +1,22 @@
 import express from 'express';
-import { createSearch, getSearchResults, listSearches } from '../controllers/searches.controller.js';
+import { validateRequest } from '../middleware/validateRequest.js';
+import {
+  createSearch,
+  getSearchResults,
+  listSearches,
+  unlockContact,
+} from '../controllers/searches.controller.js';
+import {
+  createSearchSchema,
+  listSearchesQuerySchema,
+  searchIdParamSchema,
+} from '../schemas/search.schema.js';
 
 const router = express.Router();
 
-router.get('/searches', listSearches);
-router.get('/searches/:id/results', getSearchResults);
-router.post('/searches', createSearch);
+router.get('/searches', validateRequest(listSearchesQuerySchema), listSearches);
+router.get('/searches/:id/results', validateRequest(searchIdParamSchema), getSearchResults);
+router.post('/searches', validateRequest(createSearchSchema), createSearch);
+router.post('/search-results/:id/unlock', validateRequest(searchIdParamSchema), unlockContact);
 
 export default router;

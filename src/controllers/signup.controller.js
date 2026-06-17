@@ -136,6 +136,12 @@ export async function getMe(req, res, next) {
     // Prevent browser caching — credits change after every scan.
     res.set('Cache-Control', 'no-store');
 
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('free_plan_eligible_at, subscription_cancelled_at, subscription_cancel_at, last_paid_plan_code')
+      .eq('id', req.user.id)
+      .maybeSingle();
+
     res.status(200).json({
       success: true,
       data: {
@@ -143,6 +149,10 @@ export async function getMe(req, res, next) {
         email:   req.user.email,
         plan:    req.user.plan,
         credits: req.user.credits,
+        freePlanEligibleAt: profile?.free_plan_eligible_at || null,
+        subscriptionCancelledAt: profile?.subscription_cancelled_at || null,
+        subscriptionCancelAt: profile?.subscription_cancel_at || null,
+        lastPaidPlan: profile?.last_paid_plan_code || null,
       },
     });
   } catch (error) {
@@ -162,6 +172,25 @@ export async function logoutUser(req, res, next) {
       status: 'success',
       message: 'Logged out',
     });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getTransactions(req, res, next) {
+  try {
+    res.set('Cache-Control', 'no-store');
+
+    const { data, error } = await supabase
+      .from('credit_transactions')
+      .select('id, transaction_type, credits, description, created_at')
+      .eq('user_id', req.user.id)
+      .order('created_at', { ascending: false })
+      .limit(20);
+
+    if (error) throw error;
+
+    res.status(200).json({ success: true, data: data ?? [] });
   } catch (error) {
     next(error);
   }

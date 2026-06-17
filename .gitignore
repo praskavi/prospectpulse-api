@@ -48,3 +48,16 @@ test-results/
 *.tsv
 *.xls
 *.xlsx
+
+# Local AI/tooling workspace files
+.agents/
+.claude/
+.rovodev/
+skills/
+skills-lock.json
+
+# Local screenshots and image captures
+*.png
+*.jpg
+*.jpeg
+*.webp

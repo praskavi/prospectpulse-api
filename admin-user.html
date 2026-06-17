@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>ProspectPulse Admin - User</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .admin-shell { position: relative; z-index: 1; max-width: 1180px; margin: 0 auto; padding: 28px 24px 72px; }
+    .admin-header { display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; margin-bottom: 22px; }
+    .admin-kicker { font-size: 11px; text-transform: uppercase; letter-spacing: .12em; color: var(--text3); margin-bottom: 6px; }
+    .admin-title { font-size: 26px; font-weight: 750; letter-spacing: 0; overflow-wrap: anywhere; }
+    .admin-subtitle { margin-top: 6px; color: var(--text2); font-size: 13px; }
+    .admin-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 18px; }
+    .admin-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; min-width: 0; }
+    .admin-card-label { color: var(--text3); text-transform: uppercase; letter-spacing: .08em; font-size: 10px; margin-bottom: 6px; }
+    .admin-card-value { font-size: 20px; font-weight: 760; color: var(--text); overflow-wrap: anywhere; }
+    .admin-card-sub { color: var(--text3); font-size: 11px; margin-top: 4px; overflow-wrap: anywhere; }
+    .admin-panel { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; margin-bottom: 16px; }
+    .admin-panel-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 16px; border-bottom: 1px solid var(--border); }
+    .admin-panel-title { font-weight: 680; font-size: 14px; }
+    .admin-panel-tools { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .admin-btn { border: 1px solid var(--border2); background: rgba(255,255,255,.04); color: var(--text2); border-radius: 7px; padding: 8px 12px; font: inherit; font-size: 12px; cursor: pointer; }
+    .admin-btn:hover { border-color: var(--accent2); color: var(--text); }
+    .admin-table-wrap { width: 100%; overflow-x: auto; }
+    .admin-table { width: 100%; border-collapse: collapse; }
+    .admin-table th { cursor: default; }
+    .admin-table td, .admin-table th { padding: 10px 12px; white-space: nowrap; }
+    .admin-table td.wrap-cell { white-space: normal; min-width: 260px; }
+    .admin-id { font-family: Consolas, 'Courier New', monospace; color: var(--text3); font-size: 11px; }
+    .admin-state { padding: 18px 16px; color: var(--text2); font-size: 13px; }
+    .admin-state.error { color: #fca5a5; }
+    .admin-muted { color: var(--text3); }
+    .admin-link { color: var(--accent2); cursor: pointer; text-decoration: none; }
+    .admin-link:hover { text-decoration: underline; }
+    .status-pill { display: inline-flex; align-items: center; border-radius: 999px; padding: 3px 8px; font-size: 11px; font-weight: 650; border: 1px solid var(--border); }
+    .pill-free { color: #a3a3a3; background: rgba(255,255,255,.06); }
+    .pill-starter { color: #93c5fd; background: rgba(59,130,246,.12); }
+    .pill-growth { color: #6ee7b7; background: rgba(16,185,129,.12); }
+    .pill-failed { color: #fca5a5; background: rgba(239,68,68,.12); }
+    .pill-running { color: #fdba74; background: rgba(249,115,22,.12); }
+    .pill-completed { color: #6ee7b7; background: rgba(16,185,129,.12); }
+    @media (max-width: 980px) { .admin-grid { grid-template-columns: repeat(2, 1fr); } .admin-header { align-items: flex-start; flex-direction: column; } }
+    @media (max-width: 560px) { .admin-grid { grid-template-columns: 1fr; } .admin-panel-header { align-items: flex-start; flex-direction: column; } }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-inner">
+      <a href="admin.html" class="logo">
+        <div class="logo-icon">PP</div>
+        <span class="logo-text">Prospect<span>Pulse</span></span>
+        <span class="logo-badge">Admin</span>
+      </a>
+      <div class="nav-actions">
+        <button class="admin-btn" onclick="window.location.href='admin.html'">Back to Admin</button>
+        <button class="admin-btn" onclick="logout()">Sign Out</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="admin-shell">
+    <div class="admin-header">
+      <div>
+        <div class="admin-kicker">User Detail</div>
+        <h1 class="admin-title" id="title">Loading user...</h1>
+        <p class="admin-subtitle" id="subtitle">Reading protected admin data.</p>
+      </div>
+      <button class="admin-btn" onclick="loadUser()">Refresh</button>
+    </div>
+    <section id="content"><div class="admin-panel"><div class="admin-state">Loading...</div></div></section>
+  </main>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const userId = params.get('id');
+
+    function token() { return localStorage.getItem('pp_access_token'); }
+    function authHeaders() { return token() ? { Authorization: `Bearer ${token()}` } : {}; }
+    function logout() {
+      localStorage.removeItem('pp_access_token');
+      localStorage.removeItem('pp_refresh_token');
+      localStorage.removeItem('pp_user_email');
+      localStorage.removeItem('pp_user_id');
+      window.location.href = 'login.html';
+    }
+    function esc(s) {
+      return String(s ?? '')
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+    function fmt(n) { return Number(n || 0).toLocaleString(); }
+    function date(s) { return s ? new Date(s).toLocaleString('en-AU', { dateStyle: 'medium', timeStyle: 'short' }) : '-'; }
+    function pill(value) {
+      const v = String(value || 'unknown');
+      return `<span class="status-pill pill-${esc(v)}">${esc(v)}</span>`;
+    }
+    function card(label, value, sub = '') {
+      return `<div class="admin-card"><div class="admin-card-label">${esc(label)}</div><div class="admin-card-value">${esc(value)}</div><div class="admin-card-sub">${esc(sub)}</div></div>`;
+    }
+    function table(headers, rows, empty = 'No rows found.') {
+      if (!rows.length) return `<div class="admin-state">${esc(empty)}</div>`;
+      return `<div class="admin-table-wrap"><table class="admin-table"><thead><tr>${headers.map(h => `<th>${esc(h)}</th>`).join('')}</tr></thead><tbody>${rows.join('')}</tbody></table></div>`;
+    }
+    function searchLink(searchId) {
+      return searchId ? `<a class="admin-link admin-id" href="admin-search.html?id=${encodeURIComponent(searchId)}">${esc(searchId)}</a>` : '-';
+    }
+    function stripeLink(customerId) {
+      if (!customerId) return '-';
+      const isLocal = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+      const prefix = isLocal ? 'https://dashboard.stripe.com/test/customers/' : 'https://dashboard.stripe.com/customers/';
+      return `<a class="admin-link admin-id" href="${prefix}${encodeURIComponent(customerId)}" target="_blank" rel="noopener">${esc(customerId)}</a>`;
+    }
+    async function copyText(text) {
+      if (!text) return;
+      await navigator.clipboard.writeText(text);
+    }
+    async function api(path) {
+      const res = await fetch(`/api/admin${path}`, { headers: authHeaders() });
+      const json = await res.json().catch(() => ({}));
+      if (res.status === 401) { logout(); return null; }
+      if (res.status === 403) throw new Error(json.message || 'Admin access required.');
+      if (!res.ok) throw new Error(json.message || `HTTP ${res.status}`);
+      return json.data;
+    }
+    function errorView(error) {
+      document.getElementById('content').innerHTML = `<div class="admin-panel"><div class="admin-state error">${esc(error.message || error)}</div></div>`;
+    }
+    async function loadUser() {
+      if (!token()) { logout(); return; }
+      if (!userId) { errorView('Missing user id.'); return; }
+      document.getElementById('content').innerHTML = '<div class="admin-panel"><div class="admin-state">Loading...</div></div>';
+      try {
+        const data = await api(`/users/${encodeURIComponent(userId)}`);
+        const profile = data.profile;
+        document.getElementById('title').textContent = profile.email || profile.id;
+        document.getElementById('subtitle').textContent = `${profile.id}`;
+
+        const cards = [
+          card('Plan', profile.plan_code || '-', `last paid: ${profile.last_paid_plan_code || '-'}`),
+          card('Credits', fmt(profile.credits_remaining), 'current balance'),
+          card('Stripe Customer', profile.stripe_customer_id || '-', 'open from support links'),
+          card('Free Eligible', date(profile.free_plan_eligible_at), 'cancellation or trial lockout'),
+        ].join('');
+
+        const searches = (data.searches || []).map(s => `<tr>
+          <td>${searchLink(s.id)}</td>
+          <td>${esc(s.business_category)}</td>
+          <td>${esc(s.location)}</td>
+          <td>${pill(s.search_status)}</td>
+          <td>${fmt(s.estimated_credits)}</td>
+          <td>${fmt(s.actual_credits)}</td>
+          <td>${fmt(s.businesses_found)}</td>
+          <td>${date(s.created_at)}</td>
+        </tr>`);
+
+        const transactions = (data.transactions || []).map(t => `<tr>
+          <td>${pill(t.transaction_type)}</td>
+          <td class="${t.credits < 0 ? 'ch-credits-neg' : 'ch-credits-pos'}">${fmt(t.credits)}</td>
+          <td class="wrap-cell">${esc(t.description)}</td>
+          <td>${t.related_search_id ? searchLink(t.related_search_id) : '-'}</td>
+          <td>${date(t.created_at)}</td>
+        </tr>`);
+
+        document.getElementById('content').innerHTML = `
+          <div class="admin-grid">${cards}</div>
+          <div class="admin-panel">
+            <div class="admin-panel-header">
+              <div class="admin-panel-title">Support Links</div>
+              <div class="admin-panel-tools">
+                <button class="admin-btn" onclick="copyText('${esc(profile.id)}')">Copy User ID</button>
+                ${profile.stripe_customer_id ? `<button class="admin-btn" onclick="copyText('${esc(profile.stripe_customer_id)}')">Copy Stripe ID</button>` : ''}
+              </div>
+            </div>
+            <div class="admin-state">
+              Email: ${esc(profile.email || '-')}<br>
+              User ID: <span class="admin-id">${esc(profile.id)}</span><br>
+              Stripe customer: ${stripeLink(profile.stripe_customer_id)}<br>
+              Cancelled at: ${date(profile.subscription_cancelled_at)}<br>
+              Scheduled cancel: ${date(profile.subscription_cancel_at)}
+            </div>
+          </div>
+          <div class="admin-panel"><div class="admin-panel-header"><div class="admin-panel-title">Recent Searches</div><div class="admin-muted">${data.searches.length} loaded</div></div>${table(['Search ID','Category','Location','Status','Estimated','Actual','Businesses','Created'], searches)}</div>
+          <div class="admin-panel"><div class="admin-panel-header"><div class="admin-panel-title">Recent Credit Transactions</div><div class="admin-muted">${data.transactions.length} loaded</div></div>${table(['Type','Credits','Description','Search','Created'], transactions)}</div>
+        `;
+      } catch (error) {
+        errorView(error);
+      }
+    }
+
+    loadUser();
+  </script>
+</body>
+</html>

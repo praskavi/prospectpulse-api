@@ -141,6 +141,62 @@ If n8n or Apify returns an error and zero results are written to `search_results
 | Search history retention | 7 days | 30 days | 90 days |
 | Saved searches | 0 | 5 | 10 |
 
+### Free plan re-entry after cancellation
+
+If a user schedules a paid Stripe subscription to cancel at period end or on a
+future custom date, keep the user's current paid plan and credits unchanged.
+Record the scheduled cancellation timestamp in `subscription_cancel_at`.
+
+Only `customer.subscription.deleted` is treated as the actual cancellation. When
+that event arrives, the account is downgraded to the Free permission tier, but the
+Free credit bundle is not granted again for 30 days.
+
+Scheduled cancellation handling must:
+- Leave `plan_code` unchanged
+- Leave `credits_remaining` unchanged
+- Set `subscription_cancel_at` to Stripe's scheduled cancellation timestamp
+
+Actual cancellation handling must:
+- Set `plan_code = 'free'`
+- Set `credits_remaining = 0`
+- Set `subscription_cancelled_at` to the cancellation timestamp
+- Clear `subscription_cancel_at`
+- Set `free_plan_eligible_at = subscription_cancelled_at + 30 days`
+- Record the last paid plan in `last_paid_plan_code`
+
+This prevents a user from cancelling a paid plan and immediately receiving a new
+100-credit Free allocation with the same account.
+
+### Free trial enrollment
+
+Free trial credits are granted once per normalized email address per 30 days at
+profile enrollment time.
+
+Enrollment handling must:
+- Create the profile on the Free plan
+- Grant 100 Free credits only if the email has no Free trial enrollment in the
+  previous 30 days
+- Set `free_trial_started_at` to the grant timestamp
+- Set `free_trial_eligible_at = free_trial_started_at + 30 days`
+- Record the normalized email in `free_trial_enrollments`
+
+If the same email enrolls again before `free_trial_eligible_at`, create the Free
+profile with `credits_remaining = 0`.
+
+### Plan upgrades and downgrades
+
+Free users can upgrade to Starter or Growth through Stripe Checkout.
+
+Starter users can upgrade to Growth. When Starter is upgraded to Growth, the
+user's remaining Starter balance is added to the Growth credit allocation.
+Example: a Starter user with 600 credits upgrades to Growth and receives
+600 + 4,000 = 4,600 credits.
+
+Growth users can downgrade to Starter. When Growth is downgraded to Starter,
+the user's credits reset to the Starter allocation. No Growth credit balance
+rolls over into Starter. Example: a Growth user with 2,500 credits downgrades
+to Starter and receives 1,000 Starter credits.
+
 Plan limits are enforced in two layers:
 - **Frontend** — UI disables or hides controls not available to the plan
 - **Backend** — `normalizeSearchPayload()` in `searches.service.js` clamps or rejects requests that exceed plan limits, regardless of what the frontend sent
@@ -162,7 +218,7 @@ The following rules apply once Stripe integration is built:
 
 ### Subscription credit top-up
 - Credits are granted at the start of each billing cycle
-- Unused credits do not roll over to the next month (except Growth plan, TBD)
+- Unused credits do not automatically roll over to the next month unless a specific top-up or plan-change rule says so
 - Credits are granted immediately on successful Stripe payment
 
 ### Credit top-up packs
@@ -170,8 +226,8 @@ The following rules apply once Stripe integration is built:
 - Top-up credits do not expire within the current billing period
 
 ### Subscription downgrade
-- If a user downgrades (Growth → Starter), excess credits are not removed immediately
-- Credits are capped at the new plan's monthly allowance on the next renewal
+- If a user downgrades from Growth to Starter, credits reset immediately to the Starter allocation
+- No Growth credit balance rolls over into Starter
 - Search history and results are not retroactively deleted on downgrade
 
 ### Subscription expiry / cancellation

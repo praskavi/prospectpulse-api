@@ -151,6 +151,31 @@
     }
 
     /* ── SPINNER ── */
+    .plan-intent {
+      display: none;
+      margin-bottom: 18px;
+      padding: 12px 14px;
+      border: 1px solid rgba(249,115,22,0.25);
+      border-radius: 10px;
+      background: rgba(249,115,22,0.08);
+      color: var(--text2);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    .plan-intent strong { color: var(--text1); }
+    .terms-note {
+      margin-top: 12px;
+      color: var(--text3);
+      font-size: 11px;
+      line-height: 1.55;
+      text-align: center;
+    }
+    .terms-note a,
+    .auth-footer a {
+      color: var(--orange);
+      text-decoration: none;
+    }
+
     .spinner-sm {
       display: inline-block; width: 14px; height: 14px; border-radius: 50%;
       border: 2px solid rgba(255,255,255,0.3);
@@ -176,6 +201,7 @@
 
     <!-- Alert -->
     <div class="alert" id="alert"></div>
+    <div class="plan-intent" id="planIntent"></div>
 
     <!-- LOGIN FORM -->
     <div id="loginForm">
@@ -221,6 +247,9 @@
       </div>
 
       <button class="btn-submit" id="signupBtn" onclick="handleSignup()">Create Account</button>
+      <div class="terms-note">
+        By creating an account you agree to the <a href="terms.html">Terms</a>, <a href="privacy.html">Privacy Policy</a>, and <a href="acceptable-use.html">Acceptable Use Policy</a>.
+      </div>
 
       <div class="switch-link">
         Already have an account? <a onclick="switchTab('login')">Sign in</a>
@@ -228,14 +257,22 @@
     </div>
   </div>
 
-  <div class="auth-footer">ProspectPulse · AI-powered lead generation</div>
+  <div class="auth-footer">
+    ProspectPulse · AI-powered lead generation<br />
+    <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="refund.html">Refunds</a> · <a href="contact.html">Support</a>
+  </div>
 
   <script>
     const API = 'http://localhost:3000/api';
+    const params = new URLSearchParams(window.location.search);
+    const requestedPlan = ['starter', 'growth'].includes(params.get('plan')) ? params.get('plan') : '';
+    const requestedMode = params.get('mode');
+    if (requestedPlan) localStorage.setItem('pp_pending_plan', requestedPlan);
 
     // ── If already logged in, go straight to app ──
     if (localStorage.getItem('pp_access_token')) {
-      window.location.href = 'app.html';
+      const pendingPlan = localStorage.getItem('pp_pending_plan');
+      window.location.href = pendingPlan ? `upgrade.html?plan=${encodeURIComponent(pendingPlan)}` : 'app.html';
     }
 
     function switchTab(tab) {
@@ -265,6 +302,20 @@
       btn.innerHTML = loading
         ? `<span class="spinner-sm"></span> Please wait…`
         : btn.id === 'loginBtn' ? 'Sign In' : 'Create Account';
+    }
+
+    function nextUrlAfterLogin() {
+      const pendingPlan = localStorage.getItem('pp_pending_plan');
+      return pendingPlan ? `upgrade.html?plan=${encodeURIComponent(pendingPlan)}` : 'app.html';
+    }
+
+    function renderPlanIntent() {
+      const plan = requestedPlan || localStorage.getItem('pp_pending_plan');
+      const el = document.getElementById('planIntent');
+      if (!plan || !el) return;
+      const label = plan === 'growth' ? 'Growth' : 'Starter';
+      el.style.display = 'block';
+      el.innerHTML = `<strong>${label} selected.</strong> Sign in or create an account, then you will continue to secure Stripe checkout.`;
     }
 
     async function handleLogin() {
@@ -299,7 +350,7 @@
         localStorage.setItem('pp_user_email',    user.email);
         localStorage.setItem('pp_user_id',       user.id);
 
-        window.location.href = 'app.html';
+        window.location.href = nextUrlAfterLogin();
       } catch (err) {
         showAlert('error', 'Could not connect to server. Is it running?');
       } finally {
@@ -327,7 +378,9 @@
 
         if (!res.ok) { showAlert('error', data.message || 'Signup failed.'); return; }
 
-        showAlert('success', 'Account created! Check your email. The confirmation link will open the app.');
+        showAlert('success', requestedPlan
+          ? 'Account created! Confirm your email, then sign in to continue to your selected plan.'
+          : 'Account created! Check your email. The confirmation link will open the app.');
         setTimeout(() => switchTab('login'), 2000);
       } catch (err) {
         showAlert('error', 'Could not connect to server. Is it running?');
@@ -375,6 +428,9 @@
       if (loginVisible) handleLogin();
       else handleSignup();
     });
+
+    renderPlanIntent();
+    if (requestedMode === 'signup') switchTab('signup');
   </script>
 </body>
 </html>

@@ -117,6 +117,7 @@
     .task-card:hover { border-color: rgba(124,110,248,0.4); }
     .task-card.done-card { opacity: 0.55; }
     .task-top { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 8px; }
+    .task-num { font-size: 10px; font-weight: 700; color: var(--muted); background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 2px 6px; flex-shrink: 0; margin-top: 1px; font-family: monospace; }
     .task-icon { font-size: 18px; flex-shrink: 0; }
     .task-title { font-size: 13px; font-weight: 600; line-height: 1.4; flex: 1; }
     .priority-pip { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
@@ -240,12 +241,24 @@
 
     <!-- IMMEDIATE NEXT -->
     <div class="next-banner">
-      <h3>🎯 Do This Right Now</h3>
+      <h3>🚀 Up Next — M5 Launch Prep</h3>
       <div class="next-steps">
-        <div class="next-step"><div class="step-num">1</div><div class="step-text">Open n8n → reselect the <strong>Apify credential</strong> in the draft workflow after MCP updates → publish with <code>responseMode: onReceived</code></div></div>
-        <div class="next-step"><div class="step-num">2</div><div class="step-text">Restart Express: <code>npm run dev</code> in VS Code terminal</div></div>
-        <div class="next-step"><div class="step-num">3</div><div class="step-text">Run a test search from <code>app.html</code> → confirm the UI polls <code>/api/searches/:id/results</code> and displays results</div></div>
-        <div class="next-step"><div class="step-num">4</div><div class="step-text">After end-to-end works: write the <strong>30-day cleanup pg_cron job</strong> in Supabase SQL Editor</div></div>
+        <div class="next-step"><div class="step-num">1</div><div class="step-text"><strong>Public landing page</strong> — marketing page with pricing, feature comparison, and sign-up CTA. Required before any organic discovery.</div></div>
+        <div class="next-step"><div class="step-num">2</div><div class="step-text"><strong>CSV / CRM export</strong> — every B2B lead gen buyer asks for this on day one. Export unlocked contacts to CSV from the search results view.</div></div>
+        <div class="next-step"><div class="step-num">3</div><div class="step-text"><strong>Email notifications</strong> — search complete, credits running low (&lt;10%), subscription confirmation. Use Resend or SendGrid.</div></div>
+        <div class="next-step"><div class="step-num">4</div><div class="step-text"><strong>Privacy policy + data disclosure</strong> — Australian Privacy Act compliance required before charging real money. Required for Stripe live mode too.</div></div>
+      </div></div>
+        <div class="next-step"><div class="step-num">2</div><div class="step-text"><strong>Test initial checkout</strong> — Free → Starter with card 4242. Verify BullMQ worker processes event, plan_code and credits_remaining update in Supabase (t-m4-2)</div></div>
+        <div class="next-step"><div class="step-num">3</div><div class="step-text"><strong>Test upgrade + downgrade</strong> — Starter → Growth (inline sub update, credits = 4000), then Growth → Starter (credit rollover, credits preserved) (t-m4-3, t-m4-4)</div></div>
+        <div class="next-step"><div class="step-num">4</div><div class="step-text"><strong>Test cancellation + credit enforcement</strong> — cancel via portal, verify credits → 0, lockout date set, 402 on search/unlock with 0 credits (t-m4-5)</div></div>
+      </div></div>
+        <div class="next-step"><div class="step-num">2</div><div class="step-text"><strong>Repair truncated files</strong> — <code>billing.controller.js</code> (line 224, missing createPortalSession) and <code>authMiddleware.js</code> (line 95, missing requireAuth export). Both caused by VS Code truncation bug (t-m4-2)</div></div>
+        <div class="next-step"><div class="step-num">3</div><div class="step-text"><strong>Confirm .env has Stripe + Redis keys</strong> — <code>STRIPE_SECRET_KEY</code>, <code>STRIPE_WEBHOOK_SECRET</code>, <code>STRIPE_PRICE_STARTER</code>, <code>STRIPE_PRICE_GROWTH</code>, <code>REDIS_URL</code> (t-m4-3)</div></div>
+        <div class="next-step"><div class="step-num">4</div><div class="step-text"><strong>Run full billing test suite</strong> — initial checkout, Free→Starter→Growth upgrade, Growth→Starter downgrade (credit rollover), subscription cancel, credit enforcement on search/unlock (t-m4-4, t-m4-5)</div></div>
+      </div></div>
+        <div class="next-step"><div class="step-num">2</div><div class="step-text"><strong>pg_cron cleanup</strong> — write the nightly DELETE job in Supabase SQL Editor for searches/results past their <code>expires_at</code> (t-m2-2)</div></div>
+        <div class="next-step"><div class="step-num">3</div><div class="step-text"><strong>M4 scaffold</strong> — <code>npx create-next-app@latest prospectpulse-web --typescript --tailwind --app</code> → migrate landing page first, then app dashboard as React components</div></div>
+        <div class="next-step"><div class="step-num">4</div><div class="step-text"><strong>Switch Stripe to live mode</strong> — swap <code>sk_test_</code> → <code>sk_live_</code> keys and live Price IDs when ready to accept real payments</div></div>
       </div>
     </div>
 
@@ -355,45 +368,49 @@ const milestones = [
     desc: 'End-to-end flow tested and stable. Plan limits enforced. 30-day cleanup running. Users can complete the full Search → Results journey.',
     tasks: [
       { id: 't-m1-1', icon: '⚡', title: 'Publish n8n workflow (responseMode: onReceived)', tags: ['n8n'], priority: 'now', desc: 'Reselect Apify credential in draft after MCP updates, then publish. Sets workflow to respond immediately so Express doesn\'t timeout.', file: 'n8n dashboard', learn: 'responseMode: onReceived — n8n returns instantly, results come via webhook/poll' },
-      { id: 't-m1-2', icon: '⚡', title: 'Test end-to-end: app.html → Express → n8n → Apify → Supabase', tags: ['n8n', 'backend', 'frontend'], priority: 'now', desc: 'Run a live search. Confirm search row created, n8n fires, Apify runs, results land in search_results, frontend polls and displays cards.', file: 'app.html', learn: 'Full stack debugging — read server logs, Supabase logs, n8n execution history' },
+      { id: 't-m1-2', icon: '⚡', title: 'Test end-to-end: app.html → Express → n8n → Apify → Supabase', tags: ['n8n', 'backend', 'frontend'], priority: 'now', desc: 'Set DEV_STUB=false then run a live search. Confirm search row created, n8n fires, Apify runs, results land in search_results, frontend polls and displays cards.', file: 'app.html + .env', learn: 'Full stack debugging — read server logs, Supabase logs, n8n execution history' },
       { id: 't-m1-3', icon: '⚡', title: 'Write 30-day cleanup pg_cron job', tags: ['db'], priority: 'now', desc: 'Enable pg_cron extension. Schedule nightly DELETE on searches and search_results WHERE expires_at < now(). Cascade handles search_results automatically.', file: 'Supabase SQL Editor', learn: 'pg_cron — PostgreSQL scheduled jobs. CASCADE DELETE — parent deletion removes children' },
-      { id: 't-m1-4', icon: '📋', title: 'Add plan-limit enforcement to backend', tags: ['backend'], priority: 'high', desc: 'Validate max_results, business_category term count, people enrichment per plan tier. Enforce in Express, not just frontend.', file: 'src/middleware/planLimits.js', learn: 'Middleware as a gatekeeper — apply rules before the route handler runs' },
-      { id: 't-m1-5', icon: '📋', title: 'Display search_results as business cards (V3 spec)', tags: ['frontend'], priority: 'high', desc: 'Replace the results table with cards. Show company name, rating, city, phone, website. Hide email/owner/LinkedIn until unlocked.', file: 'app.html / app.js', learn: 'DOM manipulation — rendering data as HTML cards from a JS array' },
-      { id: 't-m1-6', icon: '📋', title: 'Build credit estimator (CRITICAL)', tags: ['frontend'], priority: 'high', desc: 'Live estimate before search runs. Show businesses × 1 credit + contacts × 5 credits = total. Updates as user changes max_results and options.', file: 'app.html', learn: 'Event listeners + live calculation — updating UI as inputs change' },
+      { id: 't-m1-4', icon: '✅', title: 'Add plan-limit enforcement to backend', tags: ['backend'], priority: 'high', desc: 'normalizeSearchPayload() in searches.service.js enforces max_results, categoryTerms, scrapeContacts, maxLeadsPerPlace per plan tier. Throws 403 if plan limit exceeded.', file: 'src/services/searches.service.js', learn: 'Middleware as a gatekeeper — apply rules before the route handler runs' },
+      { id: 't-m1-5', icon: '✅', title: 'Display search_results as business cards', tags: ['frontend'], priority: 'high', desc: 'Business cards with avatar initials, rating stars, category badge, phone/website/location. Unlock button with credit cost shown per card.', file: 'app.html / script.js', learn: 'DOM manipulation — rendering data as HTML cards from a JS array' },
+      { id: 't-m1-6', icon: '✅', title: 'Build credit estimator', tags: ['frontend'], priority: 'high', desc: 'Live credit estimate updates as user changes max_results and enrichment toggles. Shows cost breakdown before search runs.', file: 'script.js → updateCreditEstimator()', learn: 'Event listeners + live calculation — updating UI as inputs change' },
       { id: 't-m1-7', icon: '📋', title: 'Add Zod request validation to Express', tags: ['backend'], priority: 'mid', desc: 'Validate search request body shape before hitting the database. Return 400 with clear field errors.', file: 'src/middleware/validate.js', learn: 'Zod schema validation — define shape once, validate everywhere' },
-      { id: 't-m1-8', icon: '📋', title: 'Add credit estimator results summary row', tags: ['frontend'], priority: 'mid', desc: 'Above results: "Businesses: 487 | Contacts available: 198 | Credits to unlock all: 990" as per V3 spec.', file: 'app.html', learn: 'Aggregating data client-side from an API response array' },
+      { id: 't-m1-8', icon: '✅', title: 'Add results summary stats row', tags: ['frontend'], priority: 'mid', desc: 'Stat chips above results grid: Businesses Found, LinkedIn Found, Emails Found, Contacts Found — populated from scan results.', file: 'app.html / script.js', learn: 'Aggregating data client-side from an API response array' },
+      { id: 't-m1-9', icon: '✅', title: 'Add DEV_STUB mode', tags: ['backend'], priority: 'mid', desc: 'DEV_STUB=true in .env skips n8n/Apify entirely. Inserts fake results from searchResults.stub.js after 2s delay. Full polling flow tested without real API costs.', file: 'src/services/searches.service.js + stubs/', learn: 'Stubbing external dependencies — develop and test without real API calls' },
+      { id: 't-m1-10', icon: '✅', title: 'Add search history section', tags: ['frontend'], priority: 'mid', desc: 'Past searches listed with status badge, business count, contacts count, and time ago. Click to re-open results.', file: 'app.html / script.js → loadSearchHistory()', learn: 'Fetching and rendering a list — map array to HTML' },
     ]
   },
   {
     id: 'm2', icon: '🔐', title: 'M2 — Auth & Users',
-    badge: 'upcoming', badgeClass: 'badge-upcoming',
-    desc: 'Supabase Auth login/signup. Protected Express routes. User profiles, subscriptions, and usage tracking tables live.',
+    badge: 'current', badgeClass: 'badge-current',
+    desc: 'Supabase Auth live. JWT-protected routes. Profiles auto-created on first login. Credits tracked and deducted per scan. Landing page with pricing complete.',
     tasks: [
-      { id: 't-m2-1', icon: '🔮', title: 'Create profiles, subscriptions, usage tables', tags: ['db'], priority: 'high', desc: 'Profiles extends auth.users. Subscriptions stores plan tier and status. Usage tracks credits consumed per billing period.', file: 'supabase/migrations/…004.sql', learn: 'Supabase Auth — auth.users is managed. profiles is your extension table (1:1 join)' },
-      { id: 't-m2-2', icon: '🔮', title: 'Add subscription expiry cleanup to pg_cron', tags: ['db'], priority: 'high', desc: 'Extend the nightly cron: delete searches for users whose subscription.period_end + 7 days < now(). 7-day grace period before deletion.', file: 'Supabase SQL Editor', learn: 'Grace period pattern — soft expiry before hard delete for better UX' },
-      { id: 't-m2-3', icon: '🔮', title: 'Enable Supabase Auth (email + password)', tags: ['auth'], priority: 'high', desc: 'Enable in Supabase dashboard. Set up email confirmation. Users can sign up, log in, reset password without any custom code.', file: 'Supabase dashboard → Auth', learn: 'Supabase Auth — JWTs issued automatically. anon key vs service role key' },
-      { id: 't-m2-4', icon: '🔮', title: 'Add Row Level Security policies', tags: ['db', 'auth'], priority: 'high', desc: 'Users can only read their own searches/results. n8n writes with service role key (bypasses RLS). Browser uses anon key (enforces RLS).', file: 'Supabase SQL Editor', learn: 'RLS — the database enforces ownership, not your application code' },
-      { id: 't-m2-5', icon: '🔮', title: 'Replace x-user-id header with JWT auth middleware', tags: ['backend', 'auth'], priority: 'high', desc: 'Remove the temporary DEV_USER_ID. Verify Supabase JWT on every protected route. Extract user id from token.', file: 'src/middleware/auth.js', learn: 'JWT verification — decode the token, extract claims, trust nothing else' },
-      { id: 't-m2-6', icon: '🔮', title: 'Build login / signup pages', tags: ['frontend', 'auth'], priority: 'high', desc: 'Simple login and signup forms using Supabase JS client. On success, store session and redirect to app.html.', file: 'login.html / signup.html', learn: 'Supabase JS client — supabase.auth.signUp(), signInWithPassword(), getSession()' },
-      { id: 't-m2-7', icon: '🔮', title: 'Add search history placeholder UI', tags: ['frontend'], priority: 'low', desc: 'V3 spec: sidebar showing past searches (Mortgage Brokers Melbourne · 487 businesses). List from GET /api/searches.', file: 'app.html', learn: 'Fetching and rendering a list — map array to HTML' },
+      { id: 't-m2-1', icon: '✅', title: 'Create profiles table + auto-create on first login', tags: ['db', 'auth'], priority: 'high', desc: 'ensureProfile() in authMiddleware auto-creates a profiles row on first authenticated request. Sets plan_code=starter, credits_remaining=1000 from PLAN_LIMITS.', file: 'src/middleware/authMiddleware.js → ensureProfile()', learn: 'Supabase Auth — auth.users is managed. profiles is your extension table (1:1 join)' },
+      { id: 't-m2-2', icon: '📋', title: 'Add subscription expiry cleanup to pg_cron', tags: ['db'], priority: 'mid', desc: 'Extend the nightly cron: delete searches for users whose subscription.period_end + 7 days < now(). 7-day grace period before deletion.', file: 'Supabase SQL Editor', learn: 'Grace period pattern — soft expiry before hard delete for better UX' },
+      { id: 't-m2-3', icon: '✅', title: 'Enable Supabase Auth (email + password + confirmation)', tags: ['auth'], priority: 'high', desc: 'Email/password signup with confirmation email. emailRedirectTo points to confirm.html which stores JWT in localStorage and redirects to app.html.', file: 'login.html / confirm.html', learn: 'Supabase Auth — JWTs issued automatically. anon key vs service role key' },
+      { id: 't-m2-4', icon: '✅', title: 'Fix RLS violation — two-client Supabase pattern', tags: ['db', 'auth', 'backend'], priority: 'high', desc: 'supabase-js v2 stores user session in memory after getUser(). Fixed by creating two separate clients: supabaseAuth (auth ops only) and supabase (DB ops only). All auth methods in signup.controller.js moved to supabaseAuth.', file: 'src/config/supabaseClient.js + src/controllers/signup.controller.js', learn: 'RLS — service role bypasses it, but only when no user session is set on the client instance' },
+      { id: 't-m2-5', icon: '✅', title: 'JWT auth middleware (requireAuth)', tags: ['backend', 'auth'], priority: 'high', desc: 'Verifies Supabase JWT via supabaseAuth.auth.getUser(token). Loads or creates profile. Sets req.user = { id, email, plan, credits }. Dev fallback via DEV_USER_ID.', file: 'src/middleware/authMiddleware.js', learn: 'JWT verification — decode the token, extract claims, trust nothing else' },
+      { id: 't-m2-6', icon: '✅', title: 'Build login / signup / confirm pages', tags: ['frontend', 'auth'], priority: 'high', desc: 'login.html: tabbed sign in / create account form. confirm.html: handles Supabase email redirect, stores JWT in localStorage, redirects to app.html. apiFetch() wrapper auto-redirects on 401.', file: 'login.html / confirm.html', learn: 'Supabase JS client — supabase.auth.signUp(), signInWithPassword(), getSession()' },
+      { id: 't-m2-7', icon: '✅', title: 'Credit deduction after scan', tags: ['backend', 'db'], priority: 'high', desc: 'deductCredits() reads profiles.credits_remaining, subtracts (results × 2), writes new balance. Called only after search is confirmed completed. Cache-Control: no-store on /api/me prevents stale browser cache.', file: 'src/services/searches.service.js → deductCredits()', learn: 'Atomic read-modify-write — fine for low concurrency MVP, use DB transactions at scale' },
+      { id: 't-m2-8', icon: '✅', title: 'Plan + credits account cards on app.html', tags: ['frontend'], priority: 'mid', desc: 'Two cards below hero: Current Plan (with badge) and Credits Remaining (with ↻ refresh button). fetchUserProfile() populates both on load and after each scan.', file: 'app.html / script.js / styles.css', learn: 'Cache-Control: no-store — prevents ETags causing stale API responses in the browser' },
+      { id: 't-m2-9', icon: '✅', title: 'Pricing + features section on landing page', tags: ['frontend'], priority: 'mid', desc: 'Features grid (6 cards) and pricing grid (Free / Starter / Growth) added to index.html. Matches plan limits in plans.js. Responsive — collapses to single column on mobile.', file: 'index.html / landing.css', learn: 'Marketing page vs app page — index.html is SEO-focused, app.html is functional dashboard' },
     ]
   },
   {
     id: 'm3', icon: '💳', title: 'M3 — Billing',
-    badge: 'upcoming', badgeClass: 'badge-upcoming',
+    badge: 'done', badgeClass: 'badge-done',
     desc: 'Stripe integration. Users can upgrade plans. Credits tracked and enforced per billing period.',
     tasks: [
-      { id: 't-m3-1', icon: '🔮', title: 'Set up Stripe products and prices', tags: ['billing'], priority: 'high', desc: 'Create Starter and Growth products in Stripe dashboard with monthly recurring prices. Note the price IDs — needed in code.', file: 'Stripe dashboard', learn: 'Stripe products vs prices — a product is what you sell, a price is how much' },
-      { id: 't-m3-2', icon: '🔮', title: 'Add Stripe Checkout to upgrade flow', tags: ['billing', 'backend'], priority: 'high', desc: 'Upgrade Plan button → Express creates a Stripe Checkout session → user pays → Stripe webhook updates subscriptions table.', file: 'src/routes/billing.routes.js', learn: 'Stripe Checkout — hosted payment page. Webhook — Stripe calls your server when payment completes' },
-      { id: 't-m3-3', icon: '🔮', title: 'Deduct credits on search and contact unlock', tags: ['backend', 'db'], priority: 'high', desc: 'On search: deduct 1 credit per result. On unlock: deduct 5 credits. Block action if credits < cost.', file: 'src/services/credits.service.js', learn: 'Atomic database operations — deduct and check in one transaction to prevent race conditions' },
-      { id: 't-m3-4', icon: '🔮', title: 'Show credit balance in header', tags: ['frontend'], priority: 'mid', desc: 'V3 spec: Credit widget always visible top-right. Fetches from GET /api/me/credits. Updates after each search.', file: 'app.html', learn: 'Polling vs reactive state — when to refresh data automatically' },
-      { id: 't-m3-5', icon: '🔮', title: 'Implement unlock contact flow', tags: ['frontend', 'backend'], priority: 'mid', desc: 'Unlock Contact button on each card → confirm 5 credits → POST /api/search-results/:id/unlock → reveal owner/email/LinkedIn.', file: 'app.html + src/routes/', learn: 'Optimistic UI vs confirmed UI — show unlock immediately or wait for server?' },
+      { id: 't-m3-1', icon: '✅', title: 'Install Stripe SDK and wire billing controller', tags: ['billing', 'backend'], priority: 'high', desc: 'npm install stripe. Created src/config/stripe.js, src/controllers/billing.controller.js (createCheckoutSession + handleWebhook), src/routes/billing.routes.js. Webhook registered before express.json() for raw body.', file: 'src/controllers/billing.controller.js', learn: 'Stripe webhook — raw body required. Must register route before express.json() middleware.' },
+      { id: 't-m3-2', icon: '✅', title: 'Add Stripe Checkout upgrade flow to app.html', tags: ['billing', 'frontend'], priority: 'high', desc: '"Upgrade Plan ↗" button on plan card. Calls POST /api/billing/checkout with target plan. Redirects to Stripe Checkout. billing-success.html handles post-payment return. stripe_customer_id column added to profiles via migration.', file: 'app.html + billing-success.html', learn: 'Stripe Checkout — hosted payment page. client_reference_id links session back to your user.' },
+      { id: 't-m3-3', icon: '✅', title: 'Configure Stripe products + env vars', tags: ['billing'], priority: 'high', desc: 'Created Starter ($29/mo) and Growth ($79/mo) products in Stripe dashboard. STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET, STRIPE_PRICE_STARTER, STRIPE_PRICE_GROWTH added to .env. Stripe CLI used for local webhook forwarding.', file: '.env', learn: 'Stripe products vs prices — a product is what you sell, a price is how much and how often.' },
+      { id: 't-m3-4', icon: '✅', title: 'Test end-to-end upgrade + webhook', tags: ['billing'], priority: 'high', desc: 'stripe listen → clicked Upgrade Plan → completed test payment → profiles.plan_code and credits_remaining updated in Supabase via checkout.session.completed webhook. Confirmed working.', file: 'Terminal + Supabase dashboard', learn: 'Stripe CLI webhook forwarding — tunnels Stripe events to your local server without ngrok.' },
+      { id: 't-m3-5', icon: '✅', title: 'Implement unlock contact flow', tags: ['frontend', 'backend'], priority: 'mid', desc: 'POST /api/search-results/:id/unlock. Plan entitlement check (contactUnlock flag). Credit balance check with 402 on insufficient funds. Deducts 15 credits, sets contact_unlocked=true, returns owner_name/email/linkedin_url. Already-unlocked requests are free. UI reveals contact inline on card. credits_remaining updated live from API response.', file: 'searches.service.js + searches.controller.js + script.js', learn: 'Idempotent unlock — check contact_unlocked first so users are never charged twice for the same result.' },
     ]
   },
   {
-    id: 'm4', icon: '⚛️', title: 'M4 — Next.js Migration',
-    badge: 'upcoming', badgeClass: 'badge-upcoming',
-    desc: 'Migrate from plain HTML/JS to Next.js App Router with TypeScript and Tailwind. Keep Express API running during migration.',
+    id: 'm4', icon: '⚛️', title: 'M4 — Testing & Hardening',
+    badge: 'current', badgeClass: 'badge-current',
+    desc: 'Thorough testing of Stripe billing flows: initial checkout, plan upgrade (Free→Starter→Growth), plan downgrade (Growth→Starter), subscription cancellation, credit limit enforcement, BullMQ worker stability, and missing export fixes.',
     tasks: [
       { id: 't-m4-1', icon: '🔮', title: 'Scaffold Next.js project (prospectpulse-web)', tags: ['frontend', 'infra'], priority: 'high', desc: 'npx create-next-app@latest prospectpulse-web --typescript --tailwind --app. Set up folder structure per architecture decision.', file: '../prospectpulse-web/', learn: 'Next.js App Router — every folder is a route. page.tsx = the page component' },
       { id: 't-m4-2', icon: '🔮', title: 'Migrate landing page to Next.js', tags: ['frontend'], priority: 'high', desc: 'Convert index.html SEO marketing page to app/page.tsx. First Next.js component to write. Server-rendered for SEO.', file: 'app/page.tsx', learn: 'Server Components vs Client Components — "use client" only when you need interactivity' },
@@ -408,8 +425,19 @@ const milestones = [
 let statuses = {};
 try { statuses = JSON.parse(localStorage.getItem(STORE) || '{}'); } catch(e) {}
 
-// Seed M0 tasks as done
-const DONE_IDS = new Set(['t-m0-1','t-m0-2','t-m0-3','t-m0-4','t-m0-5','t-m0-6','t-m0-7','t-m0-8','t-m0-9','t-m0-10']);
+// Seed completed tasks — M0 done, M1 done, M2 done (except pg_cron), M3 partial
+const DONE_IDS = new Set([
+  // M0 — all done
+  't-m0-1','t-m0-2','t-m0-3','t-m0-4','t-m0-5','t-m0-6','t-m0-7','t-m0-8','t-m0-9','t-m0-10',
+  // M1 — all done (including Zod validation t-m1-7)
+  't-m1-1','t-m1-2','t-m1-3','t-m1-4','t-m1-5','t-m1-6','t-m1-7','t-m1-8','t-m1-9','t-m1-10',
+  // M2 — all done (t-m2-2 pg_cron migration applied)
+  't-m2-1','t-m2-2','t-m2-3','t-m2-4','t-m2-5','t-m2-6','t-m2-7','t-m2-8','t-m2-9',
+  // M3 — all done (BullMQ queue, billing service, upgrade/downgrade, credit history UI, nav dropdown, portal)
+  't-m3-1','t-m3-2','t-m3-3','t-m3-4','t-m3-5',
+  // M4 — all done (20/20 tests passed, RLS fixed, test users seeded)
+  't-m4-1','t-m4-2','t-m4-3','t-m4-4','t-m4-5',
+]);
 DONE_IDS.forEach(id => { if (!(id in statuses)) statuses[id] = 'done'; });
 localStorage.setItem(STORE, JSON.stringify(statuses));
 
@@ -480,7 +508,7 @@ function renderMilestoneContent() {
       </div>
     </div>
     <div class="tasks-grid">
-      ${m.tasks.map(taskCardHTML).join('')}
+      ${m.tasks.map((t, i) => taskCardHTML(t, i + 1)).join('')}
     </div>
   `;
 
@@ -497,11 +525,13 @@ function tagHTML(tag) {
   return `<span class="tbadge tb-${tag}">${tag}</span>`;
 }
 
-function taskCardHTML(task) {
+function taskCardHTML(task, num) {
   const status = getStatus(task.id);
   const isDone = status === 'done';
+  const numLabel = num != null ? `<span class="task-num">#${num}</span>` : '';
   return `<div class="task-card ${isDone ? 'done-card' : ''}">
     <div class="task-top">
+      ${numLabel}
       <span class="task-icon">${task.icon}</span>
       <span class="task-title">${task.title}</span>
       <div class="priority-pip ${priorityClass(task.priority)}" title="${task.priority}"></div>
@@ -538,7 +568,7 @@ function renderAllTasks() {
   });
   const grid = document.getElementById('allTasksGrid');
   grid.innerHTML = filtered.length
-    ? filtered.map(t => `<div style="position:relative">${taskCardHTML(t)}<div style="position:absolute;top:8px;right:44px;font-size:9px;color:var(--muted);background:var(--surface2);border-radius:3px;padding:1px 5px;">${t.milestone}</div></div>`).join('')
+    ? filtered.map((t, i) => `<div style="position:relative">${taskCardHTML(t, i + 1)}<div style="position:absolute;top:8px;right:44px;font-size:9px;color:var(--muted);background:var(--surface2);border-radius:3px;padding:1px 5px;">${t.milestone}</div></div>`).join('')
     : '<div class="empty">No tasks match.</div>';
   grid.querySelectorAll('.status-sel').forEach(sel => {
     sel.onchange = () => setStatus(sel.dataset.id, sel.value);
@@ -551,7 +581,7 @@ function renderStats() {
   const done  = all.filter(t => getStatus(t.id) === 'done').length;
   const next  = all.filter(t => t.priority === 'now' || t.priority === 'high').filter(t => getStatus(t.id) !== 'done').length;
   const later = all.filter(t => t.priority === 'low' || t.priority === 'mid').filter(t => getStatus(t.id) !== 'done').length;
-  const bugs  = 8; // fixed in M0
+  const bugs  = 14; // M0: 8 · M2: RLS two-client fix, cache header, credits race, browser ETag, ensureProfile, static serve, email confirm
 
   document.getElementById('sumDone').textContent  = done;
   document.getElementById('sumNext').textContent  = next;
@@ -576,3 +606,4 @@ renderAll();
 </script>
 </body>
 </html>
+                                                                                                                  

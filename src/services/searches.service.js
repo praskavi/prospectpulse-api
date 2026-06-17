@@ -114,6 +114,34 @@ async function createSearchRecord({ userId, search }) {
   return data;
 }
 
+async function assertSufficientCredits({ userId, estimatedCredits }) {
+  if (!supabase) {
+    throw new AppError('Supabase is not configured. Check SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.', 500);
+  }
+
+  const { data: profile, error } = await supabase
+    .from('profiles')
+    .select('credits_remaining')
+    .eq('id', userId)
+    .maybeSingle();
+
+  if (error) {
+    throw new AppError(`Could not read your credit balance: ${error.message}`, 500);
+  }
+
+  if (!profile) {
+    throw new AppError('Could not read your credit balance.', 500);
+  }
+
+  const creditsRemaining = Number(profile.credits_remaining) || 0;
+  if (creditsRemaining < estimatedCredits) {
+    throw new AppError(
+      `Insufficient credits. This search requires ${estimatedCredits} credits, but you have ${creditsRemaining}.`,
+      402,
+    );
+  }
+}
+
 async function callN8nWorkflow({ searchId, userId, search }) {
   if (!N8N_WEBHOOK_URL) {
     throw new AppError('N8N_PROSPECTPULSE_WEBHOOK_URL is not configured.', 500);
@@ -166,10 +194,26 @@ async function markSearchCompleted({ searchId, userId, n8nResult }) {
     throw new AppError(`Search completed, but status update failed: ${error.message}`, 500);
   }
 
-  await deductCredits({ userId, amount: creditsUsed });
+  await deductCredits({ userId, amount: creditsUsed, searchId });
 }
 
-async function deductCredits({ userId, amount }) {
+// Insert a row into credit_transactions for audit trail.
+// Non-fatal — a logging failure must never break the main operation.
+async function logCreditTransaction({ userId, type, credits, description, relatedSearchId = null }) {
+  if (!supabase || !userId) return;
+  const { error } = await supabase.from('credit_transactions').insert({
+    user_id:           userId,
+    transaction_type:  type,
+    credits,
+    description,
+    related_search_id: relatedSearchId || null,
+  });
+  if (error) {
+    console.error(`[credit_transactions] Failed to log ${type} for ${userId}:`, error.message);
+  }
+}
+
+async function deductCredits({ userId, amount, searchId = null }) {
   if (!userId || !amount || amount <= 0) return;
 
   // Read current balance, then write clamped value (MVP approach — fine for low concurrency)
@@ -195,6 +239,13 @@ async function deductCredits({ userId, amount }) {
       console.error(`[deductCredits] Failed to update credits for ${userId}:`, updateError.message);
     } else {
       console.log(`[deductCredits] User ${userId}: ${profile.credits_remaining} → ${newBalance} (−${amount})`);
+      await logCreditTransaction({
+        userId,
+        type:            'search',
+        credits:         -amount,
+        description:     `Search deduction: ${amount} credits for ${amount / 2} results`,
+        relatedSearchId: searchId,
+      });
     }
   } else {
     console.error(`[deductCredits] No profile found for userId: ${userId}`);
@@ -264,13 +315,17 @@ async function runStubWorkflow({ searchId, userId, search }) {
   }
 
   // Search confirmed complete — now safe to deduct.
-  await deductCredits({ userId, amount: creditsUsed });
+  await deductCredits({ userId, amount: creditsUsed, searchId });
 
   console.log(`[stub:${searchId}] Completed: ${rows.length} results (${contactsFound} with contacts), deducted ${creditsUsed} credits`);
 }
 
 export async function createSearchAndRunWorkflow({ userId, plan, payload }) {
   const search = normalizeSearchPayload(payload, plan || DEFAULT_PLAN);
+  const estimatedCredits = calculateEstimatedCredits(search.maxResults);
+
+  await assertSufficientCredits({ userId, estimatedCredits });
+
   const searchRecord = await createSearchRecord({ userId, search });
 
   if (DEV_STUB) {
@@ -348,7 +403,7 @@ export async function getSearchResultsForUser({ userId, searchId }) {
     search.businesses_found = results.length;
     search.contacts_found = contactsFound;
 
-    await deductCredits({ userId, amount: creditsUsed });
+    await deductCredits({ userId, amount: creditsUsed, searchId });
   }
 
   return {
@@ -365,21 +420,132 @@ export async function getSearchResultsForUser({ userId, searchId }) {
   };
 }
 
-export async function listSearchesForUser(userId) {
+export async function listSearchesForUser(userId, filters = {}) {
   if (!supabase) {
     throw new AppError('Supabase is not configured. Check SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.', 500);
   }
 
-  const { data, error } = await supabase
+  const limit = Math.min(Number(filters.limit) || 25, 100);
+  const page = Number(filters.page) || 1;
+  const start = (page - 1) * limit;
+  const end = start + limit - 1;
+
+  let query = supabase
     .from('searches')
     .select('*')
     .eq('user_id', userId)
     .order('created_at', { ascending: false })
-    .limit(25);
+    .range(start, end);
+
+  if (filters.businessCategory) {
+    query = query.ilike('business_category', `%${filters.businessCategory}%`);
+  }
+  if (filters.location) {
+    query = query.ilike('location', `%${filters.location}%`);
+  }
+  if (filters.state) {
+    query = query.ilike('location', `%${filters.state}%`);
+  }
+
+  const { data, error } = await query;
 
   if (error) {
     throw new AppError(`Could not fetch searches: ${error.message}`, 500);
   }
 
   return data;
+}
+
+// Unlock contact data for a single search result.
+// Guards: result must belong to user's search, user must have enough credits.
+// If already unlocked, returns contact data without deducting credits again.
+export async function unlockSearchResult({ userId, resultId, creditCost }) {
+  if (!supabase) {
+    throw new AppError('Supabase is not configured.', 500);
+  }
+
+  // Fetch the result — join to searches to confirm ownership
+  const { data: result, error: fetchError } = await supabase
+    .from('search_results')
+    .select('id, owner_name, email, linkedin_url, contact_unlocked, search_id, searches!inner(user_id)')
+    .eq('id', resultId)
+    .single();
+
+  if (fetchError || !result) {
+    throw new AppError('Search result not found.', 404);
+  }
+
+  // Ownership check
+  if (result.searches.user_id !== userId) {
+    throw new AppError('You do not have access to this result.', 403);
+  }
+
+  // Already unlocked — return data without charging again
+  if (result.contact_unlocked) {
+    return {
+      owner_name:       result.owner_name,
+      email:            result.email,
+      linkedin_url:     result.linkedin_url,
+      already_unlocked: true,
+    };
+  }
+
+  // Check credits
+  const { data: profile, error: profileError } = await supabase
+    .from('profiles')
+    .select('credits_remaining')
+    .eq('id', userId)
+    .maybeSingle();
+
+  if (profileError || !profile) {
+    throw new AppError('Could not read your credit balance.', 500);
+  }
+
+  if (profile.credits_remaining < creditCost) {
+    throw new AppError(
+      `Not enough credits. Unlocking costs ${creditCost} credits — you have ${profile.credits_remaining}.`,
+      402
+    );
+  }
+
+  // Deduct credits
+  const newBalance = profile.credits_remaining - creditCost;
+  const { error: deductError } = await supabase
+    .from('profiles')
+    .update({ credits_remaining: newBalance })
+    .eq('id', userId);
+
+  if (deductError) {
+    throw new AppError('Failed to deduct credits.', 500);
+  }
+
+  // Mark as unlocked
+  const { error: unlockError } = await supabase
+    .from('search_results')
+    .update({ contact_unlocked: true })
+    .eq('id', resultId);
+
+  if (unlockError) {
+    // Refund on failure
+    await supabase.from('profiles').update({ credits_remaining: profile.credits_remaining }).eq('id', userId);
+    throw new AppError('Failed to unlock contact.', 500);
+  }
+
+  console.log(`[unlock] User ${userId} unlocked result ${resultId} (−${creditCost} cr, balance: ${newBalance})`);
+
+  await logCreditTransaction({
+    userId,
+    type:            'unlock',
+    credits:         -creditCost,
+    description:     `Contact unlock: result ${resultId}`,
+    relatedSearchId: result.search_id,
+  });
+
+  return {
+    owner_name:        result.owner_name,
+    email:             result.email,
+    linkedin_url:      result.linkedin_url,
+    already_unlocked:  false,
+    credits_remaining: newBalance,
+  };
 }

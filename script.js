@@ -23,6 +23,107 @@ function getAuthHeaders(includeContentType = false) {
   return headers;
 }
 
+// ── CONTACT UNLOCK ─────────────────────────────────────────────────
+async function unlockContact(resultId) {
+  if (!resultId) return;
+
+  const btn = document.querySelector(`[data-result-id="${resultId}"]`);
+  if (btn) { btn.disabled = true; btn.textContent = 'Unlocking…'; }
+
+  try {
+    const res = await apiFetch(`http://localhost:3000/api/search-results/${resultId}/unlock`, {
+      method: 'POST',
+    });
+
+    if (!res) return;
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      showToast('error', err?.message || 'Could not unlock contact.');
+      if (btn) { btn.disabled = false; btn.textContent = 'Unlock · 15 cr'; }
+      return;
+    }
+
+    const json = await res.json();
+    const contact = json?.data;
+
+    // Reveal contact inline on the card
+    const contactDiv = document.getElementById(`contact-${resultId}`);
+    if (contactDiv && contact) {
+      const rows = [
+        contact.owner_name   ? `<div class="contact-row"><span class="cr-icon">👤</span><span>${escHtml(contact.owner_name)}</span></div>` : '',
+        contact.email        ? `<div class="contact-row"><span class="cr-icon">✉️</span><a href="mailto:${escHtml(contact.email)}">${escHtml(contact.email)}</a></div>` : '',
+        contact.linkedin_url ? `<div class="contact-row"><span class="cr-icon">🔗</span><a href="${escHtml(contact.linkedin_url)}" target="_blank" rel="noopener">LinkedIn</a></div>` : '',
+      ].filter(Boolean).join('');
+
+      contactDiv.innerHTML = rows
+        ? `<div class="contact-revealed">${rows}</div>`
+        : `<div class="contact-none">No contact details available</div>`;
+    }
+
+    if (!contact?.already_unlocked) {
+      showToast('success', 'Contact unlocked!');
+      creditHistoryLoaded = false; // stale — reload on next open
+      // Update credit display with new balance from response
+      if (contact?.credits_remaining !== undefined) {
+        const creditsEl = document.getElementById('creditsAmount');
+        if (creditsEl) creditsEl.textContent = contact.credits_remaining.toLocaleString();
+      } else {
+        fetchUserProfile(); // fallback refresh
+      }
+    }
+  } catch (_) {
+    showToast('error', 'Network error. Please try again.');
+    if (btn) { btn.disabled = false; btn.textContent = 'Unlock · 15 cr'; }
+  }
+}
+
+// ── STRIPE UPGRADE ─────────────────────────────────────────────────
+async function startUpgrade(targetPlan) {
+  const menuItem = document.getElementById('upgradeMenuItem');
+  const growthMenuItem = document.getElementById('upgradeGrowthMenuItem');
+  const plan = typeof targetPlan === 'string'
+    ? targetPlan
+    : menuItem?.dataset?.targetPlan;
+  if (!plan) return;
+
+  try {
+    if (menuItem) menuItem.disabled = true;
+    if (growthMenuItem) growthMenuItem.disabled = true;
+    const res  = await apiFetch('http://localhost:3000/api/billing/checkout', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify({ plan }),
+    });
+    if (!res || !res.ok) {
+      const err = await res?.json().catch(() => ({}));
+      showToast('error', err?.message || 'Could not start checkout. Try again.');
+      return;
+    }
+    const json = await res.json();
+    if (json?.url) {
+      window.location.href = json.url;
+    }
+  } catch (_) {
+    showToast('error', 'Network error. Please try again.');
+  } finally {
+    if (menuItem) menuItem.disabled = false;
+    if (growthMenuItem) growthMenuItem.disabled = false;
+    fetchUserProfile(); // restore button label
+  }
+}
+
+function openUpgradePage(targetPlan) {
+  document.getElementById('userMenuDropdown')?.classList.remove('open');
+  const suffix = targetPlan ? `?plan=${encodeURIComponent(targetPlan)}` : '';
+  window.location.href = `/upgrade${suffix}`;
+}
+
+function openAdminDashboard() {
+  document.getElementById('userMenuDropdown')?.classList.remove('open');
+  window.location.href = 'admin.html';
+}
+
 function logout() {
   localStorage.removeItem('pp_access_token');
   localStorage.removeItem('pp_refresh_token');
@@ -55,6 +156,22 @@ async function apiFetch(url, options = {}) {
   return res;
 }
 
+async function refreshAdminMenuAccess() {
+  const adminMenuItem = document.getElementById('adminMenuItem');
+  if (!adminMenuItem) return;
+
+  adminMenuItem.style.display = 'none';
+
+  try {
+    const res = await apiFetch('/api/admin/overview');
+    if (res?.ok) {
+      adminMenuItem.style.display = '';
+    }
+  } catch (_) {
+    adminMenuItem.style.display = 'none';
+  }
+}
+
 async function fetchUserProfile() {
   const refreshBtn = document.getElementById('creditsRefreshBtn');
   if (refreshBtn) refreshBtn.classList.add('spinning');
@@ -68,23 +185,53 @@ async function fetchUserProfile() {
 
     ACTIVE_PLAN = user.plan || 'free';
 
-    // Nav email
+    // Nav email + avatar
+    const email = user.email || '';
     const emailEl = document.getElementById('navUserEmail');
-    if (emailEl && user.email) emailEl.textContent = user.email;
+    if (emailEl) emailEl.textContent = email;
+    const avatarEl = document.getElementById('userAvatar');
+    if (avatarEl) avatarEl.textContent = email ? email[0].toUpperCase() : '?';
+    const menuEmailEl = document.getElementById('userMenuEmail');
+    if (menuEmailEl) menuEmailEl.textContent = email;
 
     // Credits card
     const creditsEl = document.getElementById('creditsAmount');
     if (creditsEl) creditsEl.textContent = (user.credits ?? 0).toLocaleString();
 
-    // Plan card
+    // Plan card + dropdown badge
     const planDisplayEl = document.getElementById('planDisplay');
-    const planBadgeEl   = document.getElementById('planBadge');
     const planLabel = { free: 'Free', starter: 'Starter', growth: 'Growth' }[ACTIVE_PLAN] || ACTIVE_PLAN;
     if (planDisplayEl) planDisplayEl.textContent = planLabel;
-    if (planBadgeEl)   planBadgeEl.textContent   = planLabel;
+    const planBadgeEl = document.getElementById('userMenuPlan');
+    if (planBadgeEl) {
+      planBadgeEl.textContent = planLabel;
+      planBadgeEl.className = `user-plan-badge user-plan-badge--${ACTIVE_PLAN}`;
+    }
+
+    // Upgrade button (card) + menu item — hidden on Growth plan
+    const upgradeMenuItem = document.getElementById('upgradeMenuItem');
+    const upgradeMenuLabel = document.getElementById('upgradeMenuLabel');
+    const planActions = {
+      free:    { label: 'Upgrade to Starter', target: 'starter' },
+      starter: { label: 'Upgrade to Growth', target: 'growth' },
+      growth:  { label: 'Downgrade to Starter', target: 'starter' },
+    };
+    const planAction = planActions[ACTIVE_PLAN];
+    const upgradeLabel = planAction?.label || '';
+
+    if (!planAction) {
+      if (upgradeMenuItem) upgradeMenuItem.style.display = 'none';
+    } else {
+      if (upgradeMenuItem) {
+        upgradeMenuItem.style.display = '';
+        upgradeMenuItem.dataset.targetPlan = planAction.target;
+      }
+      if (upgradeMenuLabel) upgradeMenuLabel.textContent = 'Upgrade Plan';
+    }
 
     applyPlanToUI(ACTIVE_PLAN);
     updateCreditEstimator();
+    refreshAdminMenuAccess();
   } catch (_) {
     // Non-fatal — UI falls back to defaults
   } finally {
@@ -173,6 +320,116 @@ function updateConnectionStatus() {
     dot.style.boxShadow   = 'none';
     dot.style.animation   = 'none';
     txt.textContent        = 'Not configured';
+  }
+}
+
+// ── USER MENU DROPDOWN ────────────────────────────────────────────
+
+function toggleUserMenu(e) {
+  e.stopPropagation();
+  const dropdown = document.getElementById('userMenuDropdown');
+  const isOpen   = dropdown.classList.toggle('open');
+  document.getElementById('userMenuTrigger').setAttribute('aria-expanded', isOpen);
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click', () => {
+  const dropdown = document.getElementById('userMenuDropdown');
+  if (dropdown) dropdown.classList.remove('open');
+});
+
+async function openBillingPortal() {
+  document.getElementById('userMenuDropdown')?.classList.remove('open');
+  showToast('info', 'Opening billing portal…');
+  try {
+    const res = await apiFetch('http://localhost:3000/api/billing/portal', { method: 'POST' });
+    if (!res) return;
+    const json = await res.json();
+    if (!res.ok) {
+      showToast('error', json.message || 'Could not open billing portal.');
+      return;
+    }
+    window.location.href = json.url;
+  } catch (_) {
+    showToast('error', 'Network error. Please try again.');
+  }
+}
+
+function scrollToCreditHistory() {
+  document.getElementById('userMenuDropdown')?.classList.remove('open');
+  const section = document.getElementById('creditHistorySection');
+  if (!section) return;
+  // Open the panel if collapsed
+  const body = document.getElementById('creditHistoryBody');
+  if (body && body.style.display === 'none') toggleCreditHistory();
+  section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── CREDIT HISTORY ────────────────────────────────────────────────
+
+let creditHistoryLoaded = false;
+
+function toggleCreditHistory() {
+  const body    = document.getElementById('creditHistoryBody');
+  const chevron = document.getElementById('chToggle');
+  if (!body) return;
+
+  const isOpen = body.style.display !== 'none';
+  body.style.display = isOpen ? 'none' : '';
+  if (chevron) chevron.textContent = isOpen ? '▾' : '▴';
+
+  if (!isOpen && !creditHistoryLoaded) {
+    loadCreditHistory();
+  }
+}
+
+async function loadCreditHistory() {
+  const loading = document.getElementById('chLoading');
+  const empty   = document.getElementById('chEmpty');
+  const table   = document.getElementById('chTable');
+  const tbody   = document.getElementById('chTableBody');
+  const count   = document.getElementById('chCount');
+
+  if (loading) loading.style.display = '';
+  if (empty)   empty.style.display   = 'none';
+  if (table)   table.style.display   = 'none';
+
+  try {
+    const res = await apiFetch('http://localhost:3000/api/me/transactions');
+    if (!res || !res.ok) throw new Error('Failed');
+    const json = await res.json();
+    const rows = json.data ?? [];
+
+    creditHistoryLoaded = true;
+    if (count) count.textContent = rows.length ? `(${rows.length})` : '';
+
+    if (rows.length === 0) {
+      if (empty) empty.style.display = '';
+      return;
+    }
+
+    if (tbody) {
+      tbody.innerHTML = rows.map(r => {
+        const date    = new Date(r.created_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+        const credits = r.credits;
+        const sign    = credits >= 0 ? '+' : '';
+        const cls     = credits >= 0 ? 'ch-credits-pos' : 'ch-credits-neg';
+        const typeMap = { search: '🔍 Search', unlock: '🔓 Unlock', subscription: '⚡ Subscription' };
+        const badge   = typeMap[r.transaction_type] || r.transaction_type;
+        return `<tr>
+          <td class="ch-date">${date}</td>
+          <td><span class="ch-badge ch-badge--${r.transaction_type}">${badge}</span></td>
+          <td class="ch-desc">${r.description || '—'}</td>
+          <td class="ch-col-credits ${cls}">${sign}${credits.toLocaleString()}</td>
+        </tr>`;
+      }).join('');
+    }
+
+    if (table) table.style.display = '';
+  } catch (_) {
+    if (empty) { empty.textContent = 'Failed to load transactions.'; empty.style.display = ''; }
+  } finally {
+    if (loading) loading.style.display = 'none';
   }
 }
 
@@ -579,12 +836,12 @@ async function launchScan() {
 
     const completedData = await pollSearchResults(searchId);
     finishProgress();
-    setTimeout(() => { renderResults(completedData); loadSearchHistory(); fetchUserProfile(); }, 400);
+    setTimeout(() => { renderResults(completedData); loadSearchHistory(); fetchUserProfile(); creditHistoryLoaded = false; }, 400);
 
   } catch (err) {
     stopProgress();
     showError(`Could not run the search: <strong>${escHtml(err.message)}</strong>. Check the backend console and the latest n8n workflow execution.`);
-    showToast('error', '✕', 'Search failed — check backend API.');
+    showToast('error', '✕', err.message || 'Search failed — check backend API.');
   } finally {
     setLaunchState(false);
   }
@@ -754,18 +1011,49 @@ function renderPage() {
     document.getElementById('emptyState').style.display = 'none';
 
     grid.innerHTML = page.map((l, i) => {
-      const fields     = leadDisplayFields(l);
-      const name       = fields.company || '—';
-      const color      = AVATAR_COLORS[(start + i) % AVATAR_COLORS.length];
-      const initials   = name.split(' ').filter(Boolean).map(w => w[0]).slice(0, 2).join('').toUpperCase();
-      const rating     = fields.rating ? Number(fields.rating).toFixed(1) : null;
-      const hasContact = Boolean(fields.contact || fields.email || fields.linkedin);
-      const websiteDisplay = fields.website
+      const fields          = leadDisplayFields(l);
+      const name            = fields.company || '—';
+      const color           = AVATAR_COLORS[(start + i) % AVATAR_COLORS.length];
+      const initials        = name.split(' ').filter(Boolean).map(w => w[0]).slice(0, 2).join('').toUpperCase();
+      const rating          = fields.rating ? Number(fields.rating).toFixed(1) : null;
+      const hasContact      = Boolean(fields.contact || fields.email || fields.linkedin);
+      const alreadyUnlocked = Boolean(l.contact_unlocked);
+      const resultId        = l.id || '';
+      const websiteDisplay  = fields.website
         ? fields.website.replace(/^https?:\/\//, '').replace(/\/$/, '')
         : '';
 
+      const canUnlock = ACTIVE_PLAN === 'starter' || ACTIVE_PLAN === 'growth';
+
+      // Contact section — three states: unlocked, locked+has data, no data
+      let contactSection;
+      if (alreadyUnlocked) {
+        contactSection = `
+          <div class="contact-revealed">
+            ${fields.contact  ? `<div class="contact-row"><span class="cr-icon">👤</span><span>${escHtml(fields.contact)}</span></div>` : ''}
+            ${fields.email    ? `<div class="contact-row"><span class="cr-icon">✉️</span><a href="mailto:${escHtml(fields.email)}">${escHtml(fields.email)}</a></div>` : ''}
+            ${fields.linkedin ? `<div class="contact-row"><span class="cr-icon">🔗</span><a href="${escHtml(fields.linkedin)}" target="_blank" rel="noopener">LinkedIn</a></div>` : ''}
+          </div>`;
+      } else if (hasContact) {
+        if (canUnlock) {
+          contactSection = `
+            <div class="contact-available">
+              <span class="contact-badge">👤 Contact found</span>
+              <button class="btn-unlock" onclick="unlockContact('${escHtml(resultId)}')" data-result-id="${escHtml(resultId)}">Unlock · 15 cr</button>
+            </div>`;
+        } else {
+          contactSection = `
+            <div class="contact-available">
+              <span class="contact-badge">👤 Contact found</span>
+              <button class="btn-unlock btn-unlock-locked" onclick="openUpgradePage('starter')" title="Upgrade to Starter or Growth to unlock contacts">Upgrade to unlock</button>
+            </div>`;
+        }
+      } else {
+        contactSection = `<div class="contact-none">No contact data</div>`;
+      }
+
       return `
-        <div class="business-card">
+        <div class="business-card" id="card-${escHtml(resultId)}">
           <div class="card-header">
             <div class="card-avatar" style="background:${color}">${escHtml(initials)}</div>
             <div class="card-info">
@@ -781,14 +1069,8 @@ function renderPage() {
             ${fields.phone    ? `<div class="card-detail"><span class="card-detail-icon">📞</span><span>${escHtml(fields.phone)}</span></div>` : ''}
             ${fields.website  ? `<div class="card-detail"><span class="card-detail-icon">🌐</span><a href="${escHtml(fields.website)}" target="_blank" rel="noopener">${escHtml(websiteDisplay)}</a></div>` : ''}
           </div>
-          <div class="card-contact">
-            ${hasContact
-              ? `<div class="contact-available">
-                   <span class="contact-badge">👤 ${escHtml(fields.contact || 'Contact')} found</span>
-                   <button class="btn-unlock" disabled title="Unlock contacts — coming in Billing (M3)">Unlock · 15 cr</button>
-                 </div>`
-              : `<div class="contact-none">No contact data</div>`
-            }
+          <div class="card-contact" id="contact-${escHtml(resultId)}">
+            ${contactSection}
           </div>
         </div>`;
     }).join('');
@@ -1088,7 +1370,6 @@ document.addEventListener('DOMContentLoaded', () => {
       postcodes.pop();
       renderPostcodes();
     } else if (!/[0-9]|Backspace|Delete|ArrowLeft|ArrowRight|Tab/.test(e.key)) {
-      // Block non-numeric key input (allow control keys)
       e.preventDefault();
     }
   });
@@ -1103,11 +1384,10 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('maxLeadsPerPlace').addEventListener('change', updateEnrichmentControls);
   document.getElementById('maxResults').addEventListener('change', updateCreditEstimator);
   loadSettings();
-  applyPlanToUI(ACTIVE_PLAN);   // initial render with defaults
+  applyPlanToUI(ACTIVE_PLAN);
   updateCreditEstimator();
   loadSearchHistory();
-  fetchUserProfile();            // overrides with real plan + credits once loaded
-  // Close settings modal on outside click
+  fetchUserProfile();
   document.getElementById('settingsModal').addEventListener('click', e => {
     if (e.target === document.getElementById('settingsModal')) closeSettings();
   });

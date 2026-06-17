@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ProspectPulse - Upgrade Plan</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .upgrade-shell {
+      position: relative;
+      z-index: 1;
+      width: min(1120px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 48px 0 72px;
+    }
+
+    .upgrade-hero {
+      padding: 56px 0 32px;
+      text-align: center;
+    }
+
+    .upgrade-hero h1 {
+      margin-bottom: 14px;
+      font-size: clamp(34px, 5vw, 58px);
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .upgrade-hero p {
+      max-width: 680px;
+      margin: 0 auto;
+      color: var(--text2);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+
+    .current-plan-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      margin: 0 0 22px;
+      padding: 16px 18px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: rgba(18,18,30,0.82);
+    }
+
+    .current-plan-strip span {
+      display: block;
+      color: var(--text3);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .current-plan-strip strong {
+      display: block;
+      margin-top: 4px;
+      color: var(--text);
+      font-size: 18px;
+    }
+
+    .lockout-note {
+      display: none;
+      margin: 0 0 22px;
+      padding: 14px 16px;
+      border: 1px solid rgba(249,115,22,0.28);
+      border-radius: 10px;
+      background: rgba(249,115,22,0.08);
+      color: var(--text2);
+      line-height: 1.6;
+    }
+
+    .upgrade-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .upgrade-plan {
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+      padding: 28px 24px;
+      border: 1px solid var(--border2);
+      border-radius: 16px;
+      background: var(--card);
+    }
+
+    .upgrade-plan.featured {
+      border-color: rgba(249,115,22,0.44);
+      background: linear-gradient(160deg, rgba(249,115,22,0.07), rgba(139,92,246,0.06)), var(--card);
+      box-shadow: 0 0 48px rgba(249,115,22,0.1);
+    }
+
+    .upgrade-plan h2 {
+      margin-bottom: 6px;
+      font-size: 24px;
+    }
+
+    .upgrade-price {
+      display: flex;
+      align-items: baseline;
+      gap: 5px;
+      margin-bottom: 8px;
+    }
+
+    .upgrade-price strong {
+      color: var(--text);
+      font-size: 38px;
+      line-height: 1;
+    }
+
+    .upgrade-price span,
+    .upgrade-credit-line {
+      color: var(--text3);
+      font-size: 13px;
+    }
+
+    .upgrade-credit-line {
+      color: var(--accent1);
+      font-weight: 700;
+    }
+
+    .upgrade-features {
+      display: grid;
+      gap: 11px;
+      margin: 24px 0;
+      padding: 0;
+      list-style: none;
+      color: var(--text2);
+      line-height: 1.45;
+    }
+
+    .upgrade-features li {
+      display: flex;
+      gap: 9px;
+    }
+
+    .upgrade-features li::before {
+      content: "+";
+      flex: 0 0 auto;
+      color: var(--success);
+      font-weight: 800;
+    }
+
+    .upgrade-action {
+      width: 100%;
+      min-height: 44px;
+      margin-top: auto;
+      border: 1px solid var(--border2);
+      border-radius: 10px;
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      cursor: pointer;
+      font: inherit;
+      font-weight: 800;
+      transition: all 0.2s;
+    }
+
+    .upgrade-action.primary {
+      border-color: transparent;
+      color: #fff;
+      background: linear-gradient(135deg, var(--accent1), var(--accent2));
+      box-shadow: 0 8px 28px rgba(249,115,22,0.28);
+    }
+
+    .upgrade-action:hover:not(:disabled) {
+      transform: translateY(-1px);
+      border-color: rgba(139,92,246,0.45);
+    }
+
+    .upgrade-action:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
+    }
+
+    .upgrade-note {
+      margin-top: 22px;
+      color: var(--text3);
+      font-size: 13px;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    .checkout-terms {
+      margin: 22px 0 0;
+      padding: 16px 18px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: rgba(255,255,255,0.04);
+      color: var(--text2);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .checkout-terms label {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .checkout-terms input {
+      margin-top: 3px;
+    }
+
+    .checkout-terms a {
+      color: var(--accent1);
+    }
+
+    .upgrade-footer {
+      width: min(1120px, calc(100% - 40px));
+      margin: 0 auto 38px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+      color: var(--text3);
+      font-size: 13px;
+    }
+
+    .upgrade-footer a:hover {
+      color: var(--text);
+    }
+
+    .upgrade-toast {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 50;
+      max-width: 360px;
+      padding: 13px 15px;
+      border: 1px solid rgba(239,68,68,0.3);
+      border-radius: 12px;
+      background: var(--card);
+      color: var(--text);
+      box-shadow: 0 10px 40px rgba(0,0,0,0.35);
+      opacity: 0;
+      transform: translateY(8px);
+      pointer-events: none;
+      transition: all 0.2s;
+    }
+
+    .upgrade-toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 860px) {
+      .upgrade-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .current-plan-strip {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-inner">
+      <a href="app.html" class="logo">
+        <div class="logo-icon">PP</div>
+        <span class="logo-text">Prospect<span>Pulse</span></span>
+        <span class="logo-badge">V2</span>
+      </a>
+      <div class="nav-actions">
+        <button class="user-menu-item" style="width:auto;border:1px solid var(--border);border-radius:10px;" onclick="window.location.href='app.html'">Back to App</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="upgrade-shell">
+    <section class="upgrade-hero">
+      <div class="hero-eyebrow">
+        <span class="chip chip-orange">Credits</span>
+        <span class="chip chip-purple">Enrichment</span>
+        <span class="chip chip-blue">Rollover</span>
+      </div>
+      <h1>Choose your plan</h1>
+      <p>Upgrade when you need deeper enrichment, more search volume, or contact unlocking. Growth downgrades reset to Starter credits; Starter upgrades add Growth credits to your remaining balance.</p>
+    </section>
+
+    <section class="current-plan-strip" aria-live="polite">
+      <div>
+        <span>Current plan</span>
+        <strong id="currentPlan">Loading...</strong>
+      </div>
+      <div>
+        <span>Credits remaining</span>
+        <strong id="currentCredits">Loading...</strong>
+      </div>
+    </section>
+
+    <div class="lockout-note" id="lockoutNote"></div>
+
+    <section class="upgrade-grid" aria-label="Available plans">
+      <article class="upgrade-plan" data-plan-card="free">
+        <h2>Free</h2>
+        <div class="upgrade-price"><strong>$0</strong><span>/mo</span></div>
+        <div class="upgrade-credit-line" data-plan-credits="free">Loading credits...</div>
+        <ul class="upgrade-features" data-plan-features="free">
+          <li>Up to 10 results per scan</li>
+          <li>Business name, phone, website, and rating</li>
+          <li>Search history with 7-day retention</li>
+          <li>No company contact or people enrichment</li>
+        </ul>
+        <button class="upgrade-action" data-plan="free" disabled>Current free access</button>
+      </article>
+
+      <article class="upgrade-plan featured" data-plan-card="starter">
+        <h2>Starter</h2>
+        <div class="upgrade-price"><strong>$29</strong><span>/mo</span></div>
+        <div class="upgrade-credit-line" data-plan-credits="starter">Loading credits...</div>
+        <ul class="upgrade-features" data-plan-features="starter">
+          <li>Up to 25 results per scan</li>
+          <li>Company contact scraping</li>
+          <li>1 decision-maker per business</li>
+          <li>Email verification and contact unlocking</li>
+        </ul>
+        <button class="upgrade-action primary" data-plan="starter">Upgrade to Starter</button>
+      </article>
+
+      <article class="upgrade-plan" data-plan-card="growth">
+        <h2>Growth</h2>
+        <div class="upgrade-price"><strong>$79</strong><span>/mo</span></div>
+        <div class="upgrade-credit-line" data-plan-credits="growth">Loading credits...</div>
+        <ul class="upgrade-features" data-plan-features="growth">
+          <li>Up to 50 results per scan</li>
+          <li>Up to 3 category terms</li>
+          <li>Up to 2 decision-makers per business</li>
+          <li>90-day search history retention</li>
+        </ul>
+        <button class="upgrade-action" data-plan="growth">Upgrade to Growth</button>
+      </article>
+    </section>
+
+    <p class="upgrade-note">
+      Business results cost 2 credits each. Contact unlocks cost 15 credits. Failed searches do not deduct credits. Starter to Growth adds the Growth credit allocation to your remaining balance; Growth to Starter resets to the Starter allocation.
+    </p>
+
+    <div class="checkout-terms">
+      <label>
+        <input type="checkbox" id="termsAccepted" />
+        <span>I understand plan changes are processed by Stripe and agree to the <a href="terms.html">Terms</a>, <a href="refund.html">Refund Policy</a>, and <a href="acceptable-use.html">Acceptable Use Policy</a>.</span>
+      </label>
+    </div>
+  </main>
+
+  <footer class="upgrade-footer">
+    <a href="privacy.html">Privacy</a>
+    <a href="terms.html">Terms</a>
+    <a href="refund.html">Refund Policy</a>
+    <a href="acceptable-use.html">Acceptable Use</a>
+    <a href="contact.html">Support</a>
+  </footer>
+
+  <div class="upgrade-toast" id="upgradeToast"></div>
+
+  <script>
+    const PLAN_LABELS = { free: 'Free', starter: 'Starter', growth: 'Growth' };
+    const PLAN_FALLBACKS = {
+      free: {
+        credits: 100,
+        maxResults: 10,
+        categoryTerms: 1,
+        scrapeContacts: false,
+        maxLeadsPerPlace: 0,
+        emailVerification: false,
+        contactUnlock: false,
+        retentionDays: 7,
+      },
+      starter: {
+        credits: 1000,
+        maxResults: 25,
+        categoryTerms: 1,
+        scrapeContacts: true,
+        maxLeadsPerPlace: 1,
+        emailVerification: true,
+        contactUnlock: true,
+        retentionDays: 30,
+      },
+      growth: {
+        credits: 4000,
+        maxResults: 50,
+        categoryTerms: 3,
+        scrapeContacts: true,
+        maxLeadsPerPlace: 2,
+        emailVerification: true,
+        contactUnlock: true,
+        retentionDays: 90,
+      },
+    };
+    const PLAN_ACTIONS = {
+      free: {
+        starter: 'Upgrade to Starter',
+        growth: 'Upgrade to Growth',
+      },
+      starter: {
+        growth: 'Upgrade to Growth',
+      },
+      growth: {
+        starter: 'Downgrade to Starter',
+      },
+    };
+
+    function getToken() {
+      return localStorage.getItem('pp_access_token');
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('upgradeToast');
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3500);
+    }
+
+    async function apiFetch(url, options = {}) {
+      const token = getToken();
+      const res = await fetch(url, {
+        ...options,
+        headers: {
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          ...(options.headers || {}),
+        },
+      });
+      if (res.status === 401) {
+        window.location.href = 'login.html';
+        return null;
+      }
+      return res;
+    }
+
+    function setButtonsForPlan(activePlan) {
+      const allowed = PLAN_ACTIONS[activePlan] || {};
+      document.querySelectorAll('.upgrade-action[data-plan]').forEach(button => {
+        const target = button.dataset.plan;
+        if (target === 'free') {
+          button.disabled = true;
+          button.textContent = activePlan === 'free' ? 'Current plan' : 'Free plan unavailable';
+          return;
+        }
+
+        if (target === activePlan) {
+          button.disabled = true;
+          button.textContent = 'Current plan';
+          return;
+        }
+
+        const label = allowed[target];
+        button.disabled = !label;
+        button.textContent = label || 'Not available';
+        button.classList.toggle('primary', Boolean(label));
+      });
+    }
+
+    function formatNumber(value) {
+      return Number(value || 0).toLocaleString();
+    }
+
+    function featureRows(plan) {
+      const rows = [
+        `Up to ${formatNumber(plan.maxResults)} results per scan`,
+        plan.categoryTerms > 1
+          ? `Up to ${formatNumber(plan.categoryTerms)} category terms`
+          : '1 category term per search',
+        `${formatNumber(plan.retentionDays)}-day search history retention`,
+      ];
+
+      if (plan.scrapeContacts) {
+        rows.push('Company contact scraping');
+      } else {
+        rows.push('Business name, phone, website, and rating');
+        rows.push('No company contact scraping');
+      }
+
+      if (plan.maxLeadsPerPlace > 0) {
+        const suffix = plan.maxLeadsPerPlace === 1 ? '' : 's';
+        rows.push(`Up to ${formatNumber(plan.maxLeadsPerPlace)} decision-maker${suffix} per business`);
+      } else {
+        rows.push('No people enrichment');
+      }
+
+      rows.push(plan.emailVerification ? 'Email verification included' : 'No email verification');
+      if (plan.contactUnlock) rows.push('Contact unlocking available');
+
+      return rows;
+    }
+
+    function renderPlanCards(plansByCode) {
+      Object.entries({ ...PLAN_FALLBACKS, ...plansByCode }).forEach(([code, plan]) => {
+        const creditLine = document.querySelector(`[data-plan-credits="${code}"]`);
+        if (creditLine) creditLine.textContent = `${formatNumber(plan.credits)} credits / month`;
+
+        const features = document.querySelector(`[data-plan-features="${code}"]`);
+        if (features) {
+          features.innerHTML = featureRows(plan)
+            .map(row => `<li>${row}</li>`)
+            .join('');
+        }
+      });
+    }
+
+    async function loadPlans() {
+      renderPlanCards(PLAN_FALLBACKS);
+
+      try {
+        const res = await fetch('http://localhost:3000/api/billing/plans');
+        if (!res.ok) return;
+        const json = await res.json();
+        const plansByCode = Object.fromEntries((json.data || []).map(plan => [plan.code, plan]));
+        renderPlanCards(plansByCode);
+      } catch (error) {
+        // Keep embedded fallback limits if the API is unavailable.
+      }
+    }
+
+    async function loadProfile() {
+      const res = await apiFetch('http://localhost:3000/api/me');
+      if (!res || !res.ok) {
+        showToast('Could not load your current plan.');
+        return;
+      }
+
+      const json = await res.json();
+      const user = json.data || {};
+      const activePlan = user.plan || 'free';
+      document.getElementById('currentPlan').textContent = PLAN_LABELS[activePlan] || activePlan;
+      document.getElementById('currentCredits').textContent = Number(user.credits || 0).toLocaleString();
+      renderLockoutNote(user);
+      setButtonsForPlan(activePlan);
+
+      const requestedPlan = new URLSearchParams(window.location.search).get('plan');
+      if (requestedPlan && document.querySelector(`[data-plan="${requestedPlan}"]:not(:disabled)`)) {
+        document.querySelector(`[data-plan-card="${requestedPlan}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+
+    function renderLockoutNote(user) {
+      const note = document.getElementById('lockoutNote');
+      if (!note) return;
+      const eligibleAt = user.freePlanEligibleAt ? new Date(user.freePlanEligibleAt) : null;
+      if (user.plan === 'free' && eligibleAt && eligibleAt > new Date()) {
+        note.style.display = 'block';
+        note.textContent = `Free credits are locked until ${eligibleAt.toLocaleDateString('en-AU', { dateStyle: 'medium' })} because this account recently cancelled a paid subscription. You can still upgrade to Starter or Growth.`;
+      } else {
+        note.style.display = 'none';
+        note.textContent = '';
+      }
+    }
+
+    async function checkout(plan, button) {
+      if (!document.getElementById('termsAccepted')?.checked) {
+        showToast('Please accept the terms before continuing to checkout.');
+        return;
+      }
+
+      button.disabled = true;
+      const originalText = button.textContent;
+      button.textContent = 'Redirecting...';
+
+      try {
+        const res = await apiFetch('http://localhost:3000/api/billing/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ plan }),
+        });
+        if (!res) return;
+
+        const json = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          showToast(json.message || 'Could not start checkout. Contact support if this continues.');
+          return;
+        }
+        localStorage.removeItem('pp_pending_plan');
+        window.location.href = json.url;
+      } catch (error) {
+        showToast('Network error. Please try again or contact support.');
+      } finally {
+        button.disabled = false;
+        button.textContent = originalText;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!getToken()) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      document.querySelectorAll('.upgrade-action[data-plan]').forEach(button => {
+        button.addEventListener('click', () => checkout(button.dataset.plan, button));
+      });
+      loadPlans();
+      loadProfile();
+    });
+  </script>
+</body>
+</html>

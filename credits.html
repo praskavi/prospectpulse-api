@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ProspectPulse — Credit History</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── PAGE-SPECIFIC ── */
+    .page-header {
+      padding: 36px 0 28px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 32px;
+    }
+    .page-header h1 {
+      font-size: 24px; font-weight: 700; color: var(--text);
+      margin-bottom: 4px;
+    }
+    .page-header p { font-size: 13px; color: var(--text3); }
+
+    /* ── SUMMARY CARDS ── */
+    .summary-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+    .summary-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 18px 20px;
+      display: flex; align-items: center; gap: 14px;
+    }
+    .summary-card-icon {
+      width: 40px; height: 40px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+    .sci-balance  { background: rgba(249,115,22,0.12); }
+    .sci-spent    { background: rgba(239,68,68,0.12); }
+    .sci-received { background: rgba(16,185,129,0.12); }
+    .summary-card-body { min-width: 0; }
+    .summary-label { font-size: 11px; color: var(--text3); font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; }
+    .summary-value { font-size: 22px; font-weight: 700; color: var(--text); margin-top: 3px; }
+    .summary-sub   { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+    /* ── FILTER BAR ── */
+    .filter-bar {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 16px; flex-wrap: wrap;
+    }
+    .filter-label { font-size: 12px; color: var(--text3); white-space: nowrap; }
+    .filter-btn {
+      padding: 5px 12px; border-radius: 20px; border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04); color: var(--text3);
+      font-size: 12px; font-family: inherit; cursor: pointer;
+      transition: all 0.15s;
+    }
+    .filter-btn:hover { border-color: var(--accent2); color: var(--text2); }
+    .filter-btn.active {
+      border-color: var(--accent2); background: rgba(139,92,246,0.15);
+      color: #a78bfa; font-weight: 600;
+    }
+    .filter-spacer { flex: 1; }
+    .tx-count { font-size: 12px; color: var(--text3); white-space: nowrap; }
+
+    /* ── TRANSACTIONS TABLE ── */
+    .tx-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; overflow: hidden;
+    }
+    .tx-table { width: 100%; border-collapse: collapse; }
+    .tx-table th {
+      text-align: left; font-size: 11px; font-weight: 600;
+      letter-spacing: 0.05em; text-transform: uppercase; color: var(--text3);
+      padding: 12px 16px 12px; border-bottom: 1px solid var(--border);
+      background: rgba(255,255,255,0.02);
+    }
+    .tx-table td {
+      padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-size: 13px;
+    }
+    .tx-table tr:last-child td { border-bottom: none; }
+    .tx-table tbody tr:hover td { background: rgba(255,255,255,0.02); }
+
+    .tx-date { color: var(--text3); white-space: nowrap; font-size: 12px; }
+    .tx-time { display: block; font-size: 11px; color: var(--text3); opacity: 0.7; margin-top: 2px; }
+    .tx-desc { color: var(--text2); max-width: 340px; }
+    .tx-amount { text-align: right; font-weight: 700; white-space: nowrap; font-size: 14px; }
+    .tx-pos { color: #34d399; }
+    .tx-neg { color: #f87171; }
+
+    .tx-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px; border-radius: 20px;
+      font-size: 11px; font-weight: 600; white-space: nowrap;
+    }
+    .tx-badge--search       { background: rgba(59,130,246,0.15);  color: #60a5fa; }
+    .tx-badge--unlock       { background: rgba(139,92,246,0.15);  color: #a78bfa; }
+    .tx-badge--subscription { background: rgba(16,185,129,0.15);  color: #34d399; }
+
+    /* ── STATES ── */
+    .tx-loading, .tx-empty {
+      text-align: center; padding: 48px 24px;
+      font-size: 14px; color: var(--text3);
+    }
+    .tx-empty-icon { font-size: 36px; margin-bottom: 12px; }
+
+    /* ── LOAD MORE ── */
+    .load-more-wrap { text-align: center; padding: 16px; border-top: 1px solid var(--border); }
+    .btn-load-more {
+      padding: 8px 24px; border-radius: 8px; border: 1px solid var(--border);
+      background: rgba(255,255,255,0.04); color: var(--text2);
+      font-size: 13px; font-family: inherit; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-load-more:hover { border-color: var(--accent2); color: var(--accent2); }
+    .btn-load-more:disabled { opacity: 0.4; cursor: default; }
+
+    /* ── BACK LINK ── */
+    .back-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 12px; color: var(--text3); text-decoration: none;
+      transition: color 0.15s; margin-bottom: 28px;
+    }
+    .back-link:hover { color: var(--accent2); }
+
+    @media (max-width: 640px) {
+      .summary-cards { grid-template-columns: 1fr 1fr; }
+      .tx-table th:nth-child(3), .tx-table td:nth-child(3) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── NAV ── -->
+  <nav>
+    <div class="nav-inner">
+      <a href="app.html" class="logo">
+        <div class="logo-icon">PP</div>
+        <span class="logo-text">Prospect<span>Pulse</span></span>
+        <span class="logo-badge">V2</span>
+      </a>
+      <div class="nav-actions">
+        <div class="user-menu" id="userMenu">
+          <button class="user-menu-trigger" id="userMenuTrigger" onclick="toggleUserMenu(event)" title="Account">
+            <span class="user-avatar" id="userAvatar">?</span>
+            <span class="nav-user-email" id="navUserEmail"></span>
+            <span class="user-menu-chevron">▾</span>
+          </button>
+          <div class="user-menu-dropdown" id="userMenuDropdown">
+            <div class="user-menu-header">
+              <div class="user-menu-email" id="userMenuEmail"></div>
+              <div class="user-menu-plan"><span class="user-plan-badge" id="userMenuPlan">Free</span></div>
+            </div>
+            <div class="user-menu-divider"></div>
+            <button class="user-menu-item" onclick="openBillingPortal()">
+              <span class="umi-icon">🧾</span> Billing &amp; Invoices
+            </button>
+            <button class="user-menu-item" id="upgradeMenuItem" onclick="startUpgrade()" style="display:none;">
+              <span class="umi-icon">⚡</span> <span id="upgradeMenuLabel">Upgrade Plan</span>
+            </button>
+            <div class="user-menu-divider"></div>
+            <button class="user-menu-item" onclick="window.location.href='credits.html'">
+              <span class="umi-icon">🪙</span> Credit History
+            </button>
+            <button class="user-menu-item" onclick="window.location.href='app.html'">
+              <span class="umi-icon">🔍</span> Back to App
+            </button>
+            <div class="user-menu-divider"></div>
+            <button class="user-menu-item user-menu-item--danger" onclick="logout()">
+              <span class="umi-icon">↩</span> Sign Out
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── MAIN ── -->
+  <main>
+    <div class="wrap">
+
+      <a href="app.html" class="back-link">← Back to App</a>
+
+      <div class="page-header">
+        <h1>🪙 Credit History</h1>
+        <p>Full audit log of every credit movement on your account.</p>
+      </div>
+
+      <!-- SUMMARY CARDS -->
+      <div class="summary-cards">
+        <div class="summary-card">
+          <div class="summary-card-icon sci-balance">🪙</div>
+          <div class="summary-card-body">
+            <div class="summary-label">Current Balance</div>
+            <div class="summary-value" id="summaryBalance">—</div>
+            <div class="summary-sub" id="summaryPlan">—</div>
+          </div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-card-icon sci-spent">📉</div>
+          <div class="summary-card-body">
+            <div class="summary-label">Total Spent</div>
+            <div class="summary-value" id="summarySpent">—</div>
+            <div class="summary-sub">searches &amp; unlocks</div>
+          </div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-card-icon sci-received">📈</div>
+          <div class="summary-card-body">
+            <div class="summary-label">Total Received</div>
+            <div class="summary-value" id="summaryReceived">—</div>
+            <div class="summary-sub">from subscriptions</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FILTER BAR -->
+      <div class="filter-bar">
+        <span class="filter-label">Filter:</span>
+        <button class="filter-btn active" data-type="all"          onclick="setFilter('all')">All</button>
+        <button class="filter-btn"        data-type="search"       onclick="setFilter('search')">🔍 Searches</button>
+        <button class="filter-btn"        data-type="unlock"       onclick="setFilter('unlock')">🔓 Unlocks</button>
+        <button class="filter-btn"        data-type="subscription" onclick="setFilter('subscription')">⚡ Subscriptions</button>
+        <span class="filter-spacer"></span>
+        <span class="tx-count" id="txCount"></span>
+      </div>
+
+      <!-- TRANSACTIONS TABLE -->
+      <div class="tx-card">
+        <div class="tx-loading" id="txLoading">Loading transactions…</div>
+        <div class="tx-empty"   id="txEmpty"   style="display:none;">
+          <div class="tx-empty-icon">🪙</div>
+          No transactions match this filter.
+        </div>
+        <table class="tx-table" id="txTable" style="display:none;">
+          <thead>
+            <tr>
+              <th>Date &amp; Time</th>
+              <th>Type</th>
+              <th>Description</th>
+              <th style="text-align:right;">Credits</th>
+            </tr>
+          </thead>
+          <tbody id="txBody"></tbody>
+        </table>
+        <div class="load-more-wrap" id="loadMoreWrap" style="display:none;">
+          <button class="btn-load-more" id="loadMoreBtn" onclick="loadMore()">Load more</button>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ── TOAST ── -->
+  <div class="toast" id="toast">
+    <span class="ti" id="toastIcon">✓</span>
+    <span id="toastMsg"></span>
+  </div>
+
+  <script>
+  // ── AUTH ──────────────────────────────────────────────────────────
+  function getToken() { return localStorage.getItem('pp_access_token'); }
+
+  function getAuthHeaders() {
+    const token = getToken();
+    return token ? { Authorization: `Bearer ${token}` } : {};
+  }
+
+  function logout() {
+    localStorage.removeItem('pp_access_token');
+    localStorage.removeItem('pp_refresh_token');
+    localStorage.removeItem('pp_user_email');
+    localStorage.removeItem('pp_user_id');
+    window.location.href = 'login.html';
+  }
+
+  async function apiFetch(url, options = {}) {
+    const res = await fetch(url, {
+      ...options,
+      headers: { ...getAuthHeaders(), ...(options.headers || {}) },
+    });
+    if (res.status === 401) { logout(); return null; }
+    return res;
+  }
+
+  // ── NAV DROPDOWN ──────────────────────────────────────────────────
+  function toggleUserMenu(e) {
+    e.stopPropagation();
+    const dropdown = document.getElementById('userMenuDropdown');
+    dropdown.classList.toggle('open');
+  }
+
+  document.addEventListener('click', () => {
+    document.getElementById('userMenuDropdown')?.classList.remove('open');
+  });
+
+  async function openBillingPortal() {
+    document.getElementById('userMenuDropdown')?.classList.remove('open');
+    showToast('Opening billing portal…');
+    try {
+      const res  = await apiFetch('http://localhost:3000/api/billing/portal', { method: 'POST' });
+      if (!res) return;
+      const json = await res.json();
+      if (!res.ok) { showToast(json.message || 'Could not open billing portal.', true); return; }
+      window.location.href = json.url;
+    } catch (_) { showToast('Network error. Please try again.', true); }
+  }
+
+  async function startUpgrade() {
+    const mi   = document.getElementById('upgradeMenuItem');
+    const plan = mi?.dataset?.targetPlan;
+    if (!plan) return;
+    document.getElementById('userMenuDropdown')?.classList.remove('open');
+    try {
+      const res  = await apiFetch('http://localhost:3000/api/billing/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan }),
+      });
+      const json = await res?.json();
+      if (json?.url) window.location.href = json.url;
+    } catch (_) { showToast('Network error. Please try again.', true); }
+  }
+
+  // ── TOAST ─────────────────────────────────────────────────────────
+  function showToast(msg, isError = false) {
+    const toast = document.getElementById('toast');
+    const icon  = document.getElementById('toastIcon');
+    const msgEl = document.getElementById('toastMsg');
+    if (!toast) return;
+    icon.textContent = isError ? '✕' : '✓';
+    msgEl.textContent = msg;
+    toast.className = `toast show ${isError ? 'error' : 'success'}`;
+    setTimeout(() => { toast.className = 'toast'; }, 3000);
+  }
+
+  // ── DATA ──────────────────────────────────────────────────────────
+  let allTransactions = [];
+  let activeFilter    = 'all';
+  const PAGE_SIZE     = 50;
+  let visibleCount    = PAGE_SIZE;
+
+  function filtered() {
+    if (activeFilter === 'all') return allTransactions;
+    return allTransactions.filter(t => t.transaction_type === activeFilter);
+  }
+
+  function setFilter(type) {
+    activeFilter = type;
+    visibleCount = PAGE_SIZE;
+    document.querySelectorAll('.filter-btn').forEach(b => {
+      b.classList.toggle('active', b.dataset.type === type);
+    });
+    renderTable();
+  }
+
+  function renderTable() {
+    const rows    = filtered();
+    const visible = rows.slice(0, visibleCount);
+    const tbody   = document.getElementById('txBody');
+    const table   = document.getElementById('txTable');
+    const empty   = document.getElementById('txEmpty');
+    const lmWrap  = document.getElementById('loadMoreWrap');
+    const lmBtn   = document.getElementById('loadMoreBtn');
+    const txCount = document.getElementById('txCount');
+
+    txCount.textContent = `${rows.length} transaction${rows.length !== 1 ? 's' : ''}`;
+
+    if (!rows.length) {
+      table.style.display = 'none';
+      empty.style.display = '';
+      lmWrap.style.display = 'none';
+      return;
+    }
+
+    empty.style.display  = 'none';
+    table.style.display  = '';
+
+    const typeMap = {
+      search:       { label: '🔍 Search',       cls: 'tx-badge--search' },
+      unlock:       { label: '🔓 Unlock',        cls: 'tx-badge--unlock' },
+      subscription: { label: '⚡ Subscription',  cls: 'tx-badge--subscription' },
+    };
+
+    tbody.innerHTML = visible.map(t => {
+      const dt      = new Date(t.created_at);
+      const dateStr = dt.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+      const timeStr = dt.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+      const sign    = t.credits >= 0 ? '+' : '';
+      const cls     = t.credits >= 0 ? 'tx-pos' : 'tx-neg';
+      const badge   = typeMap[t.transaction_type] || { label: t.transaction_type, cls: '' };
+      return `<tr>
+        <td class="tx-date">${dateStr}<span class="tx-time">${timeStr}</span></td>
+        <td><span class="tx-badge ${badge.cls}">${badge.label}</span></td>
+        <td class="tx-desc">${escHtml(t.description || '—')}</td>
+        <td class="tx-amount ${cls}">${sign}${t.credits.toLocaleString()}</td>
+      </tr>`;
+    }).join('');
+
+    lmWrap.style.display = rows.length > visibleCount ? '' : 'none';
+    if (lmBtn) lmBtn.textContent = `Load more (${rows.length - visibleCount} remaining)`;
+  }
+
+  function loadMore() {
+    visibleCount += PAGE_SIZE;
+    renderTable();
+  }
+
+  function escHtml(s) {
+    return String(s)
+      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function computeSummary() {
+    let spent    = 0;
+    let received = 0;
+    for (const t of allTransactions) {
+      if (t.credits < 0) spent    += Math.abs(t.credits);
+      else               received += t.credits;
+    }
+    document.getElementById('summarySpent').textContent    = spent.toLocaleString();
+    document.getElementById('summaryReceived').textContent = received.toLocaleString();
+  }
+
+  // ── FETCH PROFILE ─────────────────────────────────────────────────
+  async function fetchProfile() {
+    try {
+      const res  = await apiFetch('http://localhost:3000/api/me');
+      if (!res || !res.ok) return;
+      const json = await res.json();
+      const user = json?.data;
+      if (!user) return;
+
+      const email = user.email || '';
+      document.getElementById('navUserEmail').textContent  = email;
+      document.getElementById('userMenuEmail').textContent = email;
+      const av = document.getElementById('userAvatar');
+      if (av) av.textContent = email ? email[0].toUpperCase() : '?';
+
+      const planLabel = { free: 'Free', starter: 'Starter', growth: 'Growth' }[user.plan] || (user.plan || 'Free');
+      document.getElementById('summaryBalance').textContent = (user.credits ?? 0).toLocaleString();
+      document.getElementById('summaryPlan').textContent    = `${planLabel} plan`;
+
+      const planBadge = document.getElementById('userMenuPlan');
+      if (planBadge) {
+        planBadge.textContent = planLabel;
+        planBadge.className   = `user-plan-badge user-plan-badge--${user.plan || 'free'}`;
+      }
+
+      const upgradeMenuItem  = document.getElementById('upgradeMenuItem');
+      const upgradeMenuLabel = document.getElementById('upgradeMenuLabel');
+      if (user.plan === 'growth') {
+        if (upgradeMenuItem) upgradeMenuItem.style.display = 'none';
+      } else {
+        if (upgradeMenuItem) {
+          upgradeMenuItem.style.display    = '';
+          upgradeMenuItem.dataset.targetPlan = user.plan === 'starter' ? 'growth' : 'starter';
+        }
+        if (upgradeMenuLabel) upgradeMenuLabel.textContent = user.plan === 'starter' ? 'Upgrade to Growth' : 'Upgrade Plan';
+      }
+    } catch (_) { /* non-fatal */ }
+  }
+
+  // ── FETCH TRANSACTIONS ────────────────────────────────────────────
+  async function fetchTransactions() {
+    const loading = document.getElementById('txLoading');
+    try {
+      const res  = await apiFetch('http://localhost:3000/api/me/transactions');
+      if (!res || !res.ok) throw new Error('Failed');
+      const json = await res.json();
+      allTransactions = json.data ?? [];
+      computeSummary();
+      renderTable();
+    } catch (_) {
+      if (loading) loading.textContent = 'Failed to load transactions. Please refresh.';
+      return;
+    }
+    if (loading) loading.style.display = 'none';
+  }
+
+  // ── INIT ──────────────────────────────────────────────────────────
+  document.addEventListener('DOMContentLoaded', () => {
+    if (!getToken()) { window.location.href = 'login.html'; return; }
+    const email = localStorage.getItem('pp_user_email') || '';
+    if (email) {
+      document.getElementById('navUserEmail').textContent  = email;
+      document.getElementById('userMenuEmail').textContent = email;
+      const av = document.getElementById('userAvatar');
+      if (av) av.textContent = email[0].toUpperCase();
+    }
+    fetchProfile();
+    fetchTransactions();
+  });
+  </script>
+</body>
+</html>

@@ -55,6 +55,11 @@ PORT=3000
 APP_URL=http://localhost:3000
 SUPABASE_URL=https://yeaiazjvuxkytxkfjfzj.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+REDIS_URL=redis://127.0.0.1:6379
+STRIPE_SECRET_KEY=sk_test_REPLACE_ME
+STRIPE_WEBHOOK_SECRET=whsec_REPLACE_ME
+STRIPE_PRICE_STARTER=price_REPLACE_ME
+STRIPE_PRICE_GROWTH=price_REPLACE_ME
 N8N_PROSPECTPULSE_WEBHOOK_URL=https://local.jobscapeai.com/webhook/prospectpulse-scan
 DEV_USER_ID=00000000-0000-0000-0000-000000000000
 ```
@@ -63,6 +68,12 @@ Run the dev server:
 
 ```bash
 npm run dev
+```
+
+Run the Stripe billing worker in a second terminal:
+
+```bash
+npm run worker:billing:dev
 ```
 
 Open:
@@ -103,6 +114,50 @@ https://yourdomain.com/reset-password.html
 6. n8n runs Apify and writes rows to `search_results`.
 7. Frontend polls `GET /api/searches/:id/results`.
 8. Credits are deducted after the search completes.
+
+## Stripe Billing Webhooks
+
+Stripe webhooks are verified by Express at:
+
+```text
+POST http://localhost:3000/api/billing/webhook
+```
+
+After signature verification, the API enqueues the event in BullMQ. The worker handles:
+
+- `checkout.session.completed` - updates the user plan, credits, and Stripe customer id
+- `customer.subscription.deleted` - downgrades the user to Free
+- `invoice.paid` - logs the invoice payment for audit visibility
+
+Redis must be running before Stripe events can be queued:
+
+```bash
+redis-server
+```
+
+Start the API and worker in separate terminals:
+
+```bash
+npm run dev
+npm run worker:billing:dev
+```
+
+Test locally with Stripe CLI:
+
+```bash
+stripe login
+stripe listen --forward-to localhost:3000/api/billing/webhook
+```
+
+Copy the `whsec_...` value printed by `stripe listen` into `.env` as `STRIPE_WEBHOOK_SECRET`, then restart the API. Trigger test events:
+
+```bash
+stripe trigger checkout.session.completed
+stripe trigger customer.subscription.deleted
+stripe trigger invoice.paid
+```
+
+For real checkout testing, keep `stripe listen` running, start a Checkout upgrade from the app, and complete payment with a Stripe test card.
 
 ## n8n Workflow
 

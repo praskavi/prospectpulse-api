@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Support | ProspectPulse</title>
+  <meta name="description" content="Contact ProspectPulse support for billing, credits, failed searches, account access, privacy, or data handling questions." />
+  <meta name="robots" content="index, follow" />
+  <link rel="stylesheet" href="landing.css" />
+</head>
+<body>
+  <header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">PP</span><span>ProspectPulse</span></a><nav class="site-nav"><a href="faq.html">FAQ</a><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a class="nav-cta" href="app.html">Open App</a></nav></header>
+  <main class="legal-page">
+    <section class="legal-hero"><p class="eyebrow">Support</p><h1>Contact ProspectPulse</h1><p>Send billing, credit, account, privacy, or search support questions to the ProspectPulse team.</p></section>
+
+    <section class="contact-panel">
+      <form id="supportContactForm" class="contact-form">
+        <div class="contact-field-grid">
+          <label>
+            <span>Name</span>
+            <input name="name" type="text" autocomplete="name" maxlength="120" placeholder="Jane Customer" />
+          </label>
+          <label>
+            <span>Email</span>
+            <input name="email" type="email" autocomplete="email" maxlength="254" required placeholder="you@example.com" />
+          </label>
+        </div>
+
+        <div class="contact-field-grid">
+          <label>
+            <span>Category</span>
+            <select name="category">
+              <option value="general">General support</option>
+              <option value="billing">Billing or refunds</option>
+              <option value="credits">Credits</option>
+              <option value="search">Failed search</option>
+              <option value="account">Account access</option>
+              <option value="privacy">Privacy or data request</option>
+              <option value="security">Security concern</option>
+            </select>
+          </label>
+          <label>
+            <span>Subject</span>
+            <input name="subject" type="text" maxlength="160" required placeholder="Short summary" />
+          </label>
+        </div>
+
+        <label>
+          <span>Message</span>
+          <textarea name="message" rows="7" maxlength="5000" required placeholder="Include your account email, search ID or Stripe invoice ID if relevant, and what happened."></textarea>
+        </label>
+
+        <input name="source" type="hidden" value="contact.html" />
+        <div id="contactFormStatus" class="contact-form-status" role="status" aria-live="polite"></div>
+        <button id="supportSubmitButton" class="contact-submit" type="submit">Submit request</button>
+      </form>
+    </section>
+
+    <section class="legal-grid">
+      <article class="legal-card"><h3>Billing or refunds</h3><p>Include your account email, Stripe invoice ID, and a short description.</p></article>
+      <article class="legal-card"><h3>Failed search or credits</h3><p>Include your account email, search ID if available, expected credit balance, and what happened.</p></article>
+      <article class="legal-card"><h3>Privacy or data requests</h3><p>Include your account email and whether you are requesting access, correction, deletion, or another privacy action.</p></article>
+      <article class="legal-card"><h3>Security concern</h3><p>Include a clear description, affected page/API if known, and steps to reproduce. Do not include secrets in the form.</p></article>
+    </section>
+
+    <section class="legal-section"><h2>Before Contacting Support</h2><ul><li>Check the <a href="faq.html">FAQ</a> for credit, search, and billing behaviour.</li><li>For invoices and payment methods, open Billing &amp; Invoices from the app menu.</li><li>For failed searches, try a smaller location or simpler category before resubmitting.</li></ul></section>
+  </main>
+  <footer class="site-footer"><span>ProspectPulse</span><span class="footer-links"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="refund.html">Refunds</a><a href="acceptable-use.html">Acceptable Use</a></span></footer>
+  <script>
+    const form = document.getElementById('supportContactForm');
+    const statusEl = document.getElementById('contactFormStatus');
+    const submitButton = document.getElementById('supportSubmitButton');
+
+    function setStatus(type, message) {
+      statusEl.className = `contact-form-status ${type ? `is-${type}` : ''}`;
+      statusEl.textContent = message || '';
+    }
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      setStatus('', '');
+      submitButton.disabled = true;
+      submitButton.textContent = 'Submitting...';
+
+      const payload = Object.fromEntries(new FormData(form).entries());
+
+      try {
+        const response = await fetch('/api/support/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const json = await response.json().catch(() => ({}));
+
+        if (!response.ok || !json.success) {
+          throw new Error(json.message || 'Could not submit support request.');
+        }
+
+        const ticketText = json.ticket_id ? ` Ticket ${json.ticket_id}.` : '';
+        setStatus('success', `Support request received.${ticketText}`);
+        form.reset();
+      } catch (error) {
+        setStatus('error', error.message || 'Could not submit support request.');
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = 'Submit request';
+      }
+    });
+  </script>
+</body>
+</html>

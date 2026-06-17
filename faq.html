@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FAQ | ProspectPulse</title>
+  <meta
+    name="description"
+    content="Answers to common ProspectPulse questions about credits, plans, rollovers, filters, lead searches, enrichment, billing, and cancellations."
+  />
+  <link rel="stylesheet" href="landing.css" />
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html" aria-label="ProspectPulse home">
+      <span class="brand-mark">PP</span>
+      <span>ProspectPulse</span>
+    </a>
+    <nav class="site-nav" aria-label="Primary navigation">
+      <a href="index.html#workflow">Workflow</a>
+      <a href="index.html#pricing">Pricing</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="faq.html">FAQ</a>
+      <a class="nav-cta" href="app.html">Open App</a>
+    </nav>
+  </header>
+
+  <main class="faq-page">
+    <section class="faq-hero">
+      <p class="eyebrow">Customer help</p>
+      <h1>Frequently asked questions</h1>
+      <p>
+        Practical answers for using ProspectPulse: credits, plan changes, rollovers,
+        filters, enrichment, saved results, and billing.
+      </p>
+    </section>
+
+    <section class="faq-layout" aria-label="FAQ categories">
+      <aside class="faq-nav">
+        <a href="#credits">Credits</a>
+        <a href="#plans">Plans and billing</a>
+        <a href="#searches">Running searches</a>
+        <a href="#filters">Filters</a>
+        <a href="#results">Results</a>
+        <a href="#troubleshooting">Troubleshooting</a>
+      </aside>
+
+      <div class="faq-content">
+        <section class="faq-section" id="credits">
+          <div class="section-heading faq-heading">
+            <p class="eyebrow">Credits</p>
+            <h2>How credits work</h2>
+          </div>
+
+          <details open>
+            <summary>What are credits?</summary>
+            <p>Credits are the usage balance inside ProspectPulse. Searches and contact actions use credits based on what the system actually returns or unlocks.</p>
+          </details>
+
+          <details>
+            <summary>How many credits do I get?</summary>
+            <p>Free includes 100 trial credits, Starter includes 1,000 credits, and Growth includes 4,000 credits. Paid plan credits are added after successful Stripe payment.</p>
+          </details>
+
+          <details>
+            <summary>Are credits deducted from my selected search size or actual results?</summary>
+            <p>Credits are deducted from actual output. If you ask for 50 businesses but only 12 are returned, the business-search charge is based on 12 returned businesses.</p>
+          </details>
+
+          <details>
+            <summary>How much does a business result cost?</summary>
+            <p>Each returned business costs 2 credits. Contact unlocking and deeper enrichment can add extra costs depending on the plan and feature used.</p>
+          </details>
+
+          <details>
+            <summary>Do failed searches use credits?</summary>
+            <p>No. If a search fails before usable results are saved, credits should not be deducted.</p>
+          </details>
+
+          <details>
+            <summary>Where can I see credit history?</summary>
+            <p>Open the app menu and select Credit History. It shows recent search, unlock, subscription, and billing-related credit entries.</p>
+          </details>
+        </section>
+
+        <section class="faq-section" id="plans">
+          <div class="section-heading faq-heading">
+            <p class="eyebrow">Plans and billing</p>
+            <h2>Subscriptions, upgrades, downgrades, and cancellations</h2>
+          </div>
+
+          <details>
+            <summary>Can Free users upgrade to Starter or Growth?</summary>
+            <p>Yes. Free users can choose Starter or Growth from the account page actions. Starter is for lighter prospecting; Growth is for higher-volume searches and broader enrichment.</p>
+          </details>
+
+          <details>
+            <summary>Can I upgrade from Starter to Growth?</summary>
+            <p>Yes. Starter users can upgrade to Growth from the app. After Stripe confirms the change, the app adds the Growth credit allocation to your remaining Starter credit balance.</p>
+          </details>
+
+          <details>
+            <summary>Can I downgrade from Growth to Starter?</summary>
+            <p>Yes. Growth users can downgrade to Starter. Your credits reset to the Starter allocation when the downgrade is processed.</p>
+          </details>
+
+          <details>
+            <summary>Do credits roll over when I downgrade from Growth to Starter?</summary>
+            <p>No. Growth credits do not roll over into Starter. When the downgrade is processed, your balance becomes the Starter credit allocation.</p>
+          </details>
+
+          <details>
+            <summary>What happens if I cancel immediately?</summary>
+            <p>When Stripe confirms the actual cancellation, your account moves to Free permissions, credits become 0, and the Free credit bundle is locked for 30 days.</p>
+          </details>
+
+          <details>
+            <summary>What happens if I cancel at the end of the billing period?</summary>
+            <p>You keep your paid plan and credits until Stripe sends the final cancellation event at period end. The app records the scheduled cancellation date, but does not downgrade you early.</p>
+          </details>
+
+          <details>
+            <summary>Can I get Free credits again after cancelling a paid plan?</summary>
+            <p>Not immediately. After a paid cancellation, Free credits are locked for 30 days to prevent cancel-and-reclaim loops.</p>
+          </details>
+
+          <details>
+            <summary>How does the Free trial work?</summary>
+            <p>Free trial credits are granted once per email address every 30 days. If the same email enrolls again before it is eligible, the Free account is created with 0 credits.</p>
+          </details>
+
+          <details>
+            <summary>Where do I manage invoices and payment details?</summary>
+            <p>Use Billing &amp; Invoices in the account menu. It opens Stripe Billing Portal for invoices, payment methods, and subscription management.</p>
+          </details>
+        </section>
+
+        <section class="faq-section" id="searches">
+          <div class="section-heading faq-heading">
+            <p class="eyebrow">Searches</p>
+            <h2>Running a lead search</h2>
+          </div>
+
+          <details>
+            <summary>What should I enter as the business category?</summary>
+            <p>Use a clear local business type, such as plumber, dentist, real estate agency, mortgage broker, cafe, builder, or accounting firm.</p>
+          </details>
+
+          <details>
+            <summary>What location should I use?</summary>
+            <p>Use the main city, suburb, or service area you care about. Add state and postcodes when you want tighter local targeting.</p>
+          </details>
+
+          <details>
+            <summary>What does max results mean?</summary>
+            <p>Max results is the upper limit you are asking the search to find. The actual number returned can be lower depending on the market and data availability.</p>
+          </details>
+
+          <details>
+            <summary>Why did I receive fewer results than I requested?</summary>
+            <p>The source may not have enough matching businesses for that category and location, or filters may have narrowed the search. Credits are based on returned results, not the original request size.</p>
+          </details>
+
+          <details>
+            <summary>Can I run the same search again?</summary>
+            <p>Yes, but results may differ as source data changes. Use saved search history to revisit prior runs before spending credits on a new one.</p>
+          </details>
+        </section>
+
+        <section class="faq-section" id="filters">
+          <div class="section-heading faq-heading">
+            <p class="eyebrow">Filters</p>
+            <h2>Using filters well</h2>
+          </div>
+
+          <details>
+            <summary>How should I use postcodes?</summary>
+            <p>Add one or more postcodes when you want a tighter search area. This is helpful for suburbs, territories, and sales regions.</p>
+          </details>
+
+          <details>
+            <summary>What is company size used for?</summary>
+            <p>Company size helps describe the type of businesses you want. Use it to focus your prospecting list, especially when your ideal customer is small, mid-market, or larger local operators.</p>
+          </details>
+
+          <details>
+            <summary>What are target roles?</summary>
+            <p>Target roles tell people enrichment what kind of contacts matter to you, such as Owner, Founder, CEO, Director, Manager, Principal, or Operations Manager.</p>
+          </details>
+
+          <details>
+            <summary>When should I enable people enrichment?</summary>
+            <p>Enable people enrichment when you need decision-makers, not just business listings. It can use more credits, so use it when the campaign needs named contacts.</p>
+          </details>
+
+          <details>
+            <summary>When should I enable email verification?</summary>
+            <p>Enable email verification when deliverability matters. It is best for outreach campaigns where bounced emails would hurt quality or waste time.</p>
+          </details>
+
+          <details>
+            <summary>Why are some filters unavailable on Free?</summary>
+            <p>Free is designed for trial use. Company contacts, people enrichment, email verification, and contact unlocking require Starter or Growth.</p>
+          </details>
+        </section>
+
+        <section class="faq-section" id="results">
+          <div class="section-heading faq-heading">
+            <p class="eyebrow">Results</p>
+            <h2>Understanding saved results</h2>
+          </div>
+
+          <details>
+            <summary>What information can appear in a result?</summary>
+            <p>Results can include business name, business type, city, state, phone, website, rating, review count, email, owner name, LinkedIn URL, and Google listing URL when available.</p>
+          </details>
+
+          <details>
+            <summary>Why do some businesses not have email or LinkedIn?</summary>
+            <p>Not every business publishes contact details or has discoverable people data. ProspectPulse returns what can be found from the connected data sources.</p>
+          </details>
+
+          <details>
+            <summary>What does contact unlocking do?</summary>
+            <p>If contact data is available but locked, Starter and Growth users can spend unlock credits to reveal the contact details for that result.</p>
+          </details>
+
+          <details>
+            <summary>How long are results saved?</summary>
+            <p>Free search history is retained for 7 days, Starter for 30 days, and Growth for 90 days.</p>
+          </details>
+
+          <details>
+            <summary>Can I export results?</summary>
+            <p>Yes, where export is available in the app, it exports the currently loaded and filtered result set.</p>
+          </details>
+        </section>
+
+        <section class="faq-section" id="troubleshooting">
+          <div class="section-heading faq-heading">
+            <p class="eyebrow">Troubleshooting</p>
+            <h2>Common issues</h2>
+          </div>
+
+          <details>
+            <summary>Why is my search taking a while?</summary>
+            <p>Search time depends on result volume, enrichment settings, and source response times. People enrichment and verification can take longer than a basic business search.</p>
+          </details>
+
+          <details>
+            <summary>Why did my credits not update immediately?</summary>
+            <p>Refresh the balance using the refresh button. Billing and webhook events can take a few seconds to process through Stripe and the worker queue.</p>
+          </details>
+
+          <details>
+            <summary>Why can I not open Billing Portal?</summary>
+            <p>Billing Portal is available after you have an active Stripe customer record. Free users who have never upgraded may not have a portal session yet.</p>
+          </details>
+
+          <details>
+            <summary>What should I do if a search fails?</summary>
+            <p>Try a smaller location, simpler category, or fewer enrichment options. If it still fails, check whether your account has credits and whether the selected filters are available on your plan.</p>
+          </details>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span>ProspectPulse</span>
+    <span class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="terms.html">Terms</a>
+      <a href="refund.html">Refunds</a>
+      <a href="data-handling.html">Data Handling</a>
+      <a href="contact.html">Contact</a>
+    </span>
+  </footer>
+</body>
+</html>

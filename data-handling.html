@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data Handling | ProspectPulse</title>
+  <meta name="description" content="How ProspectPulse handles searches, lead results, contact enrichment, retention, exports, and admin access." />
+  <meta name="robots" content="index, follow" />
+  <link rel="stylesheet" href="landing.css" />
+</head>
+<body>
+  <header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">PP</span><span>ProspectPulse</span></a><nav class="site-nav"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="faq.html">FAQ</a><a class="nav-cta" href="app.html">Open App</a></nav></header>
+  <main class="legal-page">
+    <section class="legal-hero"><p class="eyebrow">Trust</p><h1>Data Handling</h1><p class="legal-updated">Last updated: 17 June 2026</p><p>This page explains how ProspectPulse stores and protects customer search data and lead results.</p></section>
+
+    <section class="legal-section"><h2>Search Records</h2><p>Each search is stored with the user ID, category, location, filters, status, estimated credits, actual credits, result counts, creation date, and expiry date.</p></section>
+
+    <section class="legal-section"><h2>Search Results</h2><p>Results may include public business information, websites, phone numbers, ratings, public listing URLs, enriched owner/contact fields, LinkedIn URLs, emails where available, and raw provider payloads used for troubleshooting.</p></section>
+
+    <section class="legal-section"><h2>Access Controls</h2><ul><li>Customer-facing search results are scoped to the logged-in user.</li><li>Admin access is restricted to users in the `admin_users` allowlist.</li><li>Service-role keys and Stripe secrets stay on the backend.</li><li>Admin pages are internal and marked `noindex`.</li></ul></section>
+
+    <section class="legal-section"><h2>Retention</h2><p>Current retention targets are Free: 7 days, Starter: 30 days, and Growth: 90 days. Some operational records, such as billing events, credit transactions, webhook logs, and admin audit records, may be retained longer.</p></section>
+
+    <section class="legal-section"><h2>Exports</h2><p>When customers export or copy results, they become responsible for storing, securing, updating, and using that data lawfully outside ProspectPulse.</p></section>
+
+    <section class="legal-section"><h2>Operational Monitoring</h2><p>ProspectPulse keeps internal records for Stripe webhooks, credit transactions, failed searches, and queue status to support billing accuracy and incident response.</p></section>
+  </main>
+  <footer class="site-footer"><span>ProspectPulse</span><span class="footer-links"><a href="privacy.html">Privacy</a><a href="acceptable-use.html">Acceptable Use</a><a href="terms.html">Terms</a><a href="contact.html">Contact</a></span></footer>
+</body>
+</html>

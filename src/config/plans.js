@@ -1,18 +1,19 @@
-//Retention days per plan — how long search results are kept before deletion
+// Retention days per plan — how long search results are kept before deletion
 export const PLAN_RETENTION_DAYS = {
-    free: 7,
-    starter: 30,
-    growth: 90,
+  free:    7,
+  starter: 30,
+  growth:  90,
 };
 
-// plan features and limits can be added here in the future for reference when implementing subscription-based access control and credit deduction logic
 export const PLAN_LIMITS = {
   free: {
     maxResults:        10,
-    categoryTerms:     1,     // searchStringsArray length cap
-    scrapeContacts:    false, // Find company contacts toggle
-    maxLeadsPerPlace:  0,     // people enrichment — 0 = disabled
+    categoryTerms:     1,
+    scrapeContacts:    false,
+    maxLeadsPerPlace:  0,
     emailVerification: false,
+    contactUnlock:     false,
+    unlockCost:        0,
     label:             'Free',
     credits:           100,
   },
@@ -22,6 +23,8 @@ export const PLAN_LIMITS = {
     scrapeContacts:    true,
     maxLeadsPerPlace:  1,
     emailVerification: true,
+    contactUnlock:     true,
+    unlockCost:        15,
     label:             'Starter',
     credits:           1000,
   },
@@ -31,10 +34,14 @@ export const PLAN_LIMITS = {
     scrapeContacts:    true,
     maxLeadsPerPlace:  2,
     emailVerification: true,
+    contactUnlock:     true,
+    unlockCost:        15,
     label:             'Growth',
     credits:           4000,
   },
 };
-    
-//used during development before auth +subscriptions are implemented
-export const DEFAULT_PLAN  = 'starter';
+
+export const DEFAULT_PLAN = 'free';
+
+export const FREE_PLAN_REENTRY_LOCKOUT_DAYS = 30;
+export const FREE_TRIAL_REENROLL_DAYS = 30;

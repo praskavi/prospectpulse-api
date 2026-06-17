@@ -18,9 +18,43 @@
       </a>
       
 <div class="nav-actions">
-  <span class="nav-user-email" id="navUserEmail"></span>
-  <button class="btn-settings" onclick="openSettings()" title="Settings">⚙</button>
-  <button class="btn-logout" onclick="logout()" title="Sign out">↩ Sign out</button>
+  <div class="user-menu" id="userMenu">
+    <button class="user-menu-trigger" id="userMenuTrigger" onclick="toggleUserMenu(event)" title="Account">
+      <span class="user-avatar" id="userAvatar">?</span>
+      <span class="nav-user-email" id="navUserEmail"></span>
+      <span class="user-menu-chevron">▾</span>
+    </button>
+    <div class="user-menu-dropdown" id="userMenuDropdown">
+      <div class="user-menu-header">
+        <div class="user-menu-email" id="userMenuEmail"></div>
+        <div class="user-menu-plan"><span class="user-plan-badge" id="userMenuPlan">Free</span></div>
+      </div>
+      <div class="user-menu-divider"></div>
+      <button class="user-menu-item" id="adminMenuItem" onclick="openAdminDashboard()" style="display:none;">
+        <span class="umi-icon">◆</span> Admin Dashboard
+      </button>
+      <button class="user-menu-item" onclick="openBillingPortal()">
+        <span class="umi-icon">🧾</span> Billing &amp; Invoices
+      </button>
+      <a class="user-menu-item" id="upgradeMenuItem" href="upgrade.html" style="display:none;">
+        <span class="umi-icon">⚡</span> <span id="upgradeMenuLabel">Upgrade Plan</span>
+      </a>
+      <div class="user-menu-divider"></div>
+      <button class="user-menu-item" onclick="window.location.href='credits.html'">
+        <span class="umi-icon">🪙</span> Credit History
+      </button>
+      <button class="user-menu-item" onclick="openSettings()">
+        <span class="umi-icon">⚙</span> Settings
+      </button>
+      <button class="user-menu-item" onclick="window.location.href='faq.html'">
+        <span class="umi-icon">?</span> Help &amp; FAQ
+      </button>
+      <div class="user-menu-divider"></div>
+      <button class="user-menu-item user-menu-item--danger" onclick="logout()">
+        <span class="umi-icon">↩</span> Sign Out
+      </button>
+    </div>
+  </div>
 </div>
     </div>
   </nav>
@@ -68,7 +102,6 @@
             <div class="account-card-value" id="planDisplay">—</div>
             <div class="account-card-subvalue" id="planCreditsDisplay">— credits included</div>
           </div>
-          <div class="account-card-badge" id="planBadge"></div>
         </div>
         <div class="account-card">
           <div class="account-card-icon">🪙</div>
@@ -77,6 +110,33 @@
             <div class="account-card-value" id="creditsAmount">—</div>
           </div>
           <button class="account-card-refresh" id="creditsRefreshBtn" onclick="fetchUserProfile()" title="Refresh balance">↻</button>
+        </div>
+      </div>
+
+      <!-- CREDIT HISTORY -->
+      <div class="credit-history-section" id="creditHistorySection">
+        <div class="credit-history-header" onclick="toggleCreditHistory()">
+          <div class="credit-history-title">
+            <span class="ch-icon">🪙</span>
+            <h3>Credit History</h3>
+            <span class="ch-count" id="chCount"></span>
+          </div>
+          <span class="ch-toggle" id="chToggle">▾</span>
+        </div>
+        <div class="credit-history-body" id="creditHistoryBody" style="display:none;">
+          <div class="ch-loading" id="chLoading" style="display:none;">Loading…</div>
+          <div class="ch-empty" id="chEmpty" style="display:none;">No transactions yet.</div>
+          <table class="ch-table" id="chTable" style="display:none;">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th class="ch-col-credits">Credits</th>
+              </tr>
+            </thead>
+            <tbody id="chTableBody"></tbody>
+          </table>
         </div>
       </div>
 
@@ -353,7 +413,11 @@
   </main>
 
   <footer class="wrap">
-    ProspectPulse V2 &middot; Powered by <a href="#">n8n Automation</a> &middot; Built for Prashant
+    ProspectPulse V2 &middot;
+    <a href="privacy.html">Privacy</a> &middot;
+    <a href="terms.html">Terms</a> &middot;
+    <a href="refund.html">Refunds</a> &middot;
+    <a href="contact.html">Support</a>
   </footer>
 
   <!-- ── SETTINGS MODAL ── -->
@@ -409,6 +473,6 @@
     <span id="toastMsg"></span>
   </div>
 
-  <script src="script.js?v=20260615-plan-credits-card"></script>
+  <script src="script.js?v=20260617-admin-menu"></script>
 </body>
 </html>
