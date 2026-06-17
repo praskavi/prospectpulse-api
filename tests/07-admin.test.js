@@ -3,9 +3,11 @@ import request from 'supertest';
 import { app } from '../src/app.js';
 import {
   ADMIN_USER,
+  cleanupAdminAlerts,
   cleanupSupportTickets,
   getMagicLinkToken,
   getToken,
+  seedAdminAlert,
   seedSupportTicket,
   TEST_USERS,
 } from './helpers.js';
@@ -15,16 +17,28 @@ describe('07 - Admin dashboard API', () => {
   let nonAdminToken;
   let existingSearch;
   let supportTicket;
+  let adminAlert;
 
   beforeAll(async () => {
     adminToken = await getMagicLinkToken(ADMIN_USER.email);
     nonAdminToken = await getToken(TEST_USERS.free.email);
-    await cleanupSupportTickets('@prospectpulse.test');
+    await cleanupSupportTickets('support-admin-test@prospectpulse.test');
+    await cleanupSupportTickets('support-retry-test@prospectpulse.test');
+    await cleanupSupportTickets('alert-scan-test@prospectpulse.test');
+    await cleanupAdminAlerts('vitest-alert');
+    await cleanupAdminAlerts('support_n8n_failed:SUP-ALERT-SCAN');
     supportTicket = await seedSupportTicket({
       email: 'support-admin-test@prospectpulse.test',
       subject: 'Billing support admin test',
       category: 'billing',
       priority: 'high',
+    });
+    adminAlert = await seedAdminAlert({
+      alert_key: `vitest-alert-${Date.now().toString(36)}`,
+      title: 'Seeded admin alert test',
+      alert_type: 'search_failed',
+      severity: 'warning',
+      status: 'open',
     });
   });
 
@@ -312,6 +326,58 @@ describe('07 - Admin dashboard API', () => {
     expect(res.body.success).toBe(true);
     expect(res.body.data.ticket_id).toBe(retryTicket.ticket_id);
     expect(res.body.data.n8n_status).toBe('sent');
+  });
+
+  it('GET /api/admin/alerts returns paged operational alerts', async () => {
+    const res = await request(app)
+      .get('/api/admin/alerts?status=open&limit=10')
+      .set('Authorization', `Bearer ${adminToken}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(Array.isArray(res.body.data)).toBe(true);
+    expect(res.body.meta).toEqual(expect.objectContaining({
+      page: 1,
+      limit: 10,
+      total: expect.any(Number),
+    }));
+    expect(res.body.data.some(alert => alert.id === adminAlert.id)).toBe(true);
+  });
+
+  it('PATCH /api/admin/alerts/:id updates alert status', async () => {
+    const res = await request(app)
+      .patch(`/api/admin/alerts/${adminAlert.id}`)
+      .set('Authorization', `Bearer ${adminToken}`)
+      .send({ status: 'acknowledged' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.data.status).toBe('acknowledged');
+    expect(res.body.data.acknowledged_at).toBeTruthy();
+  });
+
+  it('POST /api/admin/alerts/scan creates alert records from failed operational signals', async () => {
+    const scanTicket = await seedSupportTicket({
+      ticket_id: 'SUP-ALERT-SCAN',
+      email: 'alert-scan-test@prospectpulse.test',
+      subject: 'Alert scan support workflow failure',
+      category: 'billing',
+      priority: 'high',
+      n8n_status: 'failed',
+    });
+
+    const res = await request(app)
+      .post('/api/admin/alerts/scan')
+      .set('Authorization', `Bearer ${adminToken}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.data).toEqual(expect.objectContaining({
+      candidates: expect.any(Number),
+      created: expect.any(Number),
+      updated: expect.any(Number),
+    }));
+    expect(res.body.data.alerts.some(alert => alert.source_id === scanTicket.ticket_id)).toBe(true);
   });
 
   it('GET /api/admin/system/health returns API and database status', async () => {

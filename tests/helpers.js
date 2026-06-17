@@ -207,3 +207,36 @@ export async function seedSupportTicket(overrides = {}) {
   if (error) throw new Error(`seedSupportTicket failed: ${error.message}`);
   return data;
 }
+
+export async function cleanupAdminAlerts(keyFragment = 'vitest') {
+  const { error } = await supabaseAdmin
+    .from('admin_alerts')
+    .delete()
+    .ilike('alert_key', `%${keyFragment}%`);
+
+  if (error) console.warn(`cleanupAdminAlerts(${keyFragment}): ${error.message}`);
+}
+
+export async function seedAdminAlert(overrides = {}) {
+  const timestamp = Date.now().toString(36).toUpperCase();
+  const { data, error } = await supabaseAdmin
+    .from('admin_alerts')
+    .insert({
+      alert_key: overrides.alert_key || `vitest-alert-${timestamp}`,
+      alert_type: overrides.alert_type || 'search_failed',
+      severity: overrides.severity || 'warning',
+      status: overrides.status || 'open',
+      title: overrides.title || 'Vitest admin alert',
+      message: overrides.message || 'This seeded alert is used by the admin API test suite.',
+      source_table: overrides.source_table || 'searches',
+      source_id: overrides.source_id || `vitest-${timestamp}`,
+      source_url: overrides.source_url || 'admin.html#alerts',
+      metadata: overrides.metadata || { source: 'vitest' },
+      notification_status: overrides.notification_status || 'skipped',
+    })
+    .select()
+    .single();
+
+  if (error) throw new Error(`seedAdminAlert failed: ${error.message}`);
+  return data;
+}

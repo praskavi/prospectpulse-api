@@ -46,6 +46,10 @@
     .pill-resolved, .pill-closed { color: #6ee7b7; background: rgba(16,185,129,.12); }
     .pill-urgent, .pill-high { color: #fca5a5; background: rgba(239,68,68,.12); }
     .pill-normal, .pill-low { color: #a3a3a3; background: rgba(255,255,255,.06); }
+    .pill-critical { color: #fca5a5; background: rgba(239,68,68,.12); }
+    .pill-warning { color: #fdba74; background: rgba(249,115,22,.12); }
+    .pill-info { color: #93c5fd; background: rgba(59,130,246,.12); }
+    .pill-acknowledged { color: #c4b5fd; background: rgba(139,92,246,.12); }
     .admin-section { display: none; }
     .admin-section.active { display: block; }
     .admin-state { padding: 18px 16px; color: var(--text2); font-size: 13px; }
@@ -88,6 +92,7 @@
       <button class="admin-tab" data-tab="searches" onclick="showTab('searches')">Searches</button>
       <button class="admin-tab" data-tab="transactions" onclick="showTab('transactions')">Transactions</button>
       <button class="admin-tab" data-tab="support" onclick="showTab('support')">Support</button>
+      <button class="admin-tab" data-tab="alerts" onclick="showTab('alerts')">Alerts</button>
       <button class="admin-tab" data-tab="billing" onclick="showTab('billing')">Billing Health</button>
       <button class="admin-tab" data-tab="webhooks" onclick="showTab('webhooks')">Webhooks</button>
       <button class="admin-tab" data-tab="system" onclick="showTab('system')">System</button>
@@ -98,6 +103,7 @@
     <section class="admin-section" id="section-searches"></section>
     <section class="admin-section" id="section-transactions"></section>
     <section class="admin-section" id="section-support"></section>
+    <section class="admin-section" id="section-alerts"></section>
     <section class="admin-section" id="section-billing"></section>
     <section class="admin-section" id="section-webhooks"></section>
     <section class="admin-section" id="section-system"></section>
@@ -197,6 +203,7 @@
         if (name === 'searches') await loadSearches();
         if (name === 'transactions') await loadTransactions();
         if (name === 'support') await loadSupport();
+        if (name === 'alerts') await loadAlerts();
         if (name === 'billing') await loadBilling();
         if (name === 'webhooks') await loadWebhooks();
         if (name === 'system') await loadSystem();
@@ -346,6 +353,60 @@
         <input class="admin-input" name="search" placeholder="Ticket, subject, message" value="${fv('supportFilters', 'search')}" />
         <button class="admin-btn" type="submit">Apply</button><button class="admin-btn" type="button" onclick="clearFilters('supportFilters')">Clear</button>
       </form></div><div class="admin-state">${data.length} loaded</div>${table(['Ticket','Status','Priority','Category','Email','Subject','n8n','Created','Actions'], rows)}</div>`);
+    }
+
+    async function scanAlerts() {
+      const res = await fetch('/api/admin/alerts/scan', {
+        method: 'POST',
+        headers: authHeaders(),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        alert(json.message || `Could not scan alerts (${res.status})`);
+        return;
+      }
+      state.loaded.delete('alerts');
+      loadAlerts();
+    }
+
+    async function updateAlertStatus(alertId, status) {
+      const res = await fetch(`/api/admin/alerts/${encodeURIComponent(alertId)}`, {
+        method: 'PATCH',
+        headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        alert(json.message || `Could not update alert (${res.status})`);
+        return;
+      }
+      state.loaded.delete('alerts');
+      loadAlerts();
+    }
+
+    async function loadAlerts() {
+      const data = await api(`/alerts?${qs('alertsFilters')}`);
+      const rows = data.map(alert => `<tr>
+        <td>${pill(alert.severity)}</td>
+        <td>${pill(alert.status)}</td>
+        <td>${esc(alert.alert_type)}</td>
+        <td class="wrap-cell"><strong>${esc(alert.title)}</strong><br><span class="admin-muted">${esc(alert.message)}</span></td>
+        <td class="admin-id">${esc(alert.source_id || '-')}</td>
+        <td>${fmt(alert.occurrence_count)}</td>
+        <td>${pill(alert.notification_status)}</td>
+        <td>${date(alert.last_seen_at)}</td>
+        <td>
+          <button class="admin-btn" onclick="updateAlertStatus('${esc(alert.id)}', 'acknowledged')">Ack</button>
+          <button class="admin-btn" onclick="updateAlertStatus('${esc(alert.id)}', 'resolved')">Resolve</button>
+          <button class="admin-btn" onclick="updateAlertStatus('${esc(alert.id)}', 'open')">Reopen</button>
+        </td>
+      </tr>`);
+      setSection('alerts', `<div class="admin-panel"><div class="admin-panel-header"><div class="admin-panel-title">Operational Alerts</div><form class="admin-panel-tools" id="alertsFilters" onsubmit="event.preventDefault(); refreshActive();">
+        <select class="admin-select" name="status"><option value="">Any status</option><option value="open" ${fs('alertsFilters', 'status', 'open')}>Open</option><option value="acknowledged" ${fs('alertsFilters', 'status', 'acknowledged')}>Acknowledged</option><option value="resolved" ${fs('alertsFilters', 'status', 'resolved')}>Resolved</option></select>
+        <select class="admin-select" name="severity"><option value="">Any severity</option><option value="critical" ${fs('alertsFilters', 'severity', 'critical')}>Critical</option><option value="warning" ${fs('alertsFilters', 'severity', 'warning')}>Warning</option><option value="info" ${fs('alertsFilters', 'severity', 'info')}>Info</option></select>
+        <select class="admin-select" name="alertType"><option value="">Any type</option><option value="stripe_webhook_failed" ${fs('alertsFilters', 'alertType', 'stripe_webhook_failed')}>Stripe webhook failed</option><option value="search_failed" ${fs('alertsFilters', 'alertType', 'search_failed')}>Search failed</option><option value="search_stuck" ${fs('alertsFilters', 'alertType', 'search_stuck')}>Search stuck</option><option value="support_n8n_failed" ${fs('alertsFilters', 'alertType', 'support_n8n_failed')}>Support n8n failed</option><option value="stripe_queue_failed_jobs" ${fs('alertsFilters', 'alertType', 'stripe_queue_failed_jobs')}>Queue failed jobs</option></select>
+        <button class="admin-btn" type="submit">Apply</button><button class="admin-btn" type="button" onclick="clearFilters('alertsFilters')">Clear</button><button class="admin-btn" type="button" onclick="scanAlerts()">Scan Now</button>
+      </form></div><div class="admin-state">${data.length} loaded</div>${table(['Severity','Status','Type','Alert','Source','Seen','Notify','Last Seen','Actions'], rows)}</div>`);
     }
 
     function billingTable(title, rows) {

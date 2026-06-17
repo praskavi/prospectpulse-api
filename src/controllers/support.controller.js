@@ -120,3 +120,57 @@ export async function submitSupportContact(req, res, next) {
     next(error);
   }
 }
+
+function ticketOwnerFilter(req) {
+  const clauses = [`profile_id.eq.${req.user.id}`];
+  if (req.user.email) clauses.push(`email.eq.${String(req.user.email).toLowerCase()}`);
+  return clauses.join(',');
+}
+
+export async function listMySupportTickets(req, res, next) {
+  try {
+    const { data, error } = await supabase
+      .from('support_tickets')
+      .select('id,ticket_id,status,priority,category,subject,message,source,created_at,updated_at,resolved_at')
+      .or(ticketOwnerFilter(req))
+      .order('created_at', { ascending: false })
+      .limit(100);
+
+    if (error) {
+      throw new AppError(`Could not load support tickets: ${error.message}`, 500);
+    }
+
+    res.status(200).json({
+      success: true,
+      data: data || [],
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export async function getMySupportTicket(req, res, next) {
+  try {
+    const { data, error } = await supabase
+      .from('support_tickets')
+      .select('id,ticket_id,status,priority,category,subject,message,source,created_at,updated_at,resolved_at')
+      .or(ticketOwnerFilter(req))
+      .eq('ticket_id', req.params.ticketId)
+      .maybeSingle();
+
+    if (error) {
+      throw new AppError(`Could not load support ticket: ${error.message}`, 500);
+    }
+
+    if (!data) {
+      throw new AppError('Support ticket not found.', 404);
+    }
+
+    res.status(200).json({
+      success: true,
+      data,
+    });
+  } catch (error) {
+    next(error);
+  }
+}

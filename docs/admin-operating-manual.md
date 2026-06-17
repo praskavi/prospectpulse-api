@@ -515,6 +515,100 @@ GET /api/admin/system/health
 Authorization: Bearer <admin_jwt>
 ```
 
+Operational alerts:
+
+```http
+GET /api/admin/alerts?status=open&limit=50
+Authorization: Bearer <admin_jwt>
+```
+
+Run an alert scan manually:
+
+```http
+POST /api/admin/alerts/scan
+Authorization: Bearer <admin_jwt>
+```
+
+Update an alert:
+
+```http
+PATCH /api/admin/alerts/<alert_id>
+Authorization: Bearer <admin_jwt>
+Content-Type: application/json
+
+{
+  "status": "acknowledged"
+}
+```
+
+Allowed alert statuses:
+
+```text
+open
+acknowledged
+resolved
+```
+
+## Operational Alerts
+
+Use Alerts to see failures that need admin attention without manually checking Supabase, Stripe, Redis, n8n, or logs.
+
+The scanner checks:
+
+- Failed Stripe webhook events
+- Failed searches in the last 24 hours
+- Searches stuck in `running` for more than 15 minutes
+- Support tickets where `n8n_status = failed`
+- Failed Stripe webhook queue jobs
+- Redis/queue read failures
+
+Run from the admin dashboard:
+
+1. Open Admin Dashboard.
+2. Open Alerts.
+3. Click Scan Now.
+4. Review open or critical alerts.
+5. Use Ack when you have seen the issue but it is not fixed.
+6. Use Resolve only after the underlying issue is handled.
+7. If a resolved issue appears again, the scanner reopens it.
+
+Run from server/worker environment:
+
+```bash
+npm run alerts:scan
+```
+
+Recommended production schedule:
+
+```text
+Every 5 minutes during beta.
+Every 1-2 minutes after paid users are active.
+```
+
+Notification behavior:
+
+- If `N8N_ADMIN_ALERT_WEBHOOK_URL` is configured, new alerts are posted to that n8n workflow.
+- If it is not configured, alerts are still stored in `admin_alerts` with notification status `skipped`.
+- Repeated scans do not create duplicate alerts because each problem has a stable `alert_key`.
+- If a resolved alert is detected again, it is reopened and notification is attempted again.
+
+Current n8n admin alert workflow:
+
+```text
+Workflow: ProspectPulse - Admin Operational Alerts
+Workflow ID: Fg1Bmv4PyN9VLnRV
+Production webhook: https://local.jobscapeai.com/webhook/prospectpulse/admin/alerts
+```
+
+Recommended n8n alert workflow:
+
+```text
+Webhook trigger
+-> optional severity routing
+-> Gmail/Slack/Teams notification to admin
+-> optional Supabase update or audit step
+```
+
 ## Security Rules
 
 Never expose these in browser code:
@@ -542,7 +636,7 @@ requireAdmin
 
 ## Current Limitations
 
-The current admin dashboard is read-only.
+The admin dashboard now supports limited operational write actions for support tickets and alerts.
 
 Not supported yet:
 
@@ -553,11 +647,9 @@ Not supported yet:
 - Retrying failed searches
 - Retrying webhook jobs
 - Full Redis/BullMQ health check beyond queue counts
-- Admin action audit logging in application code
 
 Before adding write actions, implement:
 
-- Writes to `admin_audit_log`
 - Role-based permissions
 - Confirmation flows
 - Automated tests for each write action
@@ -567,9 +659,9 @@ Before adding write actions, implement:
 
 Priority order:
 
-1. Add full worker/Redis health to System.
-2. Start writing to `admin_audit_log` before any admin write action.
-3. Add safe support actions, starting with non-destructive retries.
+1. Create and publish the n8n admin alert notification workflow.
+2. Schedule `npm run alerts:scan` in the production host.
+3. Add full worker/Redis health to System.
 4. Add broader Stripe subscription reconciliation.
 
 ## Verification
@@ -583,8 +675,8 @@ npm test
 Current expected result:
 
 ```text
-7 test files passing
-54 tests passing
+8 test files passing
+67 tests passing
 ```
 
 Admin-specific test file:
@@ -606,3 +698,5 @@ This verifies:
 - Billing health endpoint loads
 - Webhooks endpoint loads
 - System health endpoint loads
+- Support ticket admin actions work
+- Customer support ticket visibility works

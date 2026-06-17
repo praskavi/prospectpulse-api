@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "vitest run",
+    "test": "vitest run --pool=threads --maxWorkers=1",
     "test:watch": "vitest",
     "dev": "nodemon src/server.js",
     "start": "node src/server.js",
+    "alerts:scan": "node src/scripts/scanAdminAlerts.js",
     "worker:billing": "node src/workers/stripeBilling.worker.js",
     "worker:billing:dev": "nodemon src/workers/stripeBilling.worker.js"
   },

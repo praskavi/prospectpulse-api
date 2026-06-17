@@ -64,6 +64,7 @@ Implemented scope includes:
 - Stripe checkout, portal, webhook, cancellation, upgrade, and downgrade handling
 - Admin dashboard
 - Support ticket intake and admin retry
+- Operational alerting
 - Public FAQ/compliance pages
 - Automated API test suite
 
@@ -407,6 +408,9 @@ Implemented APIs:
 - `GET /api/admin/support-tickets/:id`
 - `PATCH /api/admin/support-tickets/:id`
 - `POST /api/admin/support-tickets/:id/retry-workflow`
+- `GET /api/admin/alerts`
+- `POST /api/admin/alerts/scan`
+- `PATCH /api/admin/alerts/:id`
 
 Implemented capabilities:
 
@@ -420,6 +424,7 @@ Implemented capabilities:
 - System health
 - Support ticket management
 - n8n retry action for support tickets
+- Operational alert scanning and acknowledgement
 - Audit logging for admin write actions
 
 Acceptance criteria:
@@ -431,6 +436,8 @@ Acceptance criteria:
 - Admin can inspect failed/stuck searches.
 - Admin can inspect credit transactions.
 - Admin can retry failed support workflow forwarding.
+- Admin can scan for failed webhooks, failed/stuck searches, failed support notifications, and failed queue jobs.
+- Admin can acknowledge, resolve, and reopen operational alerts.
 
 Supporting tests:
 
@@ -441,7 +448,47 @@ Supporting docs:
 - `docs/admin-dashboard-requirements.md`
 - `docs/admin-operating-manual.md`
 
-### 11. Support Contact and Ticketing
+### 11. Operational Alerts
+
+Status: Implemented
+
+Operational alerts turn existing observability signals into proactive admin notifications.
+
+Implemented capabilities:
+
+- `admin_alerts` table with RLS enabled and service-role-only policy
+- Alert scanner service
+- Optional n8n alert webhook forwarding via `N8N_ADMIN_ALERT_WEBHOOK_URL`
+- Published n8n admin alert workflow: `Fg1Bmv4PyN9VLnRV`
+- Scheduled scanner command: `npm run alerts:scan`
+- Admin Alerts tab
+- Admin alert list/filter API
+- Admin scan-now API
+- Admin acknowledge/resolve/reopen API
+- Audit logging for alert scan and status changes
+
+Alert sources:
+
+- Failed Stripe webhook events in `stripe_webhook_events`
+- Failed searches in `searches`
+- Searches stuck in `running` for more than 15 minutes
+- Failed support workflow notifications in `support_tickets.n8n_status`
+- Failed or unreachable BullMQ Stripe webhook queue
+
+Acceptance criteria:
+
+- The scanner deduplicates repeated problems by stable `alert_key`.
+- New alerts are persisted as open alerts.
+- Resolved alerts reopen if the same issue is detected again.
+- Notification forwarding is skipped safely if no n8n alert webhook is configured.
+- Admin can manually run a scan from the dashboard.
+- Admin can acknowledge, resolve, and reopen alerts.
+
+Supporting migration:
+
+- `202606170012_create_admin_alerts.sql`
+
+### 12. Support Contact and Ticketing
 
 Status: Implemented
 
@@ -456,8 +503,10 @@ Implemented capabilities:
 - Best-effort n8n workflow forwarding
 - n8n Supabase-node support workflow
 - n8n Gmail internal notification
+- Customer confirmation email
 - Admin Support tab
 - Admin retry of n8n workflow
+- Customer-facing support ticket visibility page
 
 Current architecture:
 
@@ -484,14 +533,25 @@ Acceptance criteria:
 - Admin can see support tickets.
 - Admin can change ticket status.
 - Admin can retry n8n forwarding.
+- Logged-in customers can view support tickets submitted with their account email or profile id.
+- Logged-in customers cannot view another user's support tickets.
 - n8n can create/update Supabase tickets via Supabase node.
 - Gmail notification sends after workflow success when credential is available.
+
+Customer page:
+
+- `support-tickets.html`
+
+Customer APIs:
+
+- `GET /api/me/support-tickets`
+- `GET /api/me/support-tickets/:ticketId`
 
 Supporting migration:
 
 - `202606170011_create_support_tickets.sql`
 
-### 12. Public Pricing and Signup Flow
+### 13. Public Pricing and Signup Flow
 
 Status: Implemented
 
@@ -517,7 +577,7 @@ Supporting ADR:
 
 - `docs/adr/0012-public-pricing-and-signup-flow.md`
 
-### 13. Public FAQ and Compliance Pages
+### 14. Public FAQ and Compliance Pages
 
 Status: Implemented
 
@@ -555,7 +615,7 @@ Supporting ADR:
 
 - `docs/adr/0011-public-compliance-and-trust-pages.md`
 
-### 14. Automated Test Suite
+### 15. Automated Test Suite
 
 Status: Implemented
 
@@ -570,6 +630,7 @@ Implemented test files:
 - `tests/05-billing.test.js`
 - `tests/06-webhooks.test.js`
 - `tests/07-admin.test.js`
+- `tests/08-support.test.js`
 
 Implemented coverage:
 
@@ -582,11 +643,12 @@ Implemented coverage:
 - Stripe webhooks
 - Admin APIs
 - Support ticket admin/retry flow
+- Customer support ticket visibility
 
 Current latest known result:
 
 ```text
-59 tests passed
+67 tests passed
 ```
 
 Acceptance criteria:
@@ -594,7 +656,7 @@ Acceptance criteria:
 - `npm test` should pass before production deployment or commit/push of meaningful changes.
 - Network-backed tests require Supabase and n8n/Stripe mocks or sandbox reachability depending on suite area.
 
-### 15. Project Documentation and ADRs
+### 16. Project Documentation and ADRs
 
 Status: Implemented and ongoing
 
@@ -643,12 +705,15 @@ Acceptance criteria:
 - Support tickets are created in Supabase before n8n forwarding.
 - n8n failures are captured through ticket `n8n_status`.
 - Admin can retry support workflow forwarding.
+- Operational alerts are deduplicated and persisted in `admin_alerts`.
+- `npm run alerts:scan` can be scheduled by the hosting platform for proactive checks.
 
 ### Observability
 
 - Admin dashboard exposes users, searches, transactions, webhook events, billing health, system health, and support tickets.
 - Stripe webhook events are persisted in `stripe_webhook_events`.
 - Admin audit logs are written for admin support ticket write actions.
+- Admin alerts expose operational failures before the operator has to inspect raw tables.
 
 ### Compliance and Trust
 
@@ -669,7 +734,6 @@ The following are not yet complete production features:
 - Direct admin plan mutation
 - Search retry from admin
 - Full role-based admin permissions beyond owner/support
-- Customer-facing support ticket history
 - Dedicated email deliverability provider such as Postmark/SendGrid
 - Full customer onboarding flow
 - Backup enrichment provider for LinkedIn/Apify risk
@@ -683,14 +747,18 @@ Before charging real customers in production:
 3. Verify Stripe production prices and webhook endpoint.
 4. Verify Redis/BullMQ worker is running.
 5. Verify n8n workflows are active and credentials are production-safe.
-6. Verify Gmail/support notification deliverability.
-7. Run `npm test`.
-8. Run manual smoke tests for signup, search, unlock, checkout, cancellation, admin, and support.
-9. Review privacy, terms, refund, acceptable use, and data handling pages.
-10. Confirm admin user access and non-admin denial.
+6. Configure `N8N_ADMIN_ALERT_WEBHOOK_URL` or confirm alert notifications are intentionally skipped.
+7. Schedule `npm run alerts:scan`.
+8. Verify Gmail/support notification deliverability.
+9. Run `npm test`.
+10. Run manual smoke tests for signup, search, unlock, checkout, cancellation, admin, support, and alerts.
+11. Review privacy, terms, refund, acceptable use, and data handling pages.
+12. Confirm admin user access and non-admin denial.
 
 ## Change Log
 
 | Date | Change |
 | --- | --- |
+| 2026-06-17 | Added operational alert scanning, admin alert visibility, and optional n8n alert forwarding. |
+| 2026-06-17 | Added customer support ticket visibility to support feature scope. |
 | 2026-06-17 | Created PRD and documented implemented auth, credits, search, billing, admin, support, compliance, and test suite features. |

@@ -7,7 +7,7 @@ import { AppError } from './errorHandler.js';
 import { DEFAULT_PLAN, FREE_TRIAL_REENROLL_DAYS, PLAN_LIMITS } from '../config/plans.js';
 
 const DEV_USER_ID = process.env.DEV_USER_ID;
-const IS_DEV      = process.env.NODE_ENV !== 'production';
+const IS_DEV      = process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'test';
 
 function addDays(date, days) {
   const next = new Date(date);

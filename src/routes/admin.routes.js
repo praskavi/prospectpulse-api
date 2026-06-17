@@ -3,6 +3,11 @@ import supabase, { supabaseAuth } from '../config/supabaseClient.js';
 import { AppError } from '../middleware/errorHandler.js';
 import { stripeWebhookQueue } from '../queues/stripeWebhook.queue.js';
 import { listStripeWebhookEvents } from '../services/stripeWebhookEvents.service.js';
+import {
+  listAdminAlerts,
+  scanOperationalAlerts,
+  updateAdminAlertStatus,
+} from '../services/adminAlerts.service.js';
 import { forwardSupportTicketToWorkflow } from '../controllers/support.controller.js';
 
 const router = express.Router();
@@ -209,6 +214,92 @@ router.get('/support-tickets', async (req, res, next) => {
       data: data || [],
       meta: { page, limit, total: count || 0 },
     });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.get('/alerts', async (req, res, next) => {
+  try {
+    const { page, limit } = pageRange(req.query);
+    const { data, error, count } = await listAdminAlerts({
+      page,
+      limit,
+      status: req.query.status,
+      severity: req.query.severity,
+      alertType: req.query.alertType,
+    });
+
+    if (error) throw error;
+
+    res.status(200).json({
+      success: true,
+      data: data || [],
+      meta: { page, limit, total: count || 0 },
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post('/alerts/scan', async (req, res, next) => {
+  try {
+    const result = await scanOperationalAlerts();
+
+    await auditAdminAction(req, {
+      action: 'admin_alert_scan',
+      targetType: 'admin_alert',
+      targetId: 'operational-scan',
+      metadata: {
+        candidates: result.candidates,
+        created: result.created,
+        updated: result.updated,
+      },
+    });
+
+    res.status(200).json({ success: true, data: result });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.patch('/alerts/:id', async (req, res, next) => {
+  try {
+    const allowedStatuses = new Set(['open', 'acknowledged', 'resolved']);
+    const status = String(req.body?.status || '').trim();
+
+    if (!allowedStatuses.has(status)) {
+      throw new AppError('Invalid alert status.', 400);
+    }
+
+    const { data: before, error: beforeError } = await supabase
+      .from('admin_alerts')
+      .select('*')
+      .eq('id', req.params.id)
+      .maybeSingle();
+
+    if (beforeError) throw beforeError;
+    if (!before) throw new AppError('Admin alert not found.', 404);
+
+    const { data: after, error } = await updateAdminAlertStatus({
+      id: before.id,
+      status,
+      adminUserId: req.admin?.userId,
+    });
+
+    if (error) throw error;
+    if (!after) throw new AppError('Admin alert not found.', 404);
+
+    await auditAdminAction(req, {
+      action: 'admin_alert_status_update',
+      targetType: 'admin_alert',
+      targetId: after.alert_key,
+      beforeState: before,
+      afterState: after,
+      metadata: { source: 'admin_dashboard' },
+    });
+
+    res.status(200).json({ success: true, data: after });
   } catch (error) {
     next(error);
   }

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>ProspectPulse - Support Tickets</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .support-page { max-width: 980px; margin: 0 auto; padding: 36px 24px 72px; }
+    .page-header { padding: 36px 0 28px; border-bottom: 1px solid var(--border); margin-bottom: 28px; }
+    .page-header h1 { font-size: 24px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .page-header p { font-size: 13px; color: var(--text3); }
+    .back-link { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text3); text-decoration: none; transition: color .15s; margin-bottom: 20px; }
+    .back-link:hover { color: var(--accent2); }
+    .support-toolbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+    .filter-label { font-size: 12px; color: var(--text3); }
+    .filter-btn, .support-action {
+      padding: 7px 12px; border-radius: 8px; border: 1px solid var(--border);
+      background: rgba(255,255,255,.04); color: var(--text3);
+      font: inherit; font-size: 12px; cursor: pointer;
+    }
+    .filter-btn:hover, .support-action:hover { border-color: var(--accent2); color: var(--text2); }
+    .filter-btn.active { border-color: var(--accent2); background: rgba(139,92,246,.15); color: #a78bfa; font-weight: 650; }
+    .support-action { margin-left: auto; color: var(--text2); text-decoration: none; }
+    .tickets-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+    .ticket-row { padding: 16px 18px; border-bottom: 1px solid rgba(255,255,255,.06); }
+    .ticket-row:last-child { border-bottom: 0; }
+    .ticket-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+    .ticket-id { font-family: Consolas, 'Courier New', monospace; color: var(--text3); font-size: 12px; margin-bottom: 6px; }
+    .ticket-subject { color: var(--text); font-weight: 720; font-size: 15px; overflow-wrap: anywhere; }
+    .ticket-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; color: var(--text3); font-size: 12px; }
+    .ticket-message { margin-top: 12px; color: var(--text2); line-height: 1.65; font-size: 13px; white-space: pre-wrap; overflow-wrap: anywhere; display: none; }
+    .ticket-row.open .ticket-message { display: block; }
+    .ticket-toggle { white-space: nowrap; }
+    .status-pill { display: inline-flex; align-items: center; border-radius: 999px; padding: 3px 8px; font-size: 11px; font-weight: 650; border: 1px solid var(--border); }
+    .pill-open { color: #fdba74; background: rgba(249,115,22,.12); }
+    .pill-in_progress { color: #93c5fd; background: rgba(59,130,246,.12); }
+    .pill-resolved, .pill-closed { color: #6ee7b7; background: rgba(16,185,129,.12); }
+    .pill-urgent, .pill-high { color: #fca5a5; background: rgba(239,68,68,.12); }
+    .pill-normal, .pill-low { color: #a3a3a3; background: rgba(255,255,255,.06); }
+    .support-state { text-align: center; padding: 48px 24px; font-size: 14px; color: var(--text3); }
+    .support-state strong { color: var(--text); }
+    .toast { z-index: 50; }
+    @media (max-width: 640px) {
+      .support-page { padding-inline: 16px; }
+      .ticket-top { flex-direction: column; }
+      .support-action { margin-left: 0; width: 100%; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-inner">
+      <a href="app.html" class="logo">
+        <div class="logo-icon">PP</div>
+        <span class="logo-text">Prospect<span>Pulse</span></span>
+        <span class="logo-badge">V2</span>
+      </a>
+      <div class="nav-actions">
+        <button class="support-action" onclick="logout()">Sign Out</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="support-page">
+    <a href="app.html" class="back-link">Back to App</a>
+    <div class="page-header">
+      <h1>Support Tickets</h1>
+      <p>Track support requests submitted with your account email.</p>
+    </div>
+
+    <div class="support-toolbar">
+      <span class="filter-label">Filter:</span>
+      <button class="filter-btn active" data-status="all" onclick="setStatusFilter('all')">All</button>
+      <button class="filter-btn" data-status="open" onclick="setStatusFilter('open')">Open</button>
+      <button class="filter-btn" data-status="in_progress" onclick="setStatusFilter('in_progress')">In progress</button>
+      <button class="filter-btn" data-status="resolved" onclick="setStatusFilter('resolved')">Resolved</button>
+      <a class="support-action" href="contact.html">New support request</a>
+    </div>
+
+    <section class="tickets-card">
+      <div id="ticketsLoading" class="support-state">Loading support tickets...</div>
+      <div id="ticketsEmpty" class="support-state" style="display:none;">
+        <strong>No support tickets yet.</strong><br>
+        When you submit a support request with this account email, it will appear here.
+      </div>
+      <div id="ticketsError" class="support-state" style="display:none;"></div>
+      <div id="ticketsList"></div>
+    </section>
+  </main>
+
+  <div class="toast" id="toast"><span class="ti" id="toastIcon">OK</span><span id="toastMsg"></span></div>
+
+  <script>
+    let tickets = [];
+    let activeStatus = 'all';
+
+    function getToken() { return localStorage.getItem('pp_access_token'); }
+    function getAuthHeaders() {
+      const token = getToken();
+      return token ? { Authorization: `Bearer ${token}` } : {};
+    }
+    function logout() {
+      localStorage.removeItem('pp_access_token');
+      localStorage.removeItem('pp_refresh_token');
+      localStorage.removeItem('pp_user_email');
+      localStorage.removeItem('pp_user_id');
+      window.location.href = 'login.html';
+    }
+    function escHtml(s) {
+      return String(s ?? '')
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+    }
+    function dateTime(value) {
+      if (!value) return '-';
+      return new Date(value).toLocaleString('en-AU', { dateStyle: 'medium', timeStyle: 'short' });
+    }
+    function pill(value) {
+      const v = String(value || 'unknown');
+      return `<span class="status-pill pill-${escHtml(v)}">${escHtml(v.replace('_', ' '))}</span>`;
+    }
+    function visibleTickets() {
+      if (activeStatus === 'all') return tickets;
+      return tickets.filter(ticket => ticket.status === activeStatus);
+    }
+    function setStatusFilter(status) {
+      activeStatus = status;
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.status === status);
+      });
+      renderTickets();
+    }
+    function toggleTicket(ticketId) {
+      document.getElementById(`ticket-${ticketId}`)?.classList.toggle('open');
+    }
+    function renderTickets() {
+      const loading = document.getElementById('ticketsLoading');
+      const empty = document.getElementById('ticketsEmpty');
+      const error = document.getElementById('ticketsError');
+      const list = document.getElementById('ticketsList');
+      const rows = visibleTickets();
+
+      loading.style.display = 'none';
+      error.style.display = 'none';
+      empty.style.display = rows.length ? 'none' : '';
+      list.innerHTML = rows.map(ticket => `
+        <article class="ticket-row" id="ticket-${escHtml(ticket.ticket_id)}">
+          <div class="ticket-top">
+            <div>
+              <div class="ticket-id">${escHtml(ticket.ticket_id)}</div>
+              <div class="ticket-subject">${escHtml(ticket.subject)}</div>
+              <div class="ticket-meta">
+                ${pill(ticket.status)}
+                ${pill(ticket.priority)}
+                <span>${escHtml(ticket.category || 'general')}</span>
+                <span>Created ${dateTime(ticket.created_at)}</span>
+                ${ticket.resolved_at ? `<span>Resolved ${dateTime(ticket.resolved_at)}</span>` : ''}
+              </div>
+            </div>
+            <button class="filter-btn ticket-toggle" onclick="toggleTicket('${escHtml(ticket.ticket_id)}')">Details</button>
+          </div>
+          <div class="ticket-message">${escHtml(ticket.message || '')}</div>
+        </article>
+      `).join('');
+    }
+    async function loadTickets() {
+      if (!getToken()) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/me/support-tickets', { headers: getAuthHeaders() });
+        const json = await res.json().catch(() => ({}));
+        if (res.status === 401) { logout(); return; }
+        if (!res.ok) throw new Error(json.message || 'Could not load support tickets.');
+        tickets = json.data || [];
+        renderTickets();
+      } catch (error) {
+        document.getElementById('ticketsLoading').style.display = 'none';
+        const errorEl = document.getElementById('ticketsError');
+        errorEl.style.display = '';
+        errorEl.textContent = error.message || 'Could not load support tickets.';
+      }
+    }
+
+    loadTickets();
+  </script>
+</body>
+</html>

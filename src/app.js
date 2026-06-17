@@ -47,12 +47,11 @@ app.get('/health', (req, res) => {
 // Auth routes — public
 app.use('/api', authRoutes);
 app.use('/api', supportRoutes);
+// Billing router keeps plan metadata public and protects checkout/portal internally.
+app.use('/api', billingRoutes);
 
 // Searches routes — protected
 app.use('/api', requireAuth, searchesRoutes);
-
-// Billing routes
-app.use('/api', billingRoutes);
 
 //admin routes would go here, protected by requireAdmin middleware
 app.use('/api/admin', requireAuth, requireAdmin, adminRoutes);
