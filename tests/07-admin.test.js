@@ -295,6 +295,25 @@ describe('07 - Admin dashboard API', () => {
     expect(res.body.data.resolved_at).toBeTruthy();
   });
 
+  it('POST /api/admin/support-tickets/:id/retry-workflow retries n8n forwarding', async () => {
+    const retryTicket = await seedSupportTicket({
+      email: 'support-retry-test@prospectpulse.test',
+      subject: 'Retry support workflow test',
+      category: 'billing',
+      priority: 'high',
+      n8n_status: 'failed',
+    });
+
+    const res = await request(app)
+      .post(`/api/admin/support-tickets/${retryTicket.ticket_id}/retry-workflow`)
+      .set('Authorization', `Bearer ${adminToken}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.data.ticket_id).toBe(retryTicket.ticket_id);
+    expect(res.body.data.n8n_status).toBe('sent');
+  });
+
   it('GET /api/admin/system/health returns API and database status', async () => {
     const res = await request(app)
       .get('/api/admin/system/health')

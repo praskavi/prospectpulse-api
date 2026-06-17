@@ -307,6 +307,19 @@
       loadSupport();
     }
 
+    async function retryTicketWorkflow(ticketId) {
+      const res = await fetch(`/api/admin/support-tickets/${encodeURIComponent(ticketId)}/retry-workflow`, {
+        method: 'POST',
+        headers: authHeaders(),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        alert(json.message || `Could not retry workflow (${res.status})`);
+      }
+      state.loaded.delete('support');
+      loadSupport();
+    }
+
     async function loadSupport() {
       const data = await api(`/support-tickets?${qs('supportFilters')}`);
       const rows = data.map(ticket => `<tr>
@@ -321,12 +334,14 @@
         <td>
           <button class="admin-btn" onclick="updateTicketStatus('${esc(ticket.ticket_id)}', 'in_progress')">Start</button>
           <button class="admin-btn" onclick="updateTicketStatus('${esc(ticket.ticket_id)}', 'resolved')">Resolve</button>
+          <button class="admin-btn" onclick="retryTicketWorkflow('${esc(ticket.ticket_id)}')">Retry n8n</button>
         </td>
       </tr>`);
       setSection('support', `<div class="admin-panel"><div class="admin-panel-header"><div class="admin-panel-title">Support Tickets</div><form class="admin-panel-tools" id="supportFilters" onsubmit="event.preventDefault(); refreshActive();">
         <select class="admin-select" name="status"><option value="">Any status</option><option value="open" ${fs('supportFilters', 'status', 'open')}>Open</option><option value="in_progress" ${fs('supportFilters', 'status', 'in_progress')}>In progress</option><option value="resolved" ${fs('supportFilters', 'status', 'resolved')}>Resolved</option><option value="closed" ${fs('supportFilters', 'status', 'closed')}>Closed</option></select>
         <select class="admin-select" name="priority"><option value="">Any priority</option><option value="urgent" ${fs('supportFilters', 'priority', 'urgent')}>Urgent</option><option value="high" ${fs('supportFilters', 'priority', 'high')}>High</option><option value="normal" ${fs('supportFilters', 'priority', 'normal')}>Normal</option><option value="low" ${fs('supportFilters', 'priority', 'low')}>Low</option></select>
         <select class="admin-select" name="category"><option value="">Any category</option><option value="billing" ${fs('supportFilters', 'category', 'billing')}>Billing</option><option value="credits" ${fs('supportFilters', 'category', 'credits')}>Credits</option><option value="search" ${fs('supportFilters', 'category', 'search')}>Search</option><option value="account" ${fs('supportFilters', 'category', 'account')}>Account</option><option value="privacy" ${fs('supportFilters', 'category', 'privacy')}>Privacy</option><option value="security" ${fs('supportFilters', 'category', 'security')}>Security</option><option value="general" ${fs('supportFilters', 'category', 'general')}>General</option></select>
+        <select class="admin-select" name="n8nStatus"><option value="">n8n: any</option><option value="not_sent" ${fs('supportFilters', 'n8nStatus', 'not_sent')}>Not sent</option><option value="sent" ${fs('supportFilters', 'n8nStatus', 'sent')}>Sent</option><option value="failed" ${fs('supportFilters', 'n8nStatus', 'failed')}>Failed</option><option value="skipped" ${fs('supportFilters', 'n8nStatus', 'skipped')}>Skipped</option></select>
         <input class="admin-input" name="email" placeholder="Email contains" value="${fv('supportFilters', 'email')}" />
         <input class="admin-input" name="search" placeholder="Ticket, subject, message" value="${fv('supportFilters', 'search')}" />
         <button class="admin-btn" type="submit">Apply</button><button class="admin-btn" type="button" onclick="clearFilters('supportFilters')">Clear</button>

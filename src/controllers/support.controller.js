@@ -34,10 +34,10 @@ async function updateTicket(ticketId, fields) {
   }
 }
 
-async function forwardToWorkflow(ticket) {
+export async function forwardSupportTicketToWorkflow(ticket) {
   if (!SUPPORT_WEBHOOK_URL) {
     await updateTicket(ticket.ticket_id, { n8n_status: 'skipped' });
-    return;
+    return { status: 'skipped' };
   }
 
   const controller = new AbortController();
@@ -61,13 +61,17 @@ async function forwardToWorkflow(ticket) {
       n8n_error: null,
       n8n_sent_at: new Date().toISOString(),
     });
+    return { status: 'sent' };
   } catch (error) {
+    const message = error.name === 'AbortError'
+      ? 'Support workflow timed out.'
+      : String(error.message || error).slice(0, 1000);
+
     await updateTicket(ticket.ticket_id, {
       n8n_status: 'failed',
-      n8n_error: error.name === 'AbortError'
-        ? 'Support workflow timed out.'
-        : String(error.message || error).slice(0, 1000),
+      n8n_error: message,
     });
+    return { status: 'failed', error: message };
   } finally {
     clearTimeout(timeout);
   }
@@ -103,7 +107,7 @@ export async function submitSupportContact(req, res, next) {
       throw new AppError(`Could not create support ticket: ${error.message}`, 500);
     }
 
-    await forwardToWorkflow(ticket);
+    await forwardSupportTicketToWorkflow(ticket);
 
     return res.status(201).json({
       success: true,

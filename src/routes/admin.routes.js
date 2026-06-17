@@ -3,6 +3,7 @@ import supabase, { supabaseAuth } from '../config/supabaseClient.js';
 import { AppError } from '../middleware/errorHandler.js';
 import { stripeWebhookQueue } from '../queues/stripeWebhook.queue.js';
 import { listStripeWebhookEvents } from '../services/stripeWebhookEvents.service.js';
+import { forwardSupportTicketToWorkflow } from '../controllers/support.controller.js';
 
 const router = express.Router();
 
@@ -282,6 +283,52 @@ router.patch('/support-tickets/:id', async (req, res, next) => {
     });
 
     res.status(200).json({ success: true, data: after });
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post('/support-tickets/:id/retry-workflow', async (req, res, next) => {
+  try {
+    let query = supabase
+      .from('support_tickets')
+      .select('*');
+
+    query = isUuid(req.params.id)
+      ? query.eq('id', req.params.id)
+      : query.eq('ticket_id', req.params.id);
+
+    const { data: before, error: beforeError } = await query.maybeSingle();
+
+    if (beforeError) throw beforeError;
+    if (!before) throw new AppError('Support ticket not found.', 404);
+
+    const result = await forwardSupportTicketToWorkflow(before);
+
+    const { data: after, error: afterError } = await supabase
+      .from('support_tickets')
+      .select('*')
+      .eq('id', before.id)
+      .single();
+
+    if (afterError) throw afterError;
+
+    await auditAdminAction(req, {
+      action: 'support_ticket_workflow_retry',
+      targetType: 'support_ticket',
+      targetId: after.ticket_id,
+      beforeState: before,
+      afterState: after,
+      metadata: { source: 'admin_dashboard', result },
+    });
+
+    res.status(result.status === 'sent' ? 200 : 502).json({
+      success: result.status === 'sent',
+      data: after,
+      message: result.status === 'sent'
+        ? 'Support workflow retry succeeded.'
+        : (result.error || 'Support workflow retry did not send.'),
+    });
   } catch (error) {
     next(error);
   }
