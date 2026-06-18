@@ -5,6 +5,7 @@ node_modules/
 .env
 .env.*
 !.env.example
+.do/app-preprod.yaml
 
 # Logs
 logs/

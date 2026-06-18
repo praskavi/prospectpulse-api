@@ -94,6 +94,12 @@ Production readiness smoke test:
 docs/production-smoke-test.md
 ```
 
+DigitalOcean pre-production deployment:
+
+```text
+docs/digitalocean-preprod-deployment.md
+```
+
 ## Supabase Auth Redirect URLs
 
 In Supabase Dashboard, add these under **Authentication > URL Configuration > Redirect URLs**:

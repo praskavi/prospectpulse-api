@@ -459,7 +459,7 @@ Implemented capabilities:
 - `admin_alerts` table with RLS enabled and service-role-only policy
 - Alert scanner service
 - Optional n8n alert webhook forwarding via `N8N_ADMIN_ALERT_WEBHOOK_URL`
-- Published n8n admin alert workflow: `Fg1Bmv4PyN9VLnRV`
+- Published n8n admin alert workflows: pre-production `gCDYIWjhioY8J5H1`, local/current `Fg1Bmv4PyN9VLnRV`
 - Scheduled scanner command: `npm run alerts:scan`
 - Admin Alerts tab
 - Admin alert list/filter API
@@ -666,6 +666,7 @@ Implemented documentation:
 - `BILLING_FINDINGS_AND_LEARNINGS.md`
 - `docs/admin-dashboard-requirements.md`
 - `docs/admin-operating-manual.md`
+- `docs/digitalocean-preprod-deployment.md`
 - `docs/production-smoke-test.md`
 - `docs/PRODUCT_REQUIREMENTS.md`
 - `docs/adr/`
@@ -760,6 +761,9 @@ Before charging real customers in production:
 
 | Date | Change |
 | --- | --- |
+| 2026-06-18 | Clarified that DigitalOcean pre-production uses the existing shared Supabase project. |
+| 2026-06-18 | Pointed DigitalOcean pre-production deployment docs to self-hosted `n8n-dev.jobscapeai.com` workflows. |
+| 2026-06-18 | Added DigitalOcean pre-production deployment runbook and App Platform spec template. |
 | 2026-06-17 | Added production deployment readiness smoke-test runbook. |
 | 2026-06-17 | Added operational alert scanning, admin alert visibility, and optional n8n alert forwarding. |
 | 2026-06-17 | Added customer support ticket visibility to support feature scope. |

@@ -1,0 +1,144 @@
+name: prospectpulse-preprod
+region: sgp
+alerts:
+  - rule: DEPLOYMENT_FAILED
+  - rule: DOMAIN_FAILED
+  - rule: DEPLOYMENT_LIVE
+features:
+  - buildpack-stack=ubuntu-22
+envs:
+  - key: NODE_ENV
+    value: production
+    scope: RUN_AND_BUILD_TIME
+    type: GENERAL
+  - key: APP_URL
+    value: https://prospectpulse-preprod.ondigitalocean.app
+    scope: RUN_AND_BUILD_TIME
+    type: GENERAL
+  - key: SUPABASE_URL
+    value: https://yeaiazjvuxkytxkfjfzj.supabase.co
+    scope: RUN_AND_BUILD_TIME
+    type: GENERAL
+  - key: SUPABASE_ANON_KEY
+    value: __SET_IN_DIGITALOCEAN__
+    scope: RUN_AND_BUILD_TIME
+    type: SECRET
+  - key: SUPABASE_SERVICE_ROLE_KEY
+    value: __SET_IN_DIGITALOCEAN__
+    scope: RUN_AND_BUILD_TIME
+    type: SECRET
+  - key: STRIPE_SECRET_KEY
+    value: __SET_IN_DIGITALOCEAN__
+    scope: RUN_AND_BUILD_TIME
+    type: SECRET
+  - key: STRIPE_WEBHOOK_SECRET
+    value: __SET_AFTER_STRIPE_LISTEN_OR_ENDPOINT_CREATION__
+    scope: RUN_AND_BUILD_TIME
+    type: SECRET
+  - key: STRIPE_PRICE_STARTER
+    value: __SET_IN_DIGITALOCEAN__
+    scope: RUN_AND_BUILD_TIME
+    type: SECRET
+  - key: STRIPE_PRICE_GROWTH
+    value: __SET_IN_DIGITALOCEAN__
+    scope: RUN_AND_BUILD_TIME
+    type: SECRET
+  - key: N8N_PROSPECTPULSE_WEBHOOK_URL
+    value: https://n8n-dev.jobscapeai.com/webhook/prospectpulse-scan
+    scope: RUN_AND_BUILD_TIME
+    type: GENERAL
+  - key: N8N_SUPPORT_CONTACT_WEBHOOK_URL
+    value: https://n8n-dev.jobscapeai.com/webhook/prospectpulse/support/contact
+    scope: RUN_AND_BUILD_TIME
+    type: GENERAL
+  - key: N8N_SUPPORT_CONTACT_TIMEOUT_MS
+    value: "15000"
+    scope: RUN_AND_BUILD_TIME
+    type: GENERAL
+  - key: N8N_ADMIN_ALERT_WEBHOOK_URL
+    value: https://n8n-dev.jobscapeai.com/webhook/prospectpulse/admin/alerts
+    scope: RUN_AND_BUILD_TIME
+    type: GENERAL
+  - key: N8N_ADMIN_ALERT_TIMEOUT_MS
+    value: "10000"
+    scope: RUN_AND_BUILD_TIME
+    type: GENERAL
+  - key: REDIS_URL
+    value: ${pp-preprod-redis.DATABASE_URL}
+    scope: RUN_AND_BUILD_TIME
+    type: SECRET
+databases:
+  - name: pp-preprod-redis
+    engine: VALKEY
+    production: false
+services:
+  - name: prospectpulse-web
+    github:
+      repo: praskavi/prospectpulse-api
+      branch: main
+      deploy_on_push: true
+    source_dir: /
+    environment_slug: node-js
+    build_command: npm ci
+    run_command: npm start
+    http_port: 3000
+    instance_count: 1
+    instance_size_slug: apps-s-1vcpu-1gb
+    routes:
+      - path: /
+    health_check:
+      http_path: /health
+    alerts:
+      - rule: CPU_UTILIZATION
+        operator: GREATER_THAN
+        value: 75
+        window: FIVE_MINUTES
+      - rule: MEM_UTILIZATION
+        operator: GREATER_THAN
+        value: 80
+        window: FIVE_MINUTES
+      - rule: RESTART_COUNT
+        operator: GREATER_THAN
+        value: 3
+        window: FIVE_MINUTES
+workers:
+  - name: prospectpulse-billing-worker
+    github:
+      repo: praskavi/prospectpulse-api
+      branch: main
+      deploy_on_push: true
+    source_dir: /
+    environment_slug: node-js
+    build_command: npm ci
+    run_command: npm run worker:billing
+    instance_count: 1
+    instance_size_slug: apps-s-1vcpu-1gb
+    alerts:
+      - rule: CPU_UTILIZATION
+        operator: GREATER_THAN
+        value: 75
+        window: FIVE_MINUTES
+      - rule: MEM_UTILIZATION
+        operator: GREATER_THAN
+        value: 80
+        window: FIVE_MINUTES
+      - rule: RESTART_COUNT
+        operator: GREATER_THAN
+        value: 3
+        window: FIVE_MINUTES
+jobs:
+  - name: prospectpulse-alert-scan
+    github:
+      repo: praskavi/prospectpulse-api
+      branch: main
+      deploy_on_push: true
+    source_dir: /
+    environment_slug: node-js
+    build_command: npm ci
+    run_command: npm run alerts:scan
+    instance_count: 1
+    instance_size_slug: apps-s-1vcpu-0.5gb
+    kind: SCHEDULED
+    schedule:
+      cron: "*/5 * * * *"
+      time_zone: Australia/Sydney

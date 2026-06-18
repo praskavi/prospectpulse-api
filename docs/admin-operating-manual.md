@@ -596,8 +596,10 @@ Current n8n admin alert workflow:
 
 ```text
 Workflow: ProspectPulse - Admin Operational Alerts
-Workflow ID: Fg1Bmv4PyN9VLnRV
-Production webhook: https://local.jobscapeai.com/webhook/prospectpulse/admin/alerts
+Pre-production workflow ID: gCDYIWjhioY8J5H1
+Pre-production webhook: https://n8n-dev.jobscapeai.com/webhook/prospectpulse/admin/alerts
+Local/current workflow ID: Fg1Bmv4PyN9VLnRV
+Local/current webhook: https://local.jobscapeai.com/webhook/prospectpulse/admin/alerts
 ```
 
 Recommended n8n alert workflow:

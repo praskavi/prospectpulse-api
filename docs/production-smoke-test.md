@@ -43,16 +43,16 @@ npx supabase db push
 
 ```text
 APP_URL=https://<production-domain>
-SUPABASE_URL=<production-supabase-url>
+SUPABASE_URL=https://yeaiazjvuxkytxkfjfzj.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=<production-service-role-key>
 REDIS_URL=<production-redis-url>
 STRIPE_SECRET_KEY=<production-or-sandbox-secret-key-for-test>
 STRIPE_WEBHOOK_SECRET=<current-webhook-secret>
 STRIPE_PRICE_STARTER=<starter-price-id>
 STRIPE_PRICE_GROWTH=<growth-price-id>
-N8N_PROSPECTPULSE_WEBHOOK_URL=<published-search-workflow-url>
-N8N_SUPPORT_CONTACT_WEBHOOK_URL=https://local.jobscapeai.com/webhook/prospectpulse/support/contact
-N8N_ADMIN_ALERT_WEBHOOK_URL=https://local.jobscapeai.com/webhook/prospectpulse/admin/alerts
+N8N_PROSPECTPULSE_WEBHOOK_URL=https://n8n-dev.jobscapeai.com/webhook/prospectpulse-scan
+N8N_SUPPORT_CONTACT_WEBHOOK_URL=https://n8n-dev.jobscapeai.com/webhook/prospectpulse/support/contact
+N8N_ADMIN_ALERT_WEBHOOK_URL=https://n8n-dev.jobscapeai.com/webhook/prospectpulse/admin/alerts
 ```
 
 4. Confirm n8n workflows are active:
@@ -88,6 +88,10 @@ Expected current baseline:
 8 test files passing
 67 tests passing
 ```
+
+Shared Supabase note:
+
+Pre-production uses the same Supabase project as the current environment. Run smoke tests only with seeded test accounts and Stripe test mode. Do not use real customer accounts for checkout, cancellation, support, or credit tests.
 
 ## Test Users
 
