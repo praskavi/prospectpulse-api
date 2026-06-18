@@ -4,7 +4,7 @@
 // ─────────────────────────────────────────────────────────────────
 
 const SETTINGS_KEY  = 'pp_v2_settings';
-const API_SEARCHES_URL = 'http://localhost:3000/api/searches';
+const API_SEARCHES_URL = '/api/searches';
 const DEFAULT_WEBHOOK = API_SEARCHES_URL;
 const SEARCH_POLL_INTERVAL_MS = 3000;
 const SEARCH_POLL_TIMEOUT_MS = 180000;
@@ -31,7 +31,7 @@ async function unlockContact(resultId) {
   if (btn) { btn.disabled = true; btn.textContent = 'Unlocking…'; }
 
   try {
-    const res = await apiFetch(`http://localhost:3000/api/search-results/${resultId}/unlock`, {
+    const res = await apiFetch(`/api/search-results/${resultId}/unlock`, {
       method: 'POST',
     });
 
@@ -90,7 +90,7 @@ async function startUpgrade(targetPlan) {
   try {
     if (menuItem) menuItem.disabled = true;
     if (growthMenuItem) growthMenuItem.disabled = true;
-    const res  = await apiFetch('http://localhost:3000/api/billing/checkout', {
+    const res  = await apiFetch('/api/billing/checkout', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body:    JSON.stringify({ plan }),
@@ -177,7 +177,7 @@ async function fetchUserProfile() {
   if (refreshBtn) refreshBtn.classList.add('spinning');
 
   try {
-    const res  = await apiFetch('http://localhost:3000/api/me');
+    const res  = await apiFetch('/api/me');
     if (!res || !res.ok) return;
     const json = await res.json();
     const user = json?.data;
@@ -342,7 +342,7 @@ async function openBillingPortal() {
   document.getElementById('userMenuDropdown')?.classList.remove('open');
   showToast('info', 'Opening billing portal…');
   try {
-    const res = await apiFetch('http://localhost:3000/api/billing/portal', { method: 'POST' });
+    const res = await apiFetch('/api/billing/portal', { method: 'POST' });
     if (!res) return;
     const json = await res.json();
     if (!res.ok) {
@@ -395,7 +395,7 @@ async function loadCreditHistory() {
   if (table)   table.style.display   = 'none';
 
   try {
-    const res = await apiFetch('http://localhost:3000/api/me/transactions');
+    const res = await apiFetch('/api/me/transactions');
     if (!res || !res.ok) throw new Error('Failed');
     const json = await res.json();
     const rows = json.data ?? [];

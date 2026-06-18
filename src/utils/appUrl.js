@@ -26,6 +26,20 @@ export function getPublicAppUrl(req) {
     return vercelUrl;
   }
 
+  if (req) {
+    const forwardedProto = req.get('x-forwarded-proto');
+    const forwardedHost = req.get('x-forwarded-host');
+    const protocol = forwardedProto || req.protocol;
+    const host = forwardedHost || req.get('host');
+
+    if (host) {
+      const requestUrl = cleanUrl(`${protocol}://${host}`);
+      if (!isLocalUrl(requestUrl)) {
+        return requestUrl;
+      }
+    }
+  }
+
   if (configuredUrl) {
     return configuredUrl;
   }
@@ -37,7 +51,7 @@ export function getPublicAppUrl(req) {
     const host = forwardedHost || req.get('host');
 
     if (host) {
-      return `${protocol}://${host}`;
+      return cleanUrl(`${protocol}://${host}`);
     }
   }
 

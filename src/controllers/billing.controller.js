@@ -178,6 +178,7 @@ export async function createCheckoutSession(req, res, next) {
           customer: customer.id,
           return_url: `${appUrl}/app.html`,
         });
+        console.info(`[billing] Created portal session for subscription update with return_url=${appUrl}/app.html`);
 
         return res.status(200).json({
           success: true,
@@ -201,6 +202,7 @@ export async function createCheckoutSession(req, res, next) {
       success_url: `${appUrl}/billing-success.html?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${appUrl}/app.html`,
     });
+    console.info(`[billing] Created checkout session with success_url=${appUrl}/billing-success.html`);
 
     res.status(200).json({ success: true, url: session.url });
   } catch (error) {
@@ -276,6 +278,7 @@ export async function createPortalSession(req, res, next) {
       customer: profile.stripe_customer_id,
       return_url: `${appUrl}/app.html`,
     });
+    console.info(`[billing] Created portal session with return_url=${appUrl}/app.html`);
 
     res.status(200).json({ success: true, url: session.url });
   } catch (error) {

@@ -511,7 +511,7 @@
       renderPlanCards(PLAN_FALLBACKS);
 
       try {
-        const res = await fetch('http://localhost:3000/api/billing/plans');
+        const res = await fetch('/api/billing/plans');
         if (!res.ok) return;
         const json = await res.json();
         const plansByCode = Object.fromEntries((json.data || []).map(plan => [plan.code, plan]));
@@ -522,7 +522,7 @@
     }
 
     async function loadProfile() {
-      const res = await apiFetch('http://localhost:3000/api/me');
+      const res = await apiFetch('/api/me');
       if (!res || !res.ok) {
         showToast('Could not load your current plan.');
         return;
@@ -566,7 +566,7 @@
       button.textContent = 'Redirecting...';
 
       try {
-        const res = await apiFetch('http://localhost:3000/api/billing/checkout', {
+        const res = await apiFetch('/api/billing/checkout', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ plan }),
