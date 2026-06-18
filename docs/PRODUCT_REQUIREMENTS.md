@@ -1,6 +1,6 @@
 # ProspectPulse Product Requirements
 
-Last updated: 2026-06-17
+Last updated: 2026-06-18
 
 ## Maintenance Rule
 
@@ -280,6 +280,7 @@ Implemented capabilities:
 - Stripe webhook endpoint
 - Webhook signature verification
 - BullMQ queued webhook processing
+- Vercel pre-production synchronous webhook processing mode
 - Webhook observability table
 - Worker processing for relevant events
 
@@ -297,12 +298,14 @@ Acceptance criteria:
 - Portal returns a valid Stripe billing portal URL for paid users with a Stripe customer.
 - Webhook signatures are verified.
 - Webhook events are queued before processing.
+- Vercel pre-production can process webhook events synchronously when `STRIPE_WEBHOOK_PROCESSING_MODE=sync`.
 - Webhook failures are observable in admin.
 
 Supporting tests:
 
 - `tests/05-billing.test.js`
 - `tests/06-webhooks.test.js`
+- `tests/09-cron.test.js`
 
 Supporting ADRs:
 
@@ -461,6 +464,7 @@ Implemented capabilities:
 - Optional n8n alert webhook forwarding via `N8N_ADMIN_ALERT_WEBHOOK_URL`
 - Published n8n admin alert workflows: pre-production `gCDYIWjhioY8J5H1`, local/current `Fg1Bmv4PyN9VLnRV`
 - Scheduled scanner command: `npm run alerts:scan`
+- Vercel Cron endpoint: `GET /api/cron/alerts-scan`
 - Admin Alerts tab
 - Admin alert list/filter API
 - Admin scan-now API
@@ -631,6 +635,7 @@ Implemented test files:
 - `tests/06-webhooks.test.js`
 - `tests/07-admin.test.js`
 - `tests/08-support.test.js`
+- `tests/09-cron.test.js`
 
 Implemented coverage:
 
@@ -644,11 +649,12 @@ Implemented coverage:
 - Admin APIs
 - Support ticket admin/retry flow
 - Customer support ticket visibility
+- Cron alert scan endpoint for Vercel pre-production
 
 Current latest known result:
 
 ```text
-67 tests passed
+72 tests passed
 ```
 
 Acceptance criteria:
@@ -666,7 +672,7 @@ Implemented documentation:
 - `BILLING_FINDINGS_AND_LEARNINGS.md`
 - `docs/admin-dashboard-requirements.md`
 - `docs/admin-operating-manual.md`
-- `docs/digitalocean-preprod-deployment.md`
+- `docs/vercel-preprod-deployment.md`
 - `docs/production-smoke-test.md`
 - `docs/PRODUCT_REQUIREMENTS.md`
 - `docs/adr/`
@@ -704,11 +710,13 @@ Acceptance criteria:
 ### Reliability
 
 - Stripe webhooks are queued through BullMQ.
+- Vercel pre-production may process Stripe webhooks synchronously because Vercel does not run the long-lived billing worker.
 - Support tickets are created in Supabase before n8n forwarding.
 - n8n failures are captured through ticket `n8n_status`.
 - Admin can retry support workflow forwarding.
 - Operational alerts are deduplicated and persisted in `admin_alerts`.
-- `npm run alerts:scan` can be scheduled by the hosting platform for proactive checks.
+- `npm run alerts:scan` can be scheduled by persistent hosting platforms for proactive checks.
+- Vercel pre-production uses `/api/cron/alerts-scan` through Vercel Cron.
 
 ### Observability
 
@@ -747,10 +755,12 @@ Before charging real customers in production:
 1. Deploy backend with production environment variables.
 2. Verify Supabase migrations are applied.
 3. Verify Stripe production prices and webhook endpoint.
-4. Verify Redis/BullMQ worker is running.
+4. Verify billing processing mode:
+   - persistent server: Redis/BullMQ worker is running
+   - Vercel pre-production: `STRIPE_WEBHOOK_PROCESSING_MODE=sync`
 5. Verify n8n workflows are active and credentials are production-safe.
 6. Configure `N8N_ADMIN_ALERT_WEBHOOK_URL` or confirm alert notifications are intentionally skipped.
-7. Schedule `npm run alerts:scan`.
+7. Schedule alert scans through `npm run alerts:scan` or Vercel Cron.
 8. Verify Gmail/support notification deliverability.
 9. Run `npm test`.
 10. Run the production smoke test in `docs/production-smoke-test.md`.
@@ -761,9 +771,9 @@ Before charging real customers in production:
 
 | Date | Change |
 | --- | --- |
-| 2026-06-18 | Clarified that DigitalOcean pre-production uses the existing shared Supabase project. |
-| 2026-06-18 | Pointed DigitalOcean pre-production deployment docs to self-hosted `n8n-dev.jobscapeai.com` workflows. |
-| 2026-06-18 | Added DigitalOcean pre-production deployment runbook and App Platform spec template. |
+| 2026-06-18 | Added Vercel serverless entrypoint, synchronous Stripe webhook mode, and Vercel Cron alert scan endpoint. |
+| 2026-06-18 | Switched pre-production deployment runbook from DigitalOcean App Platform to Vercel. |
+| 2026-06-18 | Clarified that Vercel pre-production uses the existing shared Supabase project and self-hosted `n8n-dev.jobscapeai.com` workflows. |
 | 2026-06-17 | Added production deployment readiness smoke-test runbook. |
 | 2026-06-17 | Added operational alert scanning, admin alert visibility, and optional n8n alert forwarding. |
 | 2026-06-17 | Added customer support ticket visibility to support feature scope. |

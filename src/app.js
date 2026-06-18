@@ -12,6 +12,7 @@ import { requireAuth } from './middleware/authMiddleware.js';
 import adminRoutes from './routes/admin.routes.js';
 import { requireAdmin } from './middleware/adminMiddleware.js';
 import { errorHandler } from './middleware/errorHandler.js';
+import { runAlertScanCron } from './controllers/cron.controller.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -43,6 +44,8 @@ const deprecatedLeadsHandler = (req, res) => {
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'ProspectPulse API is healthy' });
 });
+
+app.get('/api/cron/alerts-scan', runAlertScanCron);
 
 // Auth routes — public
 app.use('/api', authRoutes);

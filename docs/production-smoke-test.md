@@ -1,6 +1,6 @@
 # ProspectPulse Production Readiness Smoke Test
 
-Last updated: 2026-06-17
+Last updated: 2026-06-18
 
 Use this checklist before enabling real customer traffic or after any production deployment that touches auth, billing, search, support, admin, webhooks, or alerts.
 
@@ -24,7 +24,10 @@ Production is smoke-test ready only when:
 
 - All required environment variables are present.
 - Supabase migrations are applied.
-- API, billing worker, Redis, n8n, Stripe webhook forwarding, and alert scanner are running.
+- API, n8n, Stripe webhook forwarding, and alert scanner are running for the chosen deployment mode.
+- Billing processing mode is confirmed:
+  - persistent server: BullMQ worker and Redis running
+  - Vercel pre-production: `STRIPE_WEBHOOK_PROCESSING_MODE=sync`
 - All smoke-test scenarios below pass.
 - No new failed Stripe webhooks, failed support notifications, stuck searches, or critical admin alerts remain open.
 
@@ -46,6 +49,7 @@ APP_URL=https://<production-domain>
 SUPABASE_URL=https://yeaiazjvuxkytxkfjfzj.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=<production-service-role-key>
 REDIS_URL=<production-redis-url>
+STRIPE_WEBHOOK_PROCESSING_MODE=queue
 STRIPE_SECRET_KEY=<production-or-sandbox-secret-key-for-test>
 STRIPE_WEBHOOK_SECRET=<current-webhook-secret>
 STRIPE_PRICE_STARTER=<starter-price-id>
@@ -55,6 +59,15 @@ N8N_SUPPORT_CONTACT_WEBHOOK_URL=https://n8n-dev.jobscapeai.com/webhook/prospectp
 N8N_ADMIN_ALERT_WEBHOOK_URL=https://n8n-dev.jobscapeai.com/webhook/prospectpulse/admin/alerts
 ```
 
+For Vercel pre-production, use this override:
+
+```text
+STRIPE_WEBHOOK_PROCESSING_MODE=sync
+CRON_SECRET=<long-random-secret-for-manual-alert-scan-test>
+```
+
+`REDIS_URL` and the billing worker are not required for Vercel pre-production sync webhook mode.
+
 4. Confirm n8n workflows are active:
 
 | Workflow | Production path |
@@ -63,17 +76,25 @@ N8N_ADMIN_ALERT_WEBHOOK_URL=https://n8n-dev.jobscapeai.com/webhook/prospectpulse
 | Support contact workflow | `/webhook/prospectpulse/support/contact` |
 | Admin alert workflow | `/webhook/prospectpulse/admin/alerts` |
 
-5. Start required services:
+5. Start required services for persistent-server deployments:
 
 ```bash
 npm start
 npm run worker:billing
 ```
 
+For Vercel pre-production, the API is a Vercel Function through `api/index.js`; do not start `npm run worker:billing`.
+
 6. Schedule or manually run alerts:
 
 ```bash
 npm run alerts:scan
+```
+
+For Vercel pre-production, alert scan runs through Vercel Cron at `/api/cron/alerts-scan`. Manual check:
+
+```bash
+curl -H "Authorization: Bearer <CRON_SECRET>" https://<vercel-preprod-domain>/api/cron/alerts-scan
 ```
 
 7. Confirm automated tests passed before deployment:
@@ -85,8 +106,8 @@ npm test
 Expected current baseline:
 
 ```text
-8 test files passing
-67 tests passing
+9 test files passing
+72 tests passing
 ```
 
 Shared Supabase note:
@@ -250,17 +271,19 @@ https://<production-domain>/api/billing/webhook
 2. Complete ST-04 checkout.
 3. Open Admin Dashboard > Webhooks.
 4. Find the related `checkout.session.completed` event.
-5. Confirm worker processed it.
+5. Confirm it was processed by the configured deployment mode.
 6. Check Supabase profile for the user.
 
 Expected:
 
 - Webhook row exists in `stripe_webhook_events`.
-- Event moves through received/queued/processing to `processed`.
+- Persistent-server mode: event moves through received/queued/processing to `processed`.
+- Vercel sync mode: event is received and processed during the webhook request.
 - Profile plan becomes Starter.
 - Credits match Starter entitlement plus any applicable business rule.
 - `stripe_customer_id` is populated.
-- No failed BullMQ job remains.
+- No failed BullMQ job remains in queue mode.
+- No failed webhook event remains in sync mode.
 
 Fail conditions:
 
@@ -299,7 +322,8 @@ Expected:
 - Non-admin receives `403`.
 - Unauthenticated user receives `401` or login redirect.
 - Overview counts are non-error.
-- System tab shows API/database ok and Redis queue status.
+- System tab shows API/database ok.
+- Redis queue status is shown when Redis is configured; Vercel sync mode may show queue health as unavailable without blocking this smoke test.
 
 Fail conditions:
 
@@ -361,10 +385,18 @@ Fail conditions:
 Steps:
 
 1. Confirm `N8N_ADMIN_ALERT_WEBHOOK_URL` is configured.
-2. Run:
+2. Run the scanner for the deployment mode.
+
+Persistent server:
 
 ```bash
 npm run alerts:scan
+```
+
+Vercel pre-production:
+
+```bash
+curl -H "Authorization: Bearer <CRON_SECRET>" https://<vercel-preprod-domain>/api/cron/alerts-scan
 ```
 
 3. Open Admin Dashboard > Alerts.

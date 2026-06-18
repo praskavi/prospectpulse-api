@@ -553,6 +553,12 @@ resolved
 
 Use Alerts to see failures that need admin attention without manually checking Supabase, Stripe, Redis, n8n, or logs.
 
+Deployment note:
+
+- Local or persistent-server deployments can run `npm run alerts:scan`.
+- Vercel pre-production runs the same scanner through `GET /api/cron/alerts-scan`.
+- Manual Vercel check: `curl -H "Authorization: Bearer <CRON_SECRET>" https://<vercel-preprod-domain>/api/cron/alerts-scan`.
+
 The scanner checks:
 
 - Failed Stripe webhook events
@@ -677,8 +683,8 @@ npm test
 Current expected result:
 
 ```text
-8 test files passing
-67 tests passing
+9 test files passing
+72 tests passing
 ```
 
 Admin-specific test file:

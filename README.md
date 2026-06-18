@@ -56,10 +56,12 @@ APP_URL=http://localhost:3000
 SUPABASE_URL=https://yeaiazjvuxkytxkfjfzj.supabase.co
 SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
 REDIS_URL=redis://127.0.0.1:6379
+STRIPE_WEBHOOK_PROCESSING_MODE=queue
 STRIPE_SECRET_KEY=sk_test_REPLACE_ME
 STRIPE_WEBHOOK_SECRET=whsec_REPLACE_ME
 STRIPE_PRICE_STARTER=price_REPLACE_ME
 STRIPE_PRICE_GROWTH=price_REPLACE_ME
+CRON_SECRET=replace_with_long_random_secret_for_manual_cron_calls
 N8N_PROSPECTPULSE_WEBHOOK_URL=https://local.jobscapeai.com/webhook/prospectpulse-scan
 DEV_USER_ID=00000000-0000-0000-0000-000000000000
 ```
@@ -94,10 +96,10 @@ Production readiness smoke test:
 docs/production-smoke-test.md
 ```
 
-DigitalOcean pre-production deployment:
+Vercel pre-production deployment:
 
 ```text
-docs/digitalocean-preprod-deployment.md
+docs/vercel-preprod-deployment.md
 ```
 
 ## Supabase Auth Redirect URLs
@@ -135,7 +137,7 @@ Stripe webhooks are verified by Express at:
 POST http://localhost:3000/api/billing/webhook
 ```
 
-After signature verification, the API enqueues the event in BullMQ. The worker handles:
+In local development and persistent-server deployments, the API verifies the Stripe signature and enqueues the event in BullMQ. The worker handles:
 
 - `checkout.session.completed` - updates the user plan, credits, and Stripe customer id
 - `customer.subscription.deleted` - downgrades the user to Free
@@ -170,6 +172,14 @@ stripe trigger invoice.paid
 ```
 
 For real checkout testing, keep `stripe listen` running, start a Checkout upgrade from the app, and complete payment with a Stripe test card.
+
+For Vercel pre-production, set:
+
+```env
+STRIPE_WEBHOOK_PROCESSING_MODE=sync
+```
+
+This processes Stripe webhook side effects inside the webhook request because Vercel does not run the long-lived BullMQ billing worker.
 
 ## n8n Workflow
 

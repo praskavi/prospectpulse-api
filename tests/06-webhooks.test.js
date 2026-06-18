@@ -34,6 +34,10 @@ describe('06 – Stripe Webhooks', () => {
   // ── HTTP endpoint: signature verification ──────────────────────────────
 
   describe('Webhook endpoint – signature gate', () => {
+    afterEach(() => {
+      delete process.env.STRIPE_WEBHOOK_PROCESSING_MODE;
+    });
+
     it('Missing stripe-signature header returns 400', async () => {
       const res = await request(app)
         .post('/api/webhooks/stripe')
@@ -71,6 +75,29 @@ describe('06 – Stripe Webhooks', () => {
       expect(res.status).toBe(200);
       expect(res.body.received).toBe(true);
       expect(res.body.queued).toBe(true);
+    });
+
+    it('Valid signed event can process synchronously for serverless deployments', async () => {
+      process.env.STRIPE_WEBHOOK_PROCESSING_MODE = 'sync';
+      const event = {
+        id: `evt_test_sync_${Date.now()}`,
+        type: 'ping',
+        data: { object: {} },
+      };
+      const payload = JSON.stringify(event);
+      const { header } = signWebhookPayload(payload, WEBHOOK_SECRET);
+
+      const res = await request(app)
+        .post('/api/webhooks/stripe')
+        .type('application/json')
+        .set('stripe-signature', header)
+        .send(payload);
+
+      expect(res.status).toBe(200);
+      expect(res.body.received).toBe(true);
+      expect(res.body.queued).toBe(false);
+      expect(res.body.processed).toBe(true);
+      expect(res.body.status).toBe('ignored');
     });
   });
 

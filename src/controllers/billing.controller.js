@@ -4,9 +4,13 @@ import { PLAN_LIMITS, PLAN_RETENTION_DAYS } from '../config/plans.js';
 import { AppError } from '../middleware/errorHandler.js';
 import { enqueueStripeWebhookEvent } from '../queues/stripeWebhook.queue.js';
 import {
+  markStripeWebhookFailed,
+  markStripeWebhookProcessed,
+  markStripeWebhookProcessing,
   markStripeWebhookQueued,
   recordStripeWebhookReceived,
 } from '../services/stripeWebhookEvents.service.js';
+import { processStripeWebhookEvent } from '../services/stripeBilling.service.js';
 
 function getPriceId(plan) {
   const priceMap = {
@@ -223,6 +227,24 @@ export async function handleWebhook(req, res, next) {
     }
 
     await recordStripeWebhookReceived(event);
+    if (process.env.STRIPE_WEBHOOK_PROCESSING_MODE === 'sync') {
+      try {
+        await markStripeWebhookProcessing(event.id, 1);
+        const result = await processStripeWebhookEvent(event);
+        await markStripeWebhookProcessed(event.id, result?.status === 'ignored' ? 'ignored' : 'processed');
+        console.log(`[webhook] Processed Stripe event ${event.id} (${event.type}) synchronously`);
+        return res.status(200).json({
+          received: true,
+          queued: false,
+          processed: true,
+          status: result?.status || 'processed',
+        });
+      } catch (error) {
+        await markStripeWebhookFailed(event.id, error, 1);
+        throw error;
+      }
+    }
+
     const job = await enqueueStripeWebhookEvent(event);
     await markStripeWebhookQueued(event.id, job.id);
     console.log(`[webhook] Queued Stripe event ${event.id} (${event.type}) as job ${job.id}`);
