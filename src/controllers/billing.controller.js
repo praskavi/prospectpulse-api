@@ -11,6 +11,7 @@ import {
   recordStripeWebhookReceived,
 } from '../services/stripeWebhookEvents.service.js';
 import { processStripeWebhookEvent } from '../services/stripeBilling.service.js';
+import { getPublicAppUrl } from '../utils/appUrl.js';
 
 function getPriceId(plan) {
   const priceMap = {
@@ -153,7 +154,7 @@ export async function createCheckoutSession(req, res, next) {
       throw new AppError(`Stripe price ID for plan "${plan}" is not configured.`, 503);
     }
 
-    const appUrl = process.env.APP_URL || 'http://localhost:3000';
+    const appUrl = getPublicAppUrl(req);
 
     const { data: profile } = await supabase
       .from('profiles')
@@ -269,7 +270,7 @@ export async function createPortalSession(req, res, next) {
       throw new AppError('No active subscription found. Please upgrade first.', 400);
     }
 
-    const appUrl = process.env.APP_URL || 'http://localhost:3000';
+    const appUrl = getPublicAppUrl(req);
 
     const session = await stripe.billingPortal.sessions.create({
       customer: profile.stripe_customer_id,

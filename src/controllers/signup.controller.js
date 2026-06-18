@@ -4,21 +4,12 @@
 // service-role RLS bypass stays intact for all database operations.
 import supabase, { supabaseAuth } from '../config/supabaseClient.js';
 import { AppError } from '../middleware/errorHandler.js';
-
-function getAppUrl(req) {
-  const configuredUrl = process.env.APP_URL;
-
-  if (configuredUrl) {
-    return configuredUrl.replace(/\/$/, '');
-  }
-
-  return `${req.protocol}://${req.get('host')}`;
-}
+import { getPublicAppUrl } from '../utils/appUrl.js';
 
 export async function createUser(req, res, next) {
   try {
     const { name, email, password } = req.body;
-    const emailRedirectTo = `${getAppUrl(req)}/confirm.html`;
+    const emailRedirectTo = `${getPublicAppUrl(req)}/confirm.html`;
 
     const { data, error } = await supabaseAuth.auth.signUp({
       email,
@@ -78,7 +69,7 @@ export async function requestPasswordReset(req, res, next) {
       throw new AppError('Email is required.', 400);
     }
 
-    const emailRedirectTo = `${getAppUrl(req)}/reset-password.html`;
+    const emailRedirectTo = `${getPublicAppUrl(req)}/reset-password.html`;
     const { error } = await supabaseAuth.auth.resetPasswordForEmail(email, {
       redirectTo: emailRedirectTo,
     });
