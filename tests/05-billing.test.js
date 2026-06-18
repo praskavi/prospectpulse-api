@@ -36,6 +36,7 @@ vi.mock('../src/config/stripe.js', () => ({
 }));
 
 import { app } from '../src/app.js';
+import stripe from '../src/config/stripe.js';
 import { getToken, resetProfile, TEST_USERS } from './helpers.js';
 
 describe('05 – Billing Plans & Checkout (Stripe mocked)', () => {
@@ -118,5 +119,46 @@ describe('05 – Billing Plans & Checkout (Stripe mocked)', () => {
     expect(res.status).toBe(200);
     expect(res.body.success).toBe(true);
     expect(res.body.url).toContain('stripe.com');
+  });
+
+  it('POST /api/billing/checkout returns app success URL for existing subscription changes', async () => {
+    await resetProfile(TEST_USERS.starter.id, {
+      stripe_customer_id: 'cus_mock_001',
+      plan_code: 'starter',
+      credits_remaining: 1000,
+    });
+
+    stripe.billingPortal.sessions.create.mockClear();
+    stripe.subscriptions.list.mockResolvedValueOnce({
+      data: [{
+        id: 'sub_mock_001',
+        status: 'active',
+        cancel_at_period_end: false,
+        metadata: { plan: 'starter' },
+        items: {
+          data: [{
+            id: 'si_mock_001',
+            price: { id: process.env.STRIPE_PRICE_STARTER },
+          }],
+        },
+      }],
+    });
+
+    const res = await request(app)
+      .post('/api/billing/checkout')
+      .set('Authorization', `Bearer ${starterToken}`)
+      .send({ plan: 'growth' });
+
+    expect(res.status).toBe(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.stripeRedirect).toBe(false);
+    expect(res.body.url).toContain('/billing-success.html?plan_changed=growth');
+    expect(stripe.subscriptions.update).toHaveBeenCalledWith(
+      'sub_mock_001',
+      expect.objectContaining({
+        proration_behavior: 'none',
+      }),
+    );
+    expect(stripe.billingPortal.sessions.create).not.toHaveBeenCalled();
   });
 });

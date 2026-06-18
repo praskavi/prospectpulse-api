@@ -173,16 +173,13 @@ export async function createCheckoutSession(req, res, next) {
           targetPlan: plan,
           targetPriceId: priceId,
         });
-
-        const portalSession = await stripe.billingPortal.sessions.create({
-          customer: customer.id,
-          return_url: `${appUrl}/app.html`,
-        });
-        console.info(`[billing] Created portal session for subscription update with return_url=${appUrl}/app.html`);
+        const redirectUrl = `${appUrl}/billing-success.html?plan_changed=${encodeURIComponent(plan)}`;
+        console.info(`[billing] Updated subscription plan and returning redirect_url=${redirectUrl}`);
 
         return res.status(200).json({
           success: true,
-          url: portalSession.url,
+          url: redirectUrl,
+          stripeRedirect: false,
           message: update.isGrowthToStarter
             ? 'Plan changed to Starter. Credits will reset to the Starter allocation.'
             : `Plan changed to ${plan}.`,
