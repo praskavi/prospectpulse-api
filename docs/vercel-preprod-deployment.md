@@ -38,7 +38,7 @@ vercel.json
 src/controllers/cron.controller.js
 ```
 
-`vercel.json` rewrites `/api/*` and `/health` to the Express app and schedules the alert scan endpoint every 5 minutes.
+`vercel.json` rewrites `/api/*` and `/health` to the Express app and schedules the alert scan endpoint once daily. Vercel Hobby accounts do not allow more frequent cron schedules.
 
 ## Required Environment Variables
 
@@ -160,9 +160,11 @@ Vercel Cron is configured in `vercel.json`:
 ```json
 {
   "path": "/api/cron/alerts-scan",
-  "schedule": "*/5 * * * *"
+  "schedule": "0 20 * * *"
 }
 ```
+
+Vercel Cron schedules use UTC. `0 20 * * *` runs once daily at 20:00 UTC, which is 06:00 in Sydney during AEST or 07:00 during AEDT.
 
 The endpoint requires:
 
