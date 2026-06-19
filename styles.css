@@ -806,16 +806,17 @@ tr:hover .copy-email { opacity: 1; }
 .cards-wrap { }
 .cards-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
   margin-bottom: 20px;
 }
-@media (max-width: 960px) { .cards-grid { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 620px) { .cards-grid { grid-template-columns: 1fr; } }
+@media (max-width: 960px) { .cards-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 620px) { .cards-grid { grid-template-columns: minmax(0, 1fr); } }
 
 .business-card {
   background: var(--card2); border: 1px solid var(--border2); border-radius: 14px;
   padding: 18px; display: flex; flex-direction: column; gap: 14px;
+  min-width: 0; overflow: hidden;
   transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
 }
 .business-card:hover {
@@ -823,7 +824,7 @@ tr:hover .copy-email { opacity: 1; }
   box-shadow: 0 8px 24px rgba(249,115,22,0.12);
 }
 
-.card-header { display: flex; align-items: flex-start; gap: 12px; }
+.card-header { display: flex; align-items: flex-start; gap: 12px; min-width: 0; }
 .card-avatar {
   width: 42px; height: 42px; border-radius: 10px; flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
@@ -842,18 +843,21 @@ tr:hover .copy-email { opacity: 1; }
   font-size: 10px; color: var(--text3); background: rgba(255,255,255,0.05);
   border-radius: 4px; padding: 1px 5px;
   white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 130px;
+  min-width: 0;
 }
 
-.card-details { display: flex; flex-direction: column; gap: 7px; flex: 1; }
+.card-details { display: flex; flex-direction: column; gap: 7px; flex: 1; min-width: 0; }
 .card-detail {
   display: flex; align-items: center; gap: 8px;
-  font-size: 12px; color: var(--text2); min-height: 16px;
+  font-size: 12px; color: var(--text2); min-height: 16px; min-width: 0;
 }
 .card-detail-icon { font-size: 12px; flex-shrink: 0; width: 16px; text-align: center; }
-.card-detail span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.card-detail span:not(.card-detail-icon) {
+  min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
 .card-detail a {
   color: var(--text2); text-decoration: none;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  display: block; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   transition: color 0.15s;
 }
 .card-detail a:hover { color: var(--orange); }
