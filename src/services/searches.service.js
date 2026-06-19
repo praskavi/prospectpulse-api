@@ -197,6 +197,10 @@ async function markSearchCompleted({ searchId, userId, n8nResult }) {
   await deductCredits({ userId, amount: creditsUsed, searchId });
 }
 
+export function hasFinalN8nResult(n8nResult) {
+  return n8nResult?.success === true && Array.isArray(n8nResult?.leads);
+}
+
 // Insert a row into credit_transactions for audit trail.
 // Non-fatal — a logging failure must never break the main operation.
 async function logCreditTransaction({ userId, type, credits, description, relatedSearchId = null }) {
@@ -338,7 +342,12 @@ export async function createSearchAndRunWorkflow({ userId, plan, payload }) {
   } else {
     callN8nWorkflow({ searchId: searchRecord.id, userId, search })
       .then(async n8nResult => {
-        await markSearchCompleted({ searchId: searchRecord.id, userId, n8nResult });
+        if (hasFinalN8nResult(n8nResult)) {
+          await markSearchCompleted({ searchId: searchRecord.id, userId, n8nResult });
+          return;
+        }
+
+        console.log(`[n8n:${searchRecord.id}] Workflow accepted; waiting for n8n to insert results`);
       })
       .catch(async error => {
         console.error(`[n8n:${searchRecord.id}]`, error.message);
