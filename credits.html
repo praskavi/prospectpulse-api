@@ -299,7 +299,7 @@
     document.getElementById('userMenuDropdown')?.classList.remove('open');
     showToast('Opening billing portal…');
     try {
-      const res  = await apiFetch('http://localhost:3000/api/billing/portal', { method: 'POST' });
+      const res  = await apiFetch('/api/billing/portal', { method: 'POST' });
       if (!res) return;
       const json = await res.json();
       if (!res.ok) { showToast(json.message || 'Could not open billing portal.', true); return; }
@@ -313,7 +313,7 @@
     if (!plan) return;
     document.getElementById('userMenuDropdown')?.classList.remove('open');
     try {
-      const res  = await apiFetch('http://localhost:3000/api/billing/checkout', {
+      const res  = await apiFetch('/api/billing/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ plan }),
@@ -427,7 +427,7 @@
   // ── FETCH PROFILE ─────────────────────────────────────────────────
   async function fetchProfile() {
     try {
-      const res  = await apiFetch('http://localhost:3000/api/me');
+      const res  = await apiFetch('/api/me');
       if (!res || !res.ok) return;
       const json = await res.json();
       const user = json?.data;
@@ -467,7 +467,7 @@
   async function fetchTransactions() {
     const loading = document.getElementById('txLoading');
     try {
-      const res  = await apiFetch('http://localhost:3000/api/me/transactions');
+      const res  = await apiFetch('/api/me/transactions');
       if (!res || !res.ok) throw new Error('Failed');
       const json = await res.json();
       allTransactions = json.data ?? [];
