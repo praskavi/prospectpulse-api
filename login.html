@@ -318,6 +318,16 @@
       el.innerHTML = `<strong>${label} selected.</strong> Sign in or create an account, then you will continue to secure Stripe checkout.`;
     }
 
+    async function readJsonResponse(res) {
+      const text = await res.text();
+      if (!text) return {};
+      try {
+        return JSON.parse(text);
+      } catch (_) {
+        return {};
+      }
+    }
+
     async function handleLogin() {
       const email    = document.getElementById('loginEmail').value.trim();
       const password = document.getElementById('loginPassword').value;
@@ -332,7 +342,7 @@
           headers: { 'Content-Type': 'application/json' },
           body:    JSON.stringify({ email, password }),
         });
-        const data = await res.json();
+        const data = await readJsonResponse(res);
 
         if (!res.ok) { showAlert('error', data.message || 'Login failed.'); return; }
 
@@ -374,7 +384,7 @@
           headers: { 'Content-Type': 'application/json' },
           body:    JSON.stringify({ name, email, password }),
         });
-        const data = await res.json();
+        const data = await readJsonResponse(res);
 
         if (!res.ok) { showAlert('error', data.message || 'Signup failed.'); return; }
 
@@ -406,7 +416,7 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email }),
         });
-        const data = await res.json();
+        const data = await readJsonResponse(res);
 
         if (!res.ok) {
           showAlert('error', data.message || 'Could not send reset link.');
